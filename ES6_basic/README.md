@@ -1,1 +1,154 @@
-#ES6 Basic
+# ES6 Basic
+
+## Learning Objectives
+
+## Tasks Overview
+
+**Task 0:** Refactor JavaScript functions to utilize ES6 `const` and `let` for improved scoping and maintainability, demonstrating best practices in variable declaration.
+
+**Task 1:** Modify `taskBlock` to prevent variable hoisting issues by using `const` within conditional blocks, showcasing block-level scoping with ES6.
+
+**Task 2:** Refactor an object method to use ES6 arrow syntax, illustrating how arrow functions maintain the lexical scope of `this`, improving method definitions within object constructors.
+
+**Task 3:** Simplify the function `getSumOfHoods` by using default parameters to condense its internals into one line, demonstrating efficient function setup and parameter handling.
+
+**Task 4:** Modify a function to utilize ES6 rest parameters for dynamically counting and returning the number of arguments passed to it.
+
+## File Overview
+
+**0-main.js:** Imports and tests functions from 0-constants.js by executing them and displaying their combined outputs.
+
+**0-constants.js:** 
+- `taskFirst`: Demonstrates the immutable variable declaration with `const`.
+- `getLast`: Provides a reusable component for string manipulation.
+- `taskNext`: Illustrates mutable variable management with `let` in a dynamic context.
+
+**1-main.js:** Tests the taskBlock function by executing it with different boolean values and displays the results to demonstrate the effect of the conditional logic.
+
+**1-block-scoped.js:** 
+- Demonstrates the use of `const` to maintain block-level scope and prevent hoisting issues within conditional blocks.
+
+**2-main.js:** Executes the `getNeighborhoodsList` constructor and its method `addNeighborhood` to demonstrate the application of arrow functions in methods.
+
+**2-arrow.js:** 
+- `getNeighborhoodsList`: A constructor function that initializes an object with a list of neighborhoods and includes a method to add new items.
+- `addNeighborhood`: An arrow function method added to `getNeighborhoodsList` to demonstrate the lexical scoping of `this`.
+
+**3-main.js:** Executes `getSumOfHoods` demonstrating the use of default parameters in function condensation.
+
+**3-default-parameter.js:** 
+- `getSumOfHoods`: Simplifies parameter handling by using default values, demonstrating a streamlined approach to function design.
+
+**4-main.js:** Demonstrates the use of the rest parameter syntax by executing `returnHowManyArguments` with various sets of arguments.
+
+**4-rest-parameter.js:** 
+- `returnHowManyArguments`: Uses rest parameters to dynamically handle an arbitrary number of arguments and returns their count.
+
+
+## Installation
+Clone this repository and navigate to the project directory.
+
+```
+git clone https://github.com/ThatsVie/atlas-web_back_end.git
+```
+
+```
+cd ES6_basic
+```
+
+## Setup
+Ensure you have Node.js installed on your system. [ Visit this site for details about which version may be appropriate for you ](https://github.com/nodejs/Release)
+
+**Install Jest**
+
+Jest is used for running tests. Install Jest using npm by running:
+```
+npm install --save-dev jest
+```
+
+**Install Babel**
+
+Babel is used for compiling ES6+ JavaScript to backwards-compatible versions. Install Babel along with necessary presets:
+```
+npm install --save-dev babel-jest @babel/core @babel/preset-env
+```
+
+**Install ESLint**
+
+ESLint is used to ensure code quality and consistency. Install ESLint with:
+```
+npm install --save-dev eslint
+```
+## Usage
+
+**Task 0**
+
+Executes functions from `0-constants.js` to showcase variable management with `const` and `let`.
+
+```
+npm run dev 0-main.js
+```
+When npm run dev 0-main.js is run, it uses npx babel-node to execute the 0-main.js script. Babel-node is a part of Babel, which compiles ES6+ JavaScript to backward-compatible JavaScript. This ensures that even if newer syntax features are used (like const and let), the code runs smoothly on environments that might only support older JavaScript versions.
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/c234e973-5148-467c-b22a-47791cc5c822)
+
+
+**Output:** "I prefer const when I can. But sometimes let is okay" illustrates how the functions taskFirst and taskNext handle string values and return them in a combined format.
+
+**Task 1**
+
+Test block scoping with const to validate how conditional blocks isolate variable scope.
+```
+npm run dev 1-main.js
+```
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/9dc7228b-4109-4177-8475-a9a0f8de576e)
+
+
+**Output:**
+When true is passed it outputs "true false" from within the block, then [false, true] from the function return.
+When false is passed it directly outputs [false, true] as the block does not execute, showing the initial values are unchanged.
+
+**Task 2**
+Demonstrates the use of ES6 arrow functions within object methods to maintain the lexical context of this.
+```
+npm run dev 2-main.js
+```
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/cf9df8d0-000a-4e77-aa3d-10b44f23e948)
+
+**Task 3**
+Illustrates the use of default parameters to simplify function logic in getSumOfHoods
+```
+npm run dev 3-main.js
+```
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/77f641fc-3c39-462a-999b-a115772fb099)
+
+**Task 4**
+Shows how the rest parameter can be used to handle any number of input arguments dynamically.
+
+```
+npm run dev 4-main.js
+```
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/40074da0-6191-436a-b3ba-9c3076058fcb)
+
+Output:
+
+1 when one argument is passed.
+
+4 when four arguments are passed (illustrates the function's capability to count varying numbers of arguments).
+
+**Task 5**
+
+**Task 6**
+
+**Task 7**
+
+**Task 8**
+
+**Task 9**
+
+**Task 10**
+
+**Task 11**
+
+**Task 12**
