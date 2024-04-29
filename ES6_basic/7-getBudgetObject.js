@@ -14,4 +14,3 @@ export default function getBudgetObject(income, gdp, capita) {
   // This object will have the structure { income: <value>, gdp: <value>, capita: <value> }
   return budget;
 }
-
