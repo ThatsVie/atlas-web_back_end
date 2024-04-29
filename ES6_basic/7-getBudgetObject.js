@@ -5,9 +5,9 @@ export default function getBudgetObject(income, gdp, capita) {
   // Each property uses ES6 property value shorthand to assign values,
   // which is used when the property name and the variable name are the same.
   const budget = {
-    income,  // Shorthand for income, assigns the 'income' argument to the 'income' property.
-    gdp,     // Shorthand for gdp, assigns the 'gdp' argument to the 'gdp' property.
-    capita   // Shorthand for capita, assigns the 'capita' argument to the 'capita' property.
+    income, // Shorthand for income, assigns the 'income' argument to the 'income' property.
+    gdp, // Shorthand for gdp, assigns the 'gdp' argument to the 'gdp' property.
+    capita, // Shorthand for capita, assigns the 'capita' argument to the 'capita' property.
   };
 
   // Return the newly created budget object.
