@@ -18,6 +18,8 @@
 
 **Task 6:** Enhance string construction using ES6 template literals to cleanly integrate variables into text, improving readability and maintainability.
 
+**Task 7:** Simplify object creation using enhanced object literal syntax, reducing redundancy by utilizing property value shorthand.
+
 ## File Overview
 
 **0-main.js:** Imports and tests functions from 0-constants.js by executing them and displaying their combined outputs.
@@ -57,6 +59,11 @@
 
 **6-string-interpolation.js:** 
 - `getSanFranciscoDescription`: Uses template literals to incorporate variables and create a descriptive text about San Francisco's economic figures, demonstrating clear and concise string formatting.
+
+**7-main.js:** Demonstrates the functionality of `getBudgetObject`, showcasing the use of ES6 property shorthand in object literals.
+
+**7-getBudgetObject.js:** 
+- `getBudgetObject`: Creates and returns a budget object using property shorthand to streamline the assignment of properties when the variable names and property names are identical.
 
 
 ## Installation
@@ -177,7 +184,22 @@ This command runs the getSanFranciscoDescription function, which uses template l
 Output:
 
 The output provides a detailed economic description of San Francisco as of specific years, showing how template literals can be used to make dynamic string construction straightforward and error-free.
+
 **Task 7**
+
+Demonstrates the simplification of object creation using ES6 object literal enhancements.
+
+```
+npm run dev 7-main.js
+```
+
+This command runs the getBudgetObject function, illustrating how ES6 allows for a more concise object definition when property names match the variable names used for their values.
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/cc40ba9e-c95a-4241-84e4-d174e6b99739)
+
+Output:
+
+The output will display a budget object, e.g., { income: 400, gdp: 700, capita: 900 }, confirming that the object has been created with the correct properties and values.
 
 **Task 8**
 
