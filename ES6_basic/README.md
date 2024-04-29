@@ -16,6 +16,8 @@
 
 **Task 5:** Use the spread syntax to concatenate two arrays and each character of a string into one array, showcasing the versatility of spread operators in handling multiple data types.
 
+**Task 6:** Enhance string construction using ES6 template literals to cleanly integrate variables into text, improving readability and maintainability.
+
 ## File Overview
 
 **0-main.js:** Imports and tests functions from 0-constants.js by executing them and displaying their combined outputs.
@@ -50,6 +52,11 @@
 
 **5-spread-operator.js:** 
 - `concatArrays`: Combines two arrays and the characters of a string into a single array using the spread syntax.
+
+**6-main.js:** Executes `getSanFranciscoDescription` showcasing the use of template literals for string interpolation.
+
+**6-string-interpolation.js:** 
+- `getSanFranciscoDescription`: Uses template literals to incorporate variables and create a descriptive text about San Francisco's economic figures, demonstrating clear and concise string formatting.
 
 
 ## Installation
@@ -157,7 +164,19 @@ Output:
 When calling concatArrays(['a', 'b'], ['c', 'd'], 'Hello'), the output will be: [ 'a', 'b', 'c', 'd', 'H', 'e', 'l', 'l', 'o' ], demonstrating how arrays and string characters are combined.
 
 **Task 6**
+Demonstrates template literals in creating detailed and formatted strings by integrating variables directly within the text.
 
+```
+npm run dev 6-main.js
+```
+
+This command runs the getSanFranciscoDescription function, which uses template literals to construct a complex string that includes several variables for a clear and elegant description.
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/6606d433-13e0-4d3f-9354-535c8164dca5)
+
+Output:
+
+The output provides a detailed economic description of San Francisco as of specific years, showing how template literals can be used to make dynamic string construction straightforward and error-free.
 **Task 7**
 
 **Task 8**
