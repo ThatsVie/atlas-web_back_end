@@ -1,0 +1,36 @@
+# Dependency directories
+node_modules/
+
+# Environment configuration files
+.env
+
+# Logs
+*.log
+npm-debug.log*
+
+# Build directories
+dist/
+build/
+out/
+
+# IDEs and editors
+.idea/
+.vscode/
+*.sublime-*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backup files
+*.bak
+
+# Compiled binary files
+*.o
+*.a
+*.obj
+*.dll
+*.exe
+*.pyc
+
