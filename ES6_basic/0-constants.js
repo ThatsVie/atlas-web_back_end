@@ -1,5 +1,5 @@
-// Modify function taskFirst to instantiate variables using const
-// function taskNext to instantiate variables using let
+// Modify function taskFirst to instantiate using const
+// function taskNext to instantiate using let
 
 // This function demonstrates the use of 'const' for declaring constants.
 // 'const' is used because the value of 'task' does not change once assigned.
@@ -13,7 +13,7 @@ export function getLast() {
   return ' is okay';  // Returns a string that complements the sentence in 'taskNext'.
 }
 
-// This function demonstrates the use of 'let' for variables that might change.
+// This function demonstrates the use of 'let'  that might change.
 // 'let' is used because 'combination' is reassigned with additional content.
 export function taskNext() {
   let combination = 'But sometimes let';  // Declare 'combination' with 'let' as its value will change.
