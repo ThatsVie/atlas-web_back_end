@@ -14,6 +14,8 @@
 
 **Task 4:** Modify a function to utilize ES6 rest parameters for dynamically counting and returning the number of arguments passed to it.
 
+**Task 5:** Use the spread syntax to concatenate two arrays and each character of a string into one array, showcasing the versatility of spread operators in handling multiple data types.
+
 ## File Overview
 
 **0-main.js:** Imports and tests functions from 0-constants.js by executing them and displaying their combined outputs.
@@ -43,6 +45,11 @@
 
 **4-rest-parameter.js:** 
 - `returnHowManyArguments`: Uses rest parameters to dynamically handle an arbitrary number of arguments and returns their count.
+
+**5-main.js:** Executes `concatArrays` function demonstrating the use of spread syntax to merge arrays and string characters.
+
+**5-spread-operator.js:** 
+- `concatArrays`: Combines two arrays and the characters of a string into a single array using the spread syntax.
 
 
 ## Installation
@@ -138,6 +145,16 @@ Output:
 4 when four arguments are passed (illustrates the function's capability to count varying numbers of arguments).
 
 **Task 5**
+Demonstrates the use of spread syntax to dynamically combine multiple arrays and strings into a single array.
+```
+npm run dev 5-main.js
+```
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/85e5d40e-94fa-4520-886b-7fe6a561f7c4)
+
+
+Output:
+
+When calling concatArrays(['a', 'b'], ['c', 'd'], 'Hello'), the output will be: [ 'a', 'b', 'c', 'd', 'H', 'e', 'l', 'l', 'o' ], demonstrating how arrays and string characters are combined.
 
 **Task 6**
 
