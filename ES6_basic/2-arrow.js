@@ -10,7 +10,7 @@ export default function getNeighborhoodsList() {
   // 'this' inside the arrow function refers to the object being created by 'getNeighborhoodsList'.
   this.addNeighborhood = (newNeighborhood) => {
     // Pushes a new neighborhood name to the 'sanFranciscoNeighborhoods' array.
-    // The 'this' keyword correctly refers to the object instance and its 'sanFranciscoNeighborhoods' property
+    // 'this' correctly refers to the object instance and its 'sanFranciscoNeighborhoods' property
     // because of the lexical binding of 'this' in arrow functions.
     this.sanFranciscoNeighborhoods.push(newNeighborhood);
 
