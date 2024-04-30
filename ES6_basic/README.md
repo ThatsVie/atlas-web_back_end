@@ -22,6 +22,8 @@
 
 **Task 8:** Demonstrate the use of computed property names in objects to dynamically construct property keys based on runtime values, showcasing further flexibility in object creation.
 
+**Task 9:** Implement ES6 method properties in object definitions to simplify and enhance the readability of method declarations within objects.
+
 ## File Overview
 
 **0-main.js:** Imports and tests functions from 0-constants.js by executing them and displaying their combined outputs.
@@ -71,6 +73,11 @@
 
 **8-getBudgetCurrentYear.js:** 
 - `getBudgetForCurrentYear`: Illustrates the dynamic construction of object properties using computed property names, integrating runtime values into object keys.
+
+**9-main.js:** Executes `getFullBudgetObject`, showcasing how ES6 method properties can be used within object literals for more concise method definitions.
+
+**9-getFullBudget.js:** 
+- `getFullBudgetObject`: Demonstrates the use of ES6 method properties in objects, simplifying the definition of methods that format financial figures into different currencies.
 
 
 ## Installation
@@ -223,6 +230,18 @@ Output:
 Shows the dynamically generated budget object with properties such as 'income-2021', 'gdp-2021', and 'capita-2021', where '2021' would be replaced by the current year, verifying that the properties are created correctly based on the execution year.
 
 ### Task 9
+
+Demonstrates the utilization of ES6 method properties to streamline method definition within an object.
+```
+npm run dev 9-main.js
+```
+This command runs the getFullBudgetObject function, illustrating the effective use of ES6 method properties to define methods that convert income figures into dollars and euros.
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/c40da33e-41c6-4f37-aea9-917ad5cb71ab)
+
+
+Outputs the formatted income values, e.g., "$20" and "20 euros", verifying that the methods are correctly attached to the object and functional.
+
 
 ### Task 10
 
