@@ -2,13 +2,19 @@
 
 ## Learning Objectives
 
-## Tasks Overview
+## Task Overview
+
 ### Task 0:
 The objective is to implement a class named `ClassRoom` that captures the maximum number of students a room can hold.
+
+### Task 1
+The goal is to implement a function named `initializeRooms` that returns an array of three `ClassRoom` objects with specific sizes: 19, 20, and 34.
 
 ## File Overview
 - `0-classroom.js`: Contains the implementation of the `ClassRoom` class. This class accepts a `maxStudentsSize` parameter in its constructor and assigns it to a private property `_maxStudentsSize`.
 - `0-main.js`: A testing script used to validate the functionality of the `ClassRoom` class by creating an instance and logging the `_maxStudentsSize` property.
+- `1-make_classrooms.js`: Contains the `initializeRooms` function which creates and returns an array of `ClassRoom` objects with predefined sizes.
+- `1-main.js`: A testing script used to validate the functionality of the `initializeRooms` function by logging the array of `ClassRoom` objects.
 
 ## Installation
 Clone this repository and navigate to the project directory.
@@ -59,6 +65,15 @@ When you run the above command, it executes the script 0-main.js, which imports 
 This output confirms that the ClassRoom instance has been successfully created with a maximum student size of 10, and that the _maxStudentsSize property is correctly storing and retrieving this value.
 
 ### Task 1
+To run the `1-main.js` script and test the implementation, use the following command:
+```
+npm run dev 1-main.js
+```
+When you run the above command for Task 1, it executes the script `1-main.js`, which imports and calls the `initializeRooms` function. The output should be an array of `ClassRoom` objects with the specified sizes:
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/47309aee-92a4-41f9-8cb5-5096e1026528)
+
+This confirms that the `initializeRooms` function correctly creates and returns an array of `ClassRoom` instances with the correct sizes.
 
 
 ### Task 2
