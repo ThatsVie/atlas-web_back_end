@@ -26,6 +26,8 @@
 
 **Task 10:** Refactor the `appendToEachArrayValue` function to use ES6 `for...of` loop and `const` for iterating through arrays, for more efficient code.
 
+**Task 11:** Create a function that dynamically generates objects with department names as keys and lists of employees as values, demonstrating the use of computed property names for object keys.
+
 ## File Overview
 
 **0-main.js:** Imports and tests functions from 0-constants.js by executing them and displaying their combined outputs.
@@ -86,7 +88,12 @@
 **10-loops.js:** 
 - `appendToEachArrayValue`: Refactored to utilize the ES6 `for...of` loop and `const` for iterating over array elements. This function modifies each element of the array by appending a specified string, illustrating a more modern and efficient approach to array manipulation.
 
-  
+**11-main.js:** Tests the `createEmployeesObject` function by passing department names and employee lists to see if it correctly maps them into an object.
+
+**11-createEmployeesObject.js:** 
+- `createEmployeesObject`: Constructs objects dynamically using computed property names, allowing the department names to be used as keys and the corresponding employee arrays as values. This illustrates a practical use of ES6 features to handle real-world data structuring tasks.
+
+
 ## Installation
 Clone this repository and navigate to the project directory.
 
@@ -263,5 +270,15 @@ This command runs the appendToEachArrayValue function, showing how each array it
 Shows the modified array, [ 'correctly-appended', 'correctly-fixed', 'correctly-displayed' ], verifying the function’s ability to efficiently prepend text to each array element.
 
 ### Task 11
+
+Demonstrates how to dynamically create objects with department names as keys and employee arrays as values, using computed property names.
+```
+npm run dev 11-main.js
+```
+This command runs the createEmployeesObject function, which creates an object mapping a department to its employees based on inputs.
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/42adbf8b-1988-4ece-89ee-c76678863c23)
+
+Prints an object like { Software: [ 'Bob', 'Sylvie' ] }, demonstrating that the function correctly assigns department names as keys and lists employees under them. This output confirms the function's ability to dynamically structure data based on given parameters.
 
 ### Task 12
