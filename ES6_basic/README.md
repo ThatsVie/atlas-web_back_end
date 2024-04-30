@@ -20,6 +20,8 @@
 
 **Task 7:** Simplify object creation using enhanced object literal syntax, reducing redundancy by utilizing property value shorthand.
 
+**Task 8:** Demonstrate the use of computed property names in objects to dynamically construct property keys based on runtime values, showcasing further flexibility in object creation.
+
 ## File Overview
 
 **0-main.js:** Imports and tests functions from 0-constants.js by executing them and displaying their combined outputs.
@@ -65,6 +67,11 @@
 **7-getBudgetObject.js:** 
 - `getBudgetObject`: Creates and returns a budget object using property shorthand to streamline the assignment of properties when the variable names and property names are identical.
 
+**8-main.js:** Executes `getBudgetForCurrentYear`, showcasing how to dynamically construct object properties using computed names based on current year data.
+
+**8-getBudgetCurrentYear.js:** 
+- `getBudgetForCurrentYear`: Illustrates the dynamic construction of object properties using computed property names, integrating runtime values into object keys.
+
 
 ## Installation
 Clone this repository and navigate to the project directory.
@@ -102,7 +109,7 @@ npm install --save-dev eslint
 ```
 ## Usage
 
-**Task 0**
+### Task 0
 
 Executes functions from `0-constants.js` to showcase variable management with `const` and `let`.
 
@@ -115,7 +122,7 @@ When npm run dev 0-main.js is run, it uses npx babel-node to execute the 0-main.
 
 **Output:** "I prefer const when I can. But sometimes let is okay" illustrates how the functions taskFirst and taskNext handle string values and return them in a combined format.
 
-**Task 1**
+### Task 1
 
 Test block scoping with const to validate how conditional blocks isolate variable scope.
 ```
@@ -128,14 +135,16 @@ npm run dev 1-main.js
 When true is passed it outputs "true false" from within the block, then [false, true] from the function return.
 When false is passed it directly outputs [false, true] as the block does not execute, showing the initial values are unchanged.
 
-**Task 2**
+### Task 2
 Demonstrates the use of ES6 arrow functions within object methods to maintain the lexical context of this.
 ```
 npm run dev 2-main.js
 ```
 ![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/cf9df8d0-000a-4e77-aa3d-10b44f23e948)
 
-**Task 3**
+Outputs "[ 'SOMA', 'Union Square', 'Noe Valley' ]", indicating that the arrow function retains the this context correctly.
+
+### Task 3
 Illustrates the use of default parameters to simplify function logic in getSumOfHoods
 ```
 npm run dev 3-main.js
@@ -143,7 +152,9 @@ npm run dev 3-main.js
 
 ![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/77f641fc-3c39-462a-999b-a115772fb099)
 
-**Task 4**
+Prints "142", "56", and "41" for different function calls, showing how default parameters handle missing arguments.
+
+### Task 4
 Shows how the rest parameter can be used to handle any number of input arguments dynamically.
 
 ```
@@ -152,13 +163,9 @@ npm run dev 4-main.js
 
 ![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/40074da0-6191-436a-b3ba-9c3076058fcb)
 
-Output:
+Outputs "1" and "4", demonstrating the function's ability to count how many arguments it receives.
 
-1 when one argument is passed.
-
-4 when four arguments are passed (illustrates the function's capability to count varying numbers of arguments).
-
-**Task 5**
+### Task 5
 Demonstrates the use of spread syntax to dynamically combine multiple arrays and strings into a single array.
 ```
 npm run dev 5-main.js
@@ -170,22 +177,20 @@ Output:
 
 When calling concatArrays(['a', 'b'], ['c', 'd'], 'Hello'), the output will be: [ 'a', 'b', 'c', 'd', 'H', 'e', 'l', 'l', 'o' ], demonstrating how arrays and string characters are combined.
 
-**Task 6**
+### Task 6
 Demonstrates template literals in creating detailed and formatted strings by integrating variables directly within the text.
 
 ```
 npm run dev 6-main.js
 ```
 
-This command runs the getSanFranciscoDescription function, which uses template literals to construct a complex string that includes several variables for a clear and elegant description.
+This command runs the getSanFranciscoDescription function, which uses template literals to construct a complex string that includes several variables for a clear description.
 
 ![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/6606d433-13e0-4d3f-9354-535c8164dca5)
 
-Output:
+Displays a detailed description, using variables to show income, GDP, and per capita data dynamically integrated into the text.
 
-The output provides a detailed economic description of San Francisco as of specific years, showing how template literals can be used to make dynamic string construction straightforward and error-free.
-
-**Task 7**
+### Task 7
 
 Demonstrates the simplification of object creation using ES6 object literal enhancements.
 
@@ -201,12 +206,26 @@ Output:
 
 The output will display a budget object, e.g., { income: 400, gdp: 700, capita: 900 }, confirming that the object has been created with the correct properties and values.
 
-**Task 8**
 
-**Task 9**
+### Task 8
 
-**Task 10**
+Illustrates the dynamic generation of object properties using computed property names, based on runtime values such as the current year.
+```
+npm run dev 8-main.js
+```
 
-**Task 11**
+This command runs the getBudgetForCurrentYear function, demonstrating the effective use of computed property names to incorporate the current year into property keys dynamically.
 
-**Task 12**
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/ca7b0da6-1139-4778-9498-4bdba4c88065)
+
+Output:
+
+Shows the dynamically generated budget object with properties such as 'income-2021', 'gdp-2021', and 'capita-2021', where '2021' would be replaced by the current year, verifying that the properties are created correctly based on the execution year.
+
+### Task 9
+
+### Task 10
+
+### Task 11
+
+### Task 12
