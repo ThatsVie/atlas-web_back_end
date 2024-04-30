@@ -24,6 +24,8 @@
 
 **Task 9:** Implement ES6 method properties in object definitions to simplify and enhance the readability of method declarations within objects.
 
+**Task 10:** Refactor the `appendToEachArrayValue` function to use ES6 `for...of` loop and `const` for iterating through arrays, for more efficient code.
+
 ## File Overview
 
 **0-main.js:** Imports and tests functions from 0-constants.js by executing them and displaying their combined outputs.
@@ -79,7 +81,12 @@
 **9-getFullBudget.js:** 
 - `getFullBudgetObject`: Demonstrates the use of ES6 method properties in objects, simplifying the definition of methods that format financial figures into different currencies.
 
+**10-main.js:** Tests the `appendToEachArrayValue` function by demonstrating its ability to prepend a string to each element of an array.
 
+**10-loops.js:** 
+- `appendToEachArrayValue`: Refactored to utilize the ES6 `for...of` loop and `const` for iterating over array elements. This function modifies each element of the array by appending a specified string, illustrating a more modern and efficient approach to array manipulation.
+
+  
 ## Installation
 Clone this repository and navigate to the project directory.
 
@@ -244,6 +251,16 @@ Outputs the formatted income values, e.g., "$20" and "20 euros", verifying that 
 
 
 ### Task 10
+
+Demonstrates the refactoring of an array manipulation function to use ES6 `for...of` loop and `const`.
+```
+npm run dev 10-main.js
+```
+This command runs the appendToEachArrayValue function, showing how each array item is modified by prefixing a string.
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/318ea3f6-10a4-4e62-ad22-61a814fb6335)
+
+Shows the modified array, [ 'correctly-appended', 'correctly-fixed', 'correctly-displayed' ], verifying the function’s ability to efficiently prepend text to each array element.
 
 ### Task 11
 
