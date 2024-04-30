@@ -1,6 +1,43 @@
 # ES6 Basic
 
 ## Learning Objectives
+**What ES6 is**
+
+ES6, also known as ECMAScript 2015, is the sixth edition of the ECMAScript standard, which defines the scripting language JavaScript.
+
+**New features introduced in ES6**
+
+ES6 introduced several new features to JavaScript, including let and const for variable declaration, arrow functions for concise function syntax, template literals for enhanced string formatting, and the spread and rest operators for working with arrays and function parameters.
+
+**The difference between a constant and a variable**
+
+Constants, declared using the const keyword, are immutable and cannot be reassigned, while variables, declared using let, can be reassigned within their scope.
+
+**Block-scoped variables**
+
+Block-scoped variables, declared using let and const, are scoped to the nearest enclosing block, allowing for more precise variable scoping compared to var, which is function-scoped
+
+
+**Arrow functions and function parameters default to them**
+
+Arrow functions provide a concise syntax for writing functions, and they automatically bind the this value to the enclosing lexical context, making them particularly useful for callback functions and event handlers.
+
+
+**Rest and spread function parameters**
+
+Rest parameters, denoted by three dots (...), allow functions to accept an indefinite number of arguments as an array, while spread syntax, also denoted by three dots (...), allows for the expansion of arrays and objects into individual elements or properties.
+
+**String templating in ES6**
+
+String templating in ES6, also known as template literals, allows for embedding expressions and variables directly within strings using the ${} syntax, enabling more readable and maintainable string construction.
+
+**Object creation and their properties in ES6**
+
+Object creation in ES6 supports concise syntax for defining object literals, as well as features such as computed property names, method shorthand notation, and property value shorthand notation, enhancing object-oriented programming in JavaScript.
+
+**Iterators and for-of loops**
+
+ES6 introduces iterators and the for-of loop, providing a more convenient and readable way to iterate over iterable objects such as arrays, strings, and collections, compared to traditional for loops and forEach methods.
 
 ## Tasks Overview
 
@@ -27,6 +64,8 @@
 **Task 10:** Refactor the `appendToEachArrayValue` function to use ES6 `for...of` loop and `const` for iterating through arrays, for more efficient code.
 
 **Task 11:** Create a function that dynamically generates objects with department names as keys and lists of employees as values, demonstrating the use of computed property names for object keys.
+
+**Task 12:** Enhance the `createReportObject` function to use internal state with `this` for method operations, promoting better encapsulation and leveraging ES6 features for method definition.
 
 ## File Overview
 
@@ -93,6 +132,10 @@
 **11-createEmployeesObject.js:** 
 - `createEmployeesObject`: Constructs objects dynamically using computed property names, allowing the department names to be used as keys and the corresponding employee arrays as values. This illustrates a practical use of ES6 features to handle real-world data structuring tasks.
 
+**12-main.js:** Demonstrates the functionality of the `createReportObject` by using it to manage and report on employee department data dynamically.
+
+**12-createReportObject.js:** 
+- `createReportObject`: Enhances the structure of employee reporting objects by using ES6 method properties and `this` keyword to access and manipulate internal state, demonstrating use of ES6 for object-oriented programming.
 
 ## Installation
 Clone this repository and navigate to the project directory.
@@ -282,3 +325,14 @@ This command runs the createEmployeesObject function, which creates an object ma
 Prints an object like { Software: [ 'Bob', 'Sylvie' ] }, demonstrating that the function correctly assigns department names as keys and lists employees under them. This output confirms the function's ability to dynamically structure data based on given parameters.
 
 ### Task 12
+Showcases the use of encapsulated methods within an object to operate on internal state for dynamic data reporting.
+```
+npm run dev 12-main.js
+```
+Runs the createReportObject function, illustrating how the internal methods utilize the object's state (this) to perform operations like counting departments.
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/c184cb4e-5dc5-4494-b4e4-74f4e858ece7)
+
+Displays structured employee data by departments and provides a count of departments, verifying the object’s methods correctly access and manipulate the internal state.
+
+
