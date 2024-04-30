@@ -53,7 +53,7 @@ npm run dev 0-main.js
 ```
 When you run the above command, it executes the script 0-main.js, which imports the ClassRoom class and creates an instance with a maxStudentsSize of 10. The script then logs the value of _maxStudentsSize:
 
-![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/f009e795-029d-4002-8e3a-0b80b9e81d3d)
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/a8770cee-d130-415f-af22-e68b052156ad)
 
 
 This output confirms that the ClassRoom instance has been successfully created with a maximum student size of 10, and that the _maxStudentsSize property is correctly storing and retrieving this value.
