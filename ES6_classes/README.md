@@ -13,6 +13,9 @@ The goal is to implement a function named `initializeRooms` that returns an arra
 ### Task 2
 Implement a class named `HolbertonCourse` with attributes for name, length, and students. Include type validation and implement getters and setters for each attribute.
 
+### Task 3
+Implement a class named `Currency` that handles currency information with attributes for code and name. Include type validation and implement getters, setters, and a method to display the currency in the format "name (code)".
+
 ## File Overview
 - `0-classroom.js`: Contains the implementation of the `ClassRoom` class. This class accepts a `maxStudentsSize` parameter in its constructor and assigns it to a private property `_maxStudentsSize`.
 - `0-main.js`: A testing script used to validate the functionality of the `ClassRoom` class by creating an instance and logging the `_maxStudentsSize` property.
@@ -22,6 +25,9 @@ Implement a class named `HolbertonCourse` with attributes for name, length, and 
 
 - `2-hbtn_course.js`: Contains the `HolbertonCourse` class with getters and setters for name, length, and students.
 - `2-main.js`: A testing script for `HolbertonCourse`.
+
+- `3-currency.js`: Contains the `Currency` class with methods to handle currency attributes and display them.
+- `3-main.js`: A testing script for `Currency`.
 
 
 ## Installation
@@ -102,6 +108,16 @@ The ellipsis (`...`) in the output represents truncated stack trace details. The
 
 
 ### Task 3
+
+To run the `3-main.js` script and test the implementation of the `Currency` class, use the following command:
+```
+npm run dev 3-main.js
+```
+
+When you run the above command for Task 3, it executes the script `3-main.js`, which tests the `Currency` class by creating an instance and using the `displayFullCurrency` method. The output should display the currency in the format "Dollars ($)".
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/cffca474-2dc1-4c79-a370-fb0152a49bbc)
+
 
 
 ### Task 4
