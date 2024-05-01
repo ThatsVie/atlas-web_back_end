@@ -32,11 +32,14 @@ Implement the `Pricing` class:
 - **Accessors:** Provide getters and setters for both attributes to manage data access and validation.
 - **Display Method:** `displayFullPrice()` returns the format "amount currency_name (currency_code)".
 - **Static Method:** `convertPrice(amount, conversionRate)` returns the product of the amount and conversion rate.
-
-This class uses the `Currency` class to manage currency details.
+- This class uses the `Currency` class to manage currency details.
 
 ### Task 5
-
+Implement the `Building` class:
+- **Constructor Attribute:** Initialize with `sqft` (Number), stored as `_sqft`.
+- **Abstract Enforcement:** Ensure any subclass implements `evacuationWarningMessage`. If not implemented, throw an error.
+- **Accessors:** Provide a getter and setter for `sqft` to manage data access and validate data type.
+- The class acts as a base for other building types, enforcing specific subclass behaviors.
 
 ## File Overview
 - `0-classroom.js`: Contains the implementation of the `ClassRoom` class. This class accepts a `maxStudentsSize` parameter in its constructor and assigns it to a private property `_maxStudentsSize`.
@@ -53,6 +56,9 @@ This class uses the `Currency` class to manage currency details.
 
 - `4-pricing.js`: Contains the `Pricing` class which deals with the pricing information, includes type checks, and methods for display and conversion.
 - `4-main.js`: A testing script for `Pricing`.
+
+- `5-building.js`: Defines the `Building` class, enforcing an abstract-like behavior for subclasses.
+- `5-main.js`: A testing script for `Building`, demonstrating enforcement of subclass method implementation and error handling.
 
 
 ## Installation
@@ -174,6 +180,20 @@ This output confirms that the `Pricing` class correctly manages and displays pri
 
 ### Task 5
 
+To run the `5-main.js` script and test the implementation of the `Building` class, use the following command:
+```
+npm run dev 5-main.js
+```
+
+
+When executed, this script does the following:
+- It attempts to create an instance of `Building`, which should be permissible only if `Building` is not meant to be fully abstract.
+- It then attempts to instantiate `TestBuilding`, a subclass that does not implement the required `evacuationWarningMessage` method, triggering an error.
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/1a4b338f-3f5b-4d72-b229-2f2bf5fb7655)
+
+
+This demonstrates that the `Building` class effectively enforces a rule requiring subclasses to implement the evacuationWarningMessage method.
 
 ### Task 6
 
