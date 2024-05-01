@@ -1,6 +1,28 @@
 # ES6 Classes
 
+This project covers ES6 classes including creating and managing different classes and subclasses, showcasing essential concepts like inheritance, method overriding, and data encapsulation. It also  covers static methods and metaprogramming with symbols to dynamically control how classes behave, especially when cloning objects. 
+
 ## Learning Objectives
+
+### How to Define a Class
+
+In JavaScript, a class is defined using the `class` keyword, followed by the class name and a pair of curly braces that encapsulate the class body. The constructor within a class initializes instance properties when new objects are created. Throughout the tasks, I defined various classes like `ClassRoom`, `HolbertonCourse`, and `Car`, each with a constructor that sets up initial state or properties like room size, course details, or car attributes.
+
+### How to Add Methods to a Class
+
+Methods are added to a class to define behaviors for its instances. These are placed within the class body and are defined like regular functions, but without the function keyword. Throughout these tasks, I added methods like `displayFullPrice` in the Pricing class, which utilizes other object properties to return formatted strings, demonstrating interaction with instance data.
+
+### Why and How to Add a Static Method to a Class
+
+Static methods are associated with the class itself rather than any instance. They are useful for utility functions that might be related to the class but do not operate on instance-specific data. A static method is defined using the `static` keyword. For example, in `Car` class, I used a static getter for Symbol.species to control which constructor is used when instances are cloned, showing how static methods can manage or alter class behavior.
+
+### How to Extend a Class from Another
+
+Extending a class allows a new class to inherit properties and methods from another class. This is done using the `extends` keyword. For example, I extended the `Building` class to create `SkyHighBuilding`, which inherits and can override properties and methods of `Building`. This allows for code reuse and for creating a class hierarchy where subclasses specialize or modify the behavior of their base class.
+
+### Metaprogramming and Symbols
+
+Metaprogramming involves techniques that allow a program to manipulate itself dynamically or provide ways to alter its behavior during runtime. In JavaScript, symbols are used as unique identifiers that can alter object properties in ways that are not possible with traditional strings or numbers. In task 10, I utilized Symbol.species in the `Car` class to customize the behavior of instance cloning. This ensures that the cloned object maintains the class type of the original, even when subclasses do not explicitly override the cloning method.
 
 ## Task Overview
 
@@ -328,3 +350,4 @@ This script will:
 - `false` indicates that the original and cloned cars are not the same object, demonstrating successful cloning with type preservation.
 
 This setup ensures that the `Car` class correctly implements cloning in a way that can be extended and used in more complex class hierarchies.
+
