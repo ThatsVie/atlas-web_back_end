@@ -68,6 +68,12 @@ Fix the implementation of `HolbertonClass` and `StudentHolberton`:
 - **Functionality:** Ensure proper instantiation and access control with getters, and provide a detailed description of each student through getters.
 - This task demonstrates fixing issues in class implementation, ensuring correct instantiation, and managing relationships between classes.
 
+### Task 10
+Implement the `Car` class with enhanced cloning capabilities:
+- **Attributes**: The `Car` class is initialized with attributes `brand`, `motor`, and `color`, each stored privately.
+- **Cloning**: Incorporate a `cloneCar` method that leverages `Symbol.species` to return a new, uninitialized instance of the same class, ensuring type preservation without copying initial attribute values.
+- This task demonstrates class inheritance, symbol usage, and dynamic instance creation.
+
 ## File Overview
 - `0-classroom.js`: Contains the implementation of the `ClassRoom` class. This class accepts a `maxStudentsSize` parameter in its constructor and assigns it to a private property `_maxStudentsSize`.
 - `0-main.js`: A testing script used to validate the functionality of the `ClassRoom` class by creating an instance and logging the `_maxStudentsSize` property.
@@ -99,6 +105,8 @@ Fix the implementation of `HolbertonClass` and `StudentHolberton`:
 - `9-hoisting.js`: Corrects the implementation of `HolbertonClass` and `StudentHolberton`.
 - `9-main.js`: Demonstrates and tests the corrected implementations.
 
+- `10-car.js`: Implements the `Car` class with cloning functionality using `Symbol.species`.
+- `10-main.js`: Tests the cloning method of the `Car` class.
 
 ## Installation
 Clone this repository and navigate to the project directory.
@@ -303,3 +311,20 @@ This script will:
 This output confirms that the `HolbertonClass` and `StudentHolberton` classes are correctly implemented and interacting as expected, with each student linked to a specific class and providing a detailed description including the year and location of their class.
 
 ### Task 10
+To test the implementation of the `Car` class and its cloning functionality, run the `10-main.js` script using the following command:
+```
+npm run dev 10-main.js
+```
+
+This script will:
+- Create an instance of `TestCar`, a subclass of `Car`, initialized with specific attributes.
+- Clone this `TestCar` instance using the `cloneCar` method, resulting in a new instance with type preservation but without attribute initialization.
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/368cfbe2-012e-4b21-9cf8-6507a51863e5)
+
+
+- The first `true` confirms that the original car (`tc1`) is an instance of `TestCar`.
+- The second `true` confirms that the cloned car (`tc2`) is also an instance of `TestCar`.
+- `false` indicates that the original and cloned cars are not the same object, demonstrating successful cloning with type preservation.
+
+This setup ensures that the `Car` class correctly implements cloning in a way that can be extended and used in more complex class hierarchies.
