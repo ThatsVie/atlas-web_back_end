@@ -61,6 +61,13 @@ Implement the `HolbertonClass`:
 - **Type Coercion:** Customize type conversion so that when instances are cast to a Number, they return `size`, and when cast to a String, they return `location`.
 - This class demonstrates how to manage private properties and customize object representation in JavaScript.
 
+### Task 9
+Fix the implementation of `HolbertonClass` and `StudentHolberton`:
+- **HolbertonClass:** Manages year and location of the class with proper encapsulation.
+- **StudentHolberton:** Manages student details and links to their respective `HolbertonClass`.
+- **Functionality:** Ensure proper instantiation and access control with getters, and provide a detailed description of each student through getters.
+- This task demonstrates fixing issues in class implementation, ensuring correct instantiation, and managing relationships between classes.
+
 ## File Overview
 - `0-classroom.js`: Contains the implementation of the `ClassRoom` class. This class accepts a `maxStudentsSize` parameter in its constructor and assigns it to a private property `_maxStudentsSize`.
 - `0-main.js`: A testing script used to validate the functionality of the `ClassRoom` class by creating an instance and logging the `_maxStudentsSize` property.
@@ -88,6 +95,9 @@ Implement the `HolbertonClass`:
 
 - `8-hbtn_class.js`: Defines the `HolbertonClass` with customized type coercion.
 - `8-main.js`: A testing script for `HolbertonClass`.
+
+- `9-hoisting.js`: Corrects the implementation of `HolbertonClass` and `StudentHolberton`.
+- `9-main.js`: Demonstrates and tests the corrected implementations.
 
 
 ## Installation
@@ -274,8 +284,22 @@ This script demonstrates:
 
 This confirms that the `HolbertonClass` correctly handles and returns its properties when coerced to a number or string
 
-
 ### Task 9
 
+To run the `9-main.js` script and test the corrected implementation of `HolbertonClass` and `StudentHolberton`, use the following command:
+```
+npm run dev 9-main.js
+```
+
+
+This script will:
+- Instantiate `HolbertonClass` for the years 2019 and 2020 in San Francisco.
+- Create five `StudentHolberton` instances with references to these `HolbertonClass` instances.
+- Output the list of students and their detailed descriptions.
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/b87ea8d1-3c20-48fb-a8ab-cf316cac908b)
+
+
+This output confirms that the `HolbertonClass` and `StudentHolberton` classes are correctly implemented and interacting as expected, with each student linked to a specific class and providing a detailed description including the year and location of their class.
 
 ### Task 10
