@@ -1,5 +1,7 @@
 # ES6 Basic
 
+This project covers ES6 (ECMAScript 2015) features and best practices in modern JavaScript development. It covers topics such as variable declaration with let and const, block-scoped variables, arrow functions, template literals, spread/rest operators, object creation, and iterators. 
+
 ## Learning Objectives
 **What ES6 is**
 
