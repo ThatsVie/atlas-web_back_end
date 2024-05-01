@@ -350,4 +350,3 @@ This script will:
 - `false` indicates that the original and cloned cars are not the same object, demonstrating successful cloning with type preservation.
 
 This setup ensures that the `Car` class correctly implements cloning in a way that can be extended and used in more complex class hierarchies.
-
