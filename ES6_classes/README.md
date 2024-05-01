@@ -35,11 +35,19 @@ Implement the `Pricing` class:
 - This class uses the `Currency` class to manage currency details.
 
 ### Task 5
-Implement the `Building` class:
+Implement the `Building` base class:
 - **Constructor Attribute:** Initialize with `sqft` (Number), stored as `_sqft`.
 - **Abstract Enforcement:** Ensure any subclass implements `evacuationWarningMessage`. If not implemented, throw an error.
 - **Accessors:** Provide a getter and setter for `sqft` to manage data access and validate data type.
 - The class acts as a base for other building types, enforcing specific subclass behaviors.
+
+### Task 6
+Implement the `SkyHighBuilding` class that extends the `Building` base class:
+- **Constructor Attributes:** Inherits `sqft` from `Building` and introduces `floors` (Number), both stored privately as `_sqft` and `_floors`.
+- **Getters:** Implement getters for both `sqft` and `floors` to provide external access.
+- **Method Override:** Overrides `evacuationWarningMessage` to provide a custom evacuation message specific to the number of floors.
+- This subclass demonstrates how to extend a base class with additional properties and customized behavior.
+
 
 ## File Overview
 - `0-classroom.js`: Contains the implementation of the `ClassRoom` class. This class accepts a `maxStudentsSize` parameter in its constructor and assigns it to a private property `_maxStudentsSize`.
@@ -59,6 +67,9 @@ Implement the `Building` class:
 
 - `5-building.js`: Defines the `Building` class, enforcing an abstract-like behavior for subclasses.
 - `5-main.js`: A testing script for `Building`, demonstrating enforcement of subclass method implementation and error handling.
+
+- `6-sky_high.js`: Defines the `SkyHighBuilding` class that extends `Building`.
+- `6-main.js`: A testing script for `SkyHighBuilding`.
 
 
 ## Installation
@@ -197,6 +208,20 @@ This demonstrates that the `Building` class effectively enforces a rule requirin
 
 ### Task 6
 
+To run the `6-main.js` script and test the implementation of the `SkyHighBuilding` class, use the following command:
+
+```
+npm run dev 6-main.js
+```
+
+When executed, this script demonstrates:
+- Creating an instance of `SkyHighBuilding` with specified square footage (140) and number of floors (60).
+- Accessing and displaying the `sqft` and `floors` properties via their respective getters.
+- Displaying the custom evacuation message tailored to the building's floor count.
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/fec9e361-8dc1-497e-80e9-50aeb81cc0ed)
+
+This confirms that the SkyHighBuilding class properly handles both its inherited and new properties, and it effectively provides a tailored evacuation message as required.
 
 ### Task 7
 
