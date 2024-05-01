@@ -48,6 +48,13 @@ Implement the `SkyHighBuilding` class that extends the `Building` base class:
 - **Method Override:** Overrides `evacuationWarningMessage` to provide a custom evacuation message specific to the number of floors.
 - This subclass demonstrates how to extend a base class with additional properties and customized behavior.
 
+### Task 7
+Implement the `Airport` class:
+- **Constructor Attributes:** Initialize with `name` (String) and `code` (String), stored as `_name` and `_code` to ensure privacy.
+- **Getters:** Implement getters for `name` and `code` to safely access these private attributes.
+- **Custom String Representation:** Override the `toString()` method to return the airport code when the class instance is converted to a string.
+- This class demonstrates encapsulation and custom object representation in JavaScript.
+
 
 ## File Overview
 - `0-classroom.js`: Contains the implementation of the `ClassRoom` class. This class accepts a `maxStudentsSize` parameter in its constructor and assigns it to a private property `_maxStudentsSize`.
@@ -70,6 +77,9 @@ Implement the `SkyHighBuilding` class that extends the `Building` base class:
 
 - `6-sky_high.js`: Defines the `SkyHighBuilding` class that extends `Building`.
 - `6-main.js`: A testing script for `SkyHighBuilding`.
+
+- `7-airport.js`: Defines the `Airport` class with customized toString method.
+- `7-main.js`: A testing script for `Airport`.
 
 
 ## Installation
@@ -223,8 +233,21 @@ When executed, this script demonstrates:
 
 This confirms that the SkyHighBuilding class properly handles both its inherited and new properties, and it effectively provides a tailored evacuation message as required.
 
-### Task 7
 
+### Task 7
+To run the `7-main.js` script and test the implementation of the `Airport` class, use the following command:
+```
+npm run dev 7-main.js
+```
+
+This script demonstrates:
+- Creating an instance of `Airport` with a name "San Francisco Airport" and a code "SFO".
+- Displaying the default object representation and the custom string via the overridden `toString()` method.
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/9f42ec47-70f2-4f37-98a5-375ac264fc8a)
+
+
+The output confirms that the `Airport` class manages its properties securely through encapsulation and modifies the default object-to-string conversion to display the airport code.
 
 ### Task 8
 
