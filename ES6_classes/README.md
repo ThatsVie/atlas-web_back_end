@@ -55,6 +55,11 @@ Implement the `Airport` class:
 - **Custom String Representation:** Override the `toString()` method to return the airport code when the class instance is converted to a string.
 - This class demonstrates encapsulation and custom object representation in JavaScript.
 
+### Task 8
+Implement the `HolbertonClass`:
+- **Constructor Attributes:** Initialize with `size` (Number) and `location` (String), each stored as a private property ( `_size` and `_location`).
+- **Type Coercion:** Customize type conversion so that when instances are cast to a Number, they return `size`, and when cast to a String, they return `location`.
+- This class demonstrates how to manage private properties and customize object representation in JavaScript.
 
 ## File Overview
 - `0-classroom.js`: Contains the implementation of the `ClassRoom` class. This class accepts a `maxStudentsSize` parameter in its constructor and assigns it to a private property `_maxStudentsSize`.
@@ -80,6 +85,9 @@ Implement the `Airport` class:
 
 - `7-airport.js`: Defines the `Airport` class with customized toString method.
 - `7-main.js`: A testing script for `Airport`.
+
+- `8-hbtn_class.js`: Defines the `HolbertonClass` with customized type coercion.
+- `8-main.js`: A testing script for `HolbertonClass`.
 
 
 ## Installation
@@ -235,6 +243,7 @@ This confirms that the SkyHighBuilding class properly handles both its inherited
 
 
 ### Task 7
+
 To run the `7-main.js` script and test the implementation of the `Airport` class, use the following command:
 ```
 npm run dev 7-main.js
@@ -250,6 +259,20 @@ This script demonstrates:
 The output confirms that the `Airport` class manages its properties securely through encapsulation and modifies the default object-to-string conversion to display the airport code.
 
 ### Task 8
+
+To run the `8-main.js` script and test the implementation of the `HolbertonClass`, use the following command:
+```
+npm run dev 8-main.js
+```
+
+This script demonstrates:
+- Creating an instance of `HolbertonClass` with a size of 12 and a location named "Mezzanine".
+- Showing how the class handles type coercion by converting an instance to a Number and a String.
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/e8a97da3-241a-4964-adc1-bdcc29878ae6)
+
+
+This confirms that the `HolbertonClass` correctly handles and returns its properties when coerced to a number or string
 
 
 ### Task 9
