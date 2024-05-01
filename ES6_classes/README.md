@@ -4,17 +4,39 @@
 
 ## Task Overview
 
-### Task 0:
-The objective is to implement a class named `ClassRoom` that captures the maximum number of students a room can hold.
+### Task 0
+Implement the `ClassRoom` class:
+- **Constructor Attribute:** Initialize with `maxStudentsSize` (Number), stored as `_maxStudentsSize`.
+- It creates an instance that tracks the maximum size of students that can be accommodated.
 
 ### Task 1
-The goal is to implement a function named `initializeRooms` that returns an array of three `ClassRoom` objects with specific sizes: 19, 20, and 34.
+Implement the `initializeRooms` function:
+- **Functionality:** Returns an array of three `ClassRoom` objects with sizes 19, 20, and 34, showcasing different room capacities.
 
 ### Task 2
-Implement a class named `HolbertonCourse` with attributes for name, length, and students. Include type validation and implement getters and setters for each attribute.
+Implement the `HolbertonCourse` class:
+- **Constructor Attributes:** Initialize with `name` (String), `length` (Number), and `students` (array of Strings), each stored with underscore prefixes (e.g., `_name`).
+- **Accessors:** Provide getters and setters for each attribute to manage data access and validation.
+- It handles course information and enforces attribute type during object creation.
 
 ### Task 3
-Implement a class named `Currency` that handles currency information with attributes for code and name. Include type validation and implement getters, setters, and a method to display the currency in the format "name (code)".
+Implement the `Currency` class:
+- **Constructor Attributes:** Initialize with `code` (String) and `name` (String), stored as `_code` and `_name`.
+- **Accessors:** Provide getters and setters for each attribute.
+- **Display Method:** `displayFullCurrency()` returns the format "name (code)".
+- Manages currency details and provides formatted currency display.
+
+### Task 4
+Implement the `Pricing` class:
+- **Constructor Attributes:** Initialize with `amount` (Number) and `currency` (instance of Currency), stored as `_amount` and `_currency`.
+- **Accessors:** Provide getters and setters for both attributes to manage data access and validation.
+- **Display Method:** `displayFullPrice()` returns the format "amount currency_name (currency_code)".
+- **Static Method:** `convertPrice(amount, conversionRate)` returns the product of the amount and conversion rate.
+
+This class uses the `Currency` class to manage currency details.
+
+### Task 5
+
 
 ## File Overview
 - `0-classroom.js`: Contains the implementation of the `ClassRoom` class. This class accepts a `maxStudentsSize` parameter in its constructor and assigns it to a private property `_maxStudentsSize`.
@@ -28,6 +50,9 @@ Implement a class named `Currency` that handles currency information with attrib
 
 - `3-currency.js`: Contains the `Currency` class with methods to handle currency attributes and display them.
 - `3-main.js`: A testing script for `Currency`.
+
+- `4-pricing.js`: Contains the `Pricing` class which deals with the pricing information, includes type checks, and methods for display and conversion.
+- `4-main.js`: A testing script for `Pricing`.
 
 
 ## Installation
@@ -74,7 +99,7 @@ npm run dev 0-main.js
 ```
 When you run the above command, it executes the script 0-main.js, which imports the ClassRoom class and creates an instance with a maxStudentsSize of 10. The script then logs the value of _maxStudentsSize:
 
-![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/a8770cee-d130-415f-af22-e68b052156ad)
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/f1ec5473-d1e4-4db6-9a23-26de6ba07482)
 
 
 This output confirms that the ClassRoom instance has been successfully created with a maximum student size of 10, and that the _maxStudentsSize property is correctly storing and retrieving this value.
@@ -87,7 +112,8 @@ npm run dev 1-main.js
 ```
 When you run the above command for Task 1, it executes the script `1-main.js`, which imports and calls the `initializeRooms` function. The output should be an array of `ClassRoom` objects with the specified sizes:
 
-![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/47309aee-92a4-41f9-8cb5-5096e1026528)
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/6f88425f-ae43-47d3-8ae8-4371ccf7411c)
+
 
 This confirms that the `initializeRooms` function correctly creates and returns an array of `ClassRoom` instances with the correct sizes.
 
@@ -98,10 +124,19 @@ To run the `2-main.js` script and test the implementation, use the following com
 ```
 npm run dev 2-main.js
 ```
-When you run the above command for Task 2, it executes the script `2-main.js`, which tests various functionalities of the `HolbertonCourse` class. The output should look like this:
 
-![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/4ea3e2ae-a8da-4867-b9c4-b87f90ae640b)
+This command executes the `2-main.js` script, which tests various functionalities of the `HolbertonCourse` class:
+- It first creates an instance of `HolbertonCourse` with valid initial values and prints the course name ("ES6").
+- It then updates the course name to "Python 101" and prints the entire object.
+- The script attempts to set the course name to a non-string value (`12`), which triggers a type error because the setter enforces string-only assignments.
+- It tries to instantiate a new `HolbertonCourse` with a non-number type for the `length` attribute, again triggering a type error.
 
+The output should look like this:
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/770513cc-8e55-4453-ba55-da12ba1b2dcd)
+
+
+These outputs confirm that the class correctly handles type validation and showcases the use of getters and setters to manage class properties.
 
 **Note on Output Abbreviation:**
 The ellipsis (`...`) in the output represents truncated stack trace details. These details are typically long error messages and paths which have been shortened here for clarity and brevity in the README.
@@ -116,11 +151,25 @@ npm run dev 3-main.js
 
 When you run the above command for Task 3, it executes the script `3-main.js`, which tests the `Currency` class by creating an instance and using the `displayFullCurrency` method. The output should display the currency in the format "Dollars ($)".
 
-![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/cffca474-2dc1-4c79-a370-fb0152a49bbc)
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/baf63517-dea6-468a-9699-1f057e0ed61b)
 
+
+This output demonstrates that the `Currency` class correctly formats and displays currency details using the `displayFullCurrency` method, which concatenates the currency name and code in the specified format. This confirms that getters are working as intended and that the class correctly manages and displays currency information.
 
 
 ### Task 4
+
+To run the `4-main.js` script and test the implementation of the `Pricing` class, use the following command:
+```
+npm run dev 4-main.js
+```
+
+When you run the above command, it executes the script `4-main.js`, which tests the `Pricing` class by creating an instance with an `amount` of 100 and a `currency` of Euro (`EUR`). Here's the output demonstrating the instantiated object and the formatted display of the price:
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/f63a6d20-5548-43ce-8dbb-81b55919d8eb)
+
+
+This output confirms that the `Pricing` class correctly manages and displays pricing information, including the currency details. It also shows that the class can format and present the full price as specified.
 
 
 ### Task 5
