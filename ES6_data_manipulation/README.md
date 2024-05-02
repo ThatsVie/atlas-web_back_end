@@ -145,7 +145,7 @@ npm run dev 0-main.js
 
 This command executes the `0-main.js` script, which imports the `getListStudents` function from `0-get_list_students.js` and logs the array of student objects to the console. The output confirms that the function correctly creates and returns a structured array of student data with their respective IDs, names, and locations.
 
-![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/c6f1f0cf-12d7-49cf-944d-48358584817f)
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/eeb42fcc-a001-42ee-b499-cefd6e1c9a4a)
 
 
 ### Task 1
@@ -157,7 +157,7 @@ This command executes the `1-main.js` script, which:
 - Attempts to use `getListStudentIds` with an incorrect input (`"hello"`), expecting to receive an empty array as the function checks for the input type.
 - Uses `getListStudentIds` with a valid input (an array of student objects from `getListStudents`), and logs the output array of IDs.
 
-![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/01798e79-64af-4bb6-91d2-833d2ca0070c)
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/b26b05a3-ccd2-43e3-9bf1-a7c9ac458954)
 
 - The first console.log should output an empty array `[]` because the input is a string, not an array.
 - The second console.log should output the array `[1, 2, 5]` indicating the successful extraction of student IDs from the provided array.
@@ -176,7 +176,8 @@ This command executes the `2-main.js` script, which:
 - Uses `getStudentsByLocation` with the student array and the city 'San Francisco' to filter the students.
 - Logs the filtered student list to the console.
 
-![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/4d357029-20ac-4863-9642-05e15a905541)
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/04cd55f2-5e67-4fdc-8742-13db816127b3)
+
 
 The console outputs an array of student objects who are located in 'San Francisco', confirming that the function correctly filters the students based on the specified location criteria.
 
@@ -191,7 +192,8 @@ This command runs the `3-main.js` script, which performs the following actions:
 - Calls the `getStudentIdsSum` function with the list of students as an argument.
 - Logs the resulting value to the console, which represents the sum of all student IDs.
 
-![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/8f273b1d-aaa8-454d-8549-11ed75621043)
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/65390d7e-f9f1-40cf-98d0-1237f58a16fd)
+
 
 The console will output `8`, indicating that the IDs of the provided students have been successfully summed. This confirms that the `reduce` method is correctly implemented to accumulate values across the student list.
 
@@ -206,7 +208,7 @@ This command executes the `4-main.js` script, which performs the following actio
 - Calls `updateStudentGradeByCity` with the list of students, specifying 'San Francisco' as the city and providing grade updates.
 - Logs the results to the console, showing students with their updated grades or 'N/A' where no specific grade was provided.
 
-![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/d3f3ed49-5c84-4157-82f6-ae5b5769fdff)
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/e71f0db8-d319-4fb5-a1cd-159123c841a0)
 
 - The first console log shows students in 'San Francisco' with updated grades
 - The second console log shows students in 'San Francisco' with one having an updated grade and another with 'N/A':
@@ -220,8 +222,7 @@ This command runs the `5-main.js` script, which performs the following actions:
 - Calls `createInt8TypedArray` with a buffer length of 10, position 2, and value 89.
 - Logs the resulting DataView to the console, showing the byte configuration of the buffer.
 
-![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/40fb2cc1-8d2b-4fe6-bea2-daab095c3c99)
-
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/e5206496-a86a-4361-8c29-dbd98e715bc7)
 
 The console output will show a DataView reflecting the ArrayBuffer status. This demonstrates that the `createInt8TypedArray` function correctly initializes an ArrayBuffer and successfully sets an Int8 value at the specified position without overflowing the buffer, verifying both functionality and error handling.
 
@@ -235,7 +236,8 @@ This command runs the `6-main.js` script, which:
 - Calls `setFromArray` with an array that includes duplicates (`[12, 32, 15, 78, 98, 15]`).
 - Logs the resulting Set to the console, displaying the unique elements.
 
-![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/a716c1ee-efce-49ec-8353-5934fa62ba1a)
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/8e318c59-cc55-4e6d-82b0-ce52b8bbc42f)
+
 
 This output confirms that the `setFromArray` function effectively removes duplicates (number 15 in this case) and retains only unique elements, demonstrating the utility of JavaScript's Set object for data manipulation.
 
@@ -247,7 +249,7 @@ npm run dev 7-main.js
 This command runs the `7-main.js` script, which:
 - Tests `hasValuesFromArray` by checking multiple arrays against a set containing the numbers 1 through 5.
 
-![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/203b1ce5-d1ca-42c6-a694-e6b5e450709d)
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/fdc1d46f-a646-460f-8aba-b311606117d1)
 
 - The first test checks if the element `1` is in the set, return `true`.
 - The second test checks if the non-existent element `10` is in the set, returns `false`.
@@ -262,7 +264,7 @@ This command executes the `8-main.js` script, which tests the `cleanSet` functio
 - Filtering and formatting set values that start with "bon", resulting in concatenated values separated by dashes.
 - Attempting to filter with an empty start string, which should return an empty string due to the function's validation check.
 
-![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/99a59aa2-96b7-4616-9671-bc9411f16755)
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/1ada7f96-4eee-481f-8448-1867b1e7f340)
 
 - When called with "bon" as the start string: `jovi-aparte-appetit`
 - When called with an empty start string: (nothing, just an empty line)
@@ -276,7 +278,8 @@ npm run dev 9-main.js
 ```
 This command executes the `9-main.js` script, which uses the `groceriesList` function to create a `Map` with predefined grocery items and their quantities.
 
-![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/85f90b8c-212d-487b-8898-b7d11bc94b62)
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/bb5b8355-77eb-4e7f-aa5a-8935ef01da85)
+
 
 The console will display the `Map` object listing the grocery items and their quantities.
 
@@ -290,7 +293,7 @@ npm run dev 10-main.js
 
 This command executes the `10-main.js` script, which uses both `groceriesList` to generate a grocery list `Map` and `updateUniqueItems` to update quantities in this map.
 
-![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/f8d422f2-50d4-4b7a-84e2-fd1cebe0d5c4)
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/98c46694-d7e8-439a-b62d-29555aea9444)
 
 
 - Before updating, the `Map` shows various grocery items with their initial quantities.
