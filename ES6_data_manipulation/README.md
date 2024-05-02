@@ -25,8 +25,8 @@ Create a function named `getStudentIdsSum` that computes the sum of all student 
 ### Task 4: updateStudentGradeByCity Function
 Create a function named `updateStudentGradeByCity` that retrieves an array of students for a specific city and updates their grades based on provided data. The function accepts a list of students, a city, and an array of new grade objects. It uses filter to select students from the specified city and map combined with find to assign new grades or 'N/A' if a student does not have an updated grade provided.
 
-
-### Task 5
+### Task 5: createInt8TypedArray Function
+Create a function named `createInt8TypedArray` that initializes a new ArrayBuffer and sets an Int8 value at a specific position. The function takes three arguments: the buffer's length, the position for the value, and the value itself. It throws an error if the position is outside the permissible range, ensuring error handling in data manipulation scenarios.
 
 
 ### Task 6
@@ -66,7 +66,8 @@ Create a function named `updateStudentGradeByCity` that retrieves an array of st
 - `4-main.js`: Script to test the `updateStudentGradeByCity` function by applying grade updates to students in a specified city.
 
 ### Task 5
-
+- `5-typed_arrays.js`: Implements the `createInt8TypedArray` function which creates a new ArrayBuffer and sets an Int8 value at a specific position, using a DataView for manipulation.
+- `5-main.js`: Script to test the ArrayBuffer creation and data setting functionality of `createInt8TypedArray`.
 
 ### Task 6
 
@@ -196,7 +197,18 @@ This command executes the `4-main.js` script, which performs the following actio
 - The second console log shows students in 'San Francisco' with one having an updated grade and another with 'N/A':
   
 ### Task 5
+To test the `createInt8TypedArray` function for creating an ArrayBuffer and setting an Int8 value, use the following command:
+```
+npm run dev 5-main.js
+```
+This command runs the `5-main.js` script, which performs the following actions:
+- Calls `createInt8TypedArray` with a buffer length of 10, position 2, and value 89.
+- Logs the resulting DataView to the console, showing the byte configuration of the buffer.
 
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/40fb2cc1-8d2b-4fe6-bea2-daab095c3c99)
+
+
+The console output will show a DataView reflecting the ArrayBuffer status. This demonstrates that the `createInt8TypedArray` function correctly initializes an ArrayBuffer and successfully sets an Int8 value at the specified position without overflowing the buffer, verifying both functionality and error handling.
 
 ### Task 6
 
