@@ -34,7 +34,8 @@ Create a function named `setFromArray` that transforms an array into a Set. This
 ### Task 7: hasValuesFromArray Function
 Create a function named `hasValuesFromArray` that checks if all elements specified in an array exist within a given set. The function takes a set and an array as parameters and returns a boolean indicating whether every array element is present in the set. It uses the `Set.prototype.has()` method for efficient look-up, ensuring optimal performance even with large datasets.
 
-### Task 8
+### Task 8: cleanSet Function
+Create a function named `cleanSet` that formats and concatenates elements of a set that start with a specified string (`startString`). This function takes two parameters: a set of strings and a starting string. It filters the set to find elements that begin with `startString`, then removes the `startString` portion from each, and concatenates them with a dash ('-'). If `startString` is empty or not provided, the function returns an empty string.
 
 
 ### Task 9
@@ -77,7 +78,8 @@ Create a function named `hasValuesFromArray` that checks if all elements specifi
 - `7-main.js`: Script to test the functionality of `hasValuesFromArray`.
 
 ### Task 8
-
+- `8-clean_set.js`: Implements the `cleanSet` function to extract and format set values based on a start string.
+- `8-main.js`: Script to test the `cleanSet` function.
 
 ### Task 9
 
@@ -240,7 +242,20 @@ This command runs the `7-main.js` script, which:
 - The third test checks if both `1` and `10` are in the set, returns `false` since `10` is not in the set.
 
 ### Task 8
+To test the `cleanSet` function, use the following command:
+```
+npm run dev 8-main.js
+```
+This command executes the `8-main.js` script, which tests the `cleanSet` function in the following scenarios:
+- Filtering and formatting set values that start with "bon", resulting in concatenated values separated by dashes.
+- Attempting to filter with an empty start string, which should return an empty string due to the function's validation check.
 
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/99a59aa2-96b7-4616-9671-bc9411f16755)
+
+- When called with "bon" as the start string: `jovi-aparte-appetit`
+- When called with an empty start string: (nothing, just an empty line)
+
+This setup demonstrates how `cleanSet` effectively processes sets based on prefix criteria and provides dynamic string construction, which is useful for applications requiring customized data displays or reports.
 
 ### Task 9
 
