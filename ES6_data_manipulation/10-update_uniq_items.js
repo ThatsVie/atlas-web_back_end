@@ -1,5 +1,5 @@
 export default function updateUniqueItems(map) {
-  // Verify that the provided argument is a Map instance
+  // Check that argument is a Map instance
   if (!(map instanceof Map)) {
     throw new Error('Cannot process'); // Throw an error if not to prevent further execution
   }

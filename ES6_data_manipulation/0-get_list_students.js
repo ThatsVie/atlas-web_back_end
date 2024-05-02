@@ -1,4 +1,3 @@
-// Export the function using ES6 default export syntax
 export default function getListStudents() {
   // Return an array of student objects directly from the function
   return [
