@@ -28,8 +28,8 @@ Create a function named `updateStudentGradeByCity` that retrieves an array of st
 ### Task 5: createInt8TypedArray Function
 Create a function named `createInt8TypedArray` that initializes a new ArrayBuffer and sets an Int8 value at a specific position. The function takes three arguments: the buffer's length, the position for the value, and the value itself. It throws an error if the position is outside the permissible range, ensuring error handling in data manipulation scenarios.
 
-
-### Task 6
+### Task 6: setFromArray Function
+Create a function named `setFromArray` that transforms an array into a Set. This function accepts an array as an argument and utilizes the JavaScript Set object to automatically remove duplicate elements, returning a collection of unique elements.
 
 
 ### Task 7
@@ -70,7 +70,8 @@ Create a function named `createInt8TypedArray` that initializes a new ArrayBuffe
 - `5-main.js`: Script to test the ArrayBuffer creation and data setting functionality of `createInt8TypedArray`.
 
 ### Task 6
-
+- `6-set.js`: Implements the `setFromArray` function that converts an array into a Set, ensuring all elements are unique.
+- `6-main.js`: Script to test the `setFromArray` function by converting an array to a Set and demonstrating the removal of duplicates.
 
 ### Task 7
 
@@ -211,7 +212,18 @@ This command runs the `5-main.js` script, which performs the following actions:
 The console output will show a DataView reflecting the ArrayBuffer status. This demonstrates that the `createInt8TypedArray` function correctly initializes an ArrayBuffer and successfully sets an Int8 value at the specified position without overflowing the buffer, verifying both functionality and error handling.
 
 ### Task 6
+To test the `setFromArray` function for converting an array to a Set, use the following command:
+```
+npm run dev 6-main.js
+```
 
+This command runs the `6-main.js` script, which:
+- Calls `setFromArray` with an array that includes duplicates (`[12, 32, 15, 78, 98, 15]`).
+- Logs the resulting Set to the console, displaying the unique elements.
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/a716c1ee-efce-49ec-8353-5934fa62ba1a)
+
+This output confirms that the `setFromArray` function effectively removes duplicates (number 15 in this case) and retains only unique elements, demonstrating the utility of JavaScript's Set object for data manipulation.
 
 ### Task 7
 
