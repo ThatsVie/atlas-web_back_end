@@ -19,12 +19,11 @@ Create a function named `getListStudentIds` that processes an array of student o
 ### Task 2: getStudentsByLocation Function
 Create a function named `getStudentsByLocation` that filters an array of student objects to return only those located in a specified city. This function accepts a list of students and a city as parameters and utilizes the `filter` function to produce the desired subset based on location.
 
-
 ### Task 3: getStudentIdsSum Function
 Create a function named `getStudentIdsSum` that computes the sum of all student IDs from a given list of students. This function employs the `reduce` method to aggregate ID values from an array of student objects, demonstrating a fundamental array reduction operation in JavaScript.
 
-
-### Task 4
+### Task 4: updateStudentGradeByCity Function
+Create a function named `updateStudentGradeByCity` that retrieves an array of students for a specific city and updates their grades based on provided data. The function accepts a list of students, a city, and an array of new grade objects. It uses filter to select students from the specified city and map combined with find to assign new grades or 'N/A' if a student does not have an updated grade provided.
 
 
 ### Task 5
@@ -63,6 +62,27 @@ Create a function named `getStudentIdsSum` that computes the sum of all student 
 - `3-main.js`: Script to test the summing capabilities of the `getStudentIdsSum` function.
 
 ### Task 4
+- `4-update_grade_by_city.js`: Implements the `updateStudentGradeByCity` function that updates student grades based on their location and provided grade updates.
+- `4-main.js`: Script to test the `updateStudentGradeByCity` function by applying grade updates to students in a specified city.
+
+### Task 5
+
+
+### Task 6
+
+
+### Task 7
+
+
+### Task 8
+
+
+### Task 9
+
+
+### Task 10
+
+
 
 ## Installation
 Clone this repository and navigate to the project directory.
@@ -161,8 +181,20 @@ The console will output `8`, indicating that the IDs of the provided students ha
 
 
 ### Task 4
+To test the `updateStudentGradeByCity` function for updating student grades based on city and provided grades, use the following command:
+```
+npm run dev 4-main.js
+```
+This command executes the `4-main.js` script, which performs the following actions:
+- Retrieves a list of students using the `getListStudents` function.
+- Calls `updateStudentGradeByCity` with the list of students, specifying 'San Francisco' as the city and providing grade updates.
+- Logs the results to the console, showing students with their updated grades or 'N/A' where no specific grade was provided.
 
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/d3f3ed49-5c84-4157-82f6-ae5b5769fdff)
 
+- The first console log shows students in 'San Francisco' with updated grades
+- The second console log shows students in 'San Francisco' with one having an updated grade and another with 'N/A':
+  
 ### Task 5
 
 
