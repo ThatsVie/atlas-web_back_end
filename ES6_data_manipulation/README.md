@@ -16,8 +16,8 @@ Create a function named `getListStudents` that returns an array of student objec
 ### Task 1: getListStudentIds Function
 Create a function named `getListStudentIds` that processes an array of student objects and returns an array of their IDs. The function checks if the input is an array and uses the `map` function to extract IDs, returning an empty array for invalid inputs.
 
-
-### Task 2
+### Task 2: getStudentsByLocation Function
+Create a function named `getStudentsByLocation` that filters an array of student objects to return only those located in a specified city. This function accepts a list of students and a city as parameters and utilizes the `filter` function to produce the desired subset based on location.
 
 
 ### Task 3
@@ -54,7 +54,8 @@ Create a function named `getListStudentIds` that processes an array of student o
 - `1-main.js`: A script to test the `getListStudentIds` function by providing both valid and invalid inputs to verify the function's response to different types of data.
 
 ### Task 2
-
+- `2-get_students_by_loc.js`: Implements the `getStudentsByLocation` function that filters students by their location using the `filter` method, ensuring that only students from a specific city are returned.
+- `2-main.js`: A script to test the `getStudentsByLocation` function by filtering students for a specific location and displaying the results.
 
 ## Installation
 Clone this repository and navigate to the project directory.
@@ -122,6 +123,19 @@ These tests confirm the functionality of the `getListStudentIds` function, demon
 
 
 ### Task 2
+To test the `getStudentsByLocation` function and its ability to filter students based on location, run the script using the following command:
+```
+npm run dev 2-main.js
+```
+
+This command executes the `2-main.js` script, which:
+- Imports and calls the `getListStudents` to retrieve an array of students.
+- Uses `getStudentsByLocation` with the student array and the city 'San Francisco' to filter the students.
+- Logs the filtered student list to the console.
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/4d357029-20ac-4863-9642-05e15a905541)
+
+The console outputs an array of student objects who are located in 'San Francisco', confirming that the function correctly filters the students based on the specified location criteria.
 
 
 ### Task 3
