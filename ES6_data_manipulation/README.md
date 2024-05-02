@@ -31,9 +31,8 @@ Create a function named `createInt8TypedArray` that initializes a new ArrayBuffe
 ### Task 6: setFromArray Function
 Create a function named `setFromArray` that transforms an array into a Set. This function accepts an array as an argument and utilizes the JavaScript Set object to automatically remove duplicate elements, returning a collection of unique elements.
 
-
-### Task 7
-
+### Task 7: hasValuesFromArray Function
+Create a function named `hasValuesFromArray` that checks if all elements specified in an array exist within a given set. The function takes a set and an array as parameters and returns a boolean indicating whether every array element is present in the set. It uses the `Set.prototype.has()` method for efficient look-up, ensuring optimal performance even with large datasets.
 
 ### Task 8
 
@@ -74,7 +73,8 @@ Create a function named `setFromArray` that transforms an array into a Set. This
 - `6-main.js`: Script to test the `setFromArray` function by converting an array to a Set and demonstrating the removal of duplicates.
 
 ### Task 7
-
+- `7-has_array_values.js`: Implements the `hasValuesFromArray` function to verify if all elements of an array are contained in a specific set.
+- `7-main.js`: Script to test the functionality of `hasValuesFromArray`.
 
 ### Task 8
 
@@ -226,7 +226,18 @@ This command runs the `6-main.js` script, which:
 This output confirms that the `setFromArray` function effectively removes duplicates (number 15 in this case) and retains only unique elements, demonstrating the utility of JavaScript's Set object for data manipulation.
 
 ### Task 7
+To test the `hasValuesFromArray` function for verifying the presence of array elements within a set, use the following command:
+```
+npm run dev 7-main.js
+```
+This command runs the `7-main.js` script, which:
+- Tests `hasValuesFromArray` by checking multiple arrays against a set containing the numbers 1 through 5.
 
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/203b1ce5-d1ca-42c6-a694-e6b5e450709d)
+
+- The first test checks if the element `1` is in the set, return `true`.
+- The second test checks if the non-existent element `10` is in the set, returns `false`.
+- The third test checks if both `1` and `10` are in the set, returns `false` since `10` is not in the set.
 
 ### Task 8
 
