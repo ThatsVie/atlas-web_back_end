@@ -10,7 +10,7 @@
 
 ## Task Overview
 
-### Task 0
+### Task 0: getListStudents Function
 Create a function named `getListStudents` that returns an array of student objects. Each object includes three attributes: `id` (a number), `firstName` (a string), and `location` (a string). The function must return details for students named Guillaume, James, and Serena with specific IDs and locations as described.
 
 ### Task 1: getListStudentIds Function
