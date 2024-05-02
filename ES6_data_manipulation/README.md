@@ -20,7 +20,8 @@ Create a function named `getListStudentIds` that processes an array of student o
 Create a function named `getStudentsByLocation` that filters an array of student objects to return only those located in a specified city. This function accepts a list of students and a city as parameters and utilizes the `filter` function to produce the desired subset based on location.
 
 
-### Task 3
+### Task 3: getStudentIdsSum Function
+Create a function named `getStudentIdsSum` that computes the sum of all student IDs from a given list of students. This function employs the `reduce` method to aggregate ID values from an array of student objects, demonstrating a fundamental array reduction operation in JavaScript.
 
 
 ### Task 4
@@ -56,6 +57,12 @@ Create a function named `getStudentsByLocation` that filters an array of student
 ### Task 2
 - `2-get_students_by_loc.js`: Implements the `getStudentsByLocation` function that filters students by their location using the `filter` method, ensuring that only students from a specific city are returned.
 - `2-main.js`: A script to test the `getStudentsByLocation` function by filtering students for a specific location and displaying the results.
+
+### Task 3
+- `3-get_ids_sum.js`: Implements the `getStudentIdsSum` function which calculates the sum of student IDs using the `reduce` method.
+- `3-main.js`: Script to test the summing capabilities of the `getStudentIdsSum` function.
+
+### Task 4
 
 ## Installation
 Clone this repository and navigate to the project directory.
@@ -139,6 +146,18 @@ The console outputs an array of student objects who are located in 'San Francisc
 
 
 ### Task 3
+To test the `getStudentIdsSum` function for summing student IDs, use the following command:
+```
+npm run dev 3-main.js
+```
+This command runs the `3-main.js` script, which performs the following actions:
+- Imports the list of students from `getListStudents`.
+- Calls the `getStudentIdsSum` function with the list of students as an argument.
+- Logs the resulting value to the console, which represents the sum of all student IDs.
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/8f273b1d-aaa8-454d-8549-11ed75621043)
+
+The console will output `8`, indicating that the IDs of the provided students have been successfully summed. This confirms that the `reduce` method is correctly implemented to accumulate values across the student list.
 
 
 ### Task 4
