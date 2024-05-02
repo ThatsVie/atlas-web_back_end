@@ -10,7 +10,7 @@
 
 ## Task Overview
 
-### 0-get_list_students.js
+### Task 0
 Create a function named `getListStudents` that returns an array of student objects. Each object includes three attributes: `id` (a number), `firstName` (a string), and `location` (a string). The function must return details for students named Guillaume, James, and Serena with specific IDs and locations as described.
 
 
@@ -47,6 +47,9 @@ Create a function named `getListStudents` that returns an array of student objec
 
 ### Task 0
 - `0-get_list_students.js`: This file contains the `getListStudents` function that returns an array of objects, each representing a student with `id`, `firstName`, and `location` attributes. This setup demonstrates the creation and use of basic data structures in JavaScript.
+- `0-main.js`: A testing script that imports and executes the `getListStudents` function from `0-get_list_students.js`. It is used to validate the functionality by logging the returned array of student objects to the console, ensuring that the data is correctly structured and populated as specified.
+
+### Task 1
 
 ## Installation
 Clone this repository and navigate to the project directory.
