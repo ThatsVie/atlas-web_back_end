@@ -37,8 +37,8 @@ Create a function named `hasValuesFromArray` that checks if all elements specifi
 ### Task 8: cleanSet Function
 Create a function named `cleanSet` that formats and concatenates elements of a set that start with a specified string (`startString`). This function takes two parameters: a set of strings and a starting string. It filters the set to find elements that begin with `startString`, then removes the `startString` portion from each, and concatenates them with a dash ('-'). If `startString` is empty or not provided, the function returns an empty string.
 
-
-### Task 9
+### Task 9: groceriesList Function
+Create a function named `groceriesList` that constructs a `Map` of grocery items with specified quantities. The function simplifies the management of grocery items, ensuring each item's quantity is uniquely stored and easily accessible.
 
 
 ### Task 10
@@ -82,7 +82,8 @@ Create a function named `cleanSet` that formats and concatenates elements of a s
 - `8-main.js`: Script to test the `cleanSet` function.
 
 ### Task 9
-
+- `9-groceries_list.js`: Contains the `groceriesList` function which initializes a `Map` to store grocery items with their respective quantities.
+- `9-main.js`: Script to test the `groceriesList` function, demonstrating the initialization and display of the grocery `Map`.
 
 ### Task 10
 
@@ -258,6 +259,16 @@ This command executes the `8-main.js` script, which tests the `cleanSet` functio
 This setup demonstrates how `cleanSet` effectively processes sets based on prefix criteria and provides dynamic string construction, which is useful for applications requiring customized data displays or reports.
 
 ### Task 9
+To test the `groceriesList` function and see the structure of the created `Map`, use the following command:
+```
+npm run dev 9-main.js
+```
+This command executes the `9-main.js` script, which uses the `groceriesList` function to create a `Map` with predefined grocery items and their quantities.
 
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/85f90b8c-212d-487b-8898-b7d11bc94b62)
+
+The console will display the `Map` object listing the grocery items and their quantities.
+
+This demonstrates the `groceriesList` function's ability to create a structured and easily manipulatable collection of grocery items using the `Map` data structure, which is ideal for scenarios where key uniqueness and order are important.
 
 ### Task 10
