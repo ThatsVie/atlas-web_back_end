@@ -1,12 +1,22 @@
 # ES6 Data Manipulation
 
+This project focuses on array methods, typed arrays, and complex data structures like `Set` and `Map`. The tasks cover how to manipulate data efficiently, applying methods such as `map`, `filter`, `reduce`, and exploring how `Sets` and `Maps` can be used to handle unique data and key-value storage. This project reinfonforces JavaScript skills and highlights real-world applicability of ES6 features.
+
 ## Learning Objectives
 
 ### How to use map, filter and reduce on arrays
 
+Throughout the project, several tasks cover the effective use of array methods such as `map`, `filter`, and `reduce`. In Task 1, the `map` function was used to transform an array of student objects into an array containing only their IDs, demonstrating how to extract specific properties from an array of objects. Task 2 utilized the filter method to generate a new array of students located in a specific city, showcasing the method's ability to select elements based on a criterion. Task 3 featured the `reduce` method to sum all student IDs, providing a clear example of accumulating values from an array into a single output.
+
 ### Typed arrays
 
+Task 5 focused on demonstrating typed arrays through the creation and manipulation of an ArrayBuffer using a DataView. This task involved setting an Int8 value at a specific position within the buffer, showing how JavaScript can handle binary data in a structured way. The use of DataView here exemplifies accessing and manipulating binary data efficiently.
+
 ### The Set, Map, and Weak link data structures
+
+The manipulation of advanced data structures like `Set` and `Map` was also covered in these tasks. Task 6 demonstrated the use of `Set` by converting an array into a set, ensuring all elements were unique and showing the automatic duplication property of sets. In Tasks 9 and 10, `Map` was extensively used; Task 9 created a `Map` to store and retrieve grocery items along with their quantities, while Task 10 updated the quantities in a `Map` based on certain conditions. These tasks show the utility of `Map` for efficient key-value storage and manipulation, showcasing how real-world applications like inventory management can benefit from such data structures.
+
+While `WeakMap` and `WeakSet` were not explicitly covered in the tasks, they function similarly to Map and Set but with weak references that do not prevent garbage collection if they are the only remaining references to an object. This makes them particularly useful in performance-sensitive applications where memory management is a concern.
 
 ## Task Overview
 
