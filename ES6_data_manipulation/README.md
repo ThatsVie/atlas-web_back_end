@@ -40,8 +40,8 @@ Create a function named `cleanSet` that formats and concatenates elements of a s
 ### Task 9: groceriesList Function
 Create a function named `groceriesList` that constructs a `Map` of grocery items with specified quantities. The function simplifies the management of grocery items, ensuring each item's quantity is uniquely stored and easily accessible.
 
-
-### Task 10
+### Task 10: updateUniqueItems Function
+Create a function named `updateUniqueItems` that modifies a `Map` by updating all entries with a quantity of 1 to 100. The function demonstrates handling data structures and ensuring type safety by throwing an error if the provided argument is not a `Map`.
 
 ## File Overview
 
@@ -86,7 +86,8 @@ Create a function named `groceriesList` that constructs a `Map` of grocery items
 - `9-main.js`: Script to test the `groceriesList` function, demonstrating the initialization and display of the grocery `Map`.
 
 ### Task 10
-
+- `10-update_uniq_items.js`: Contains the `updateUniqueItems` function which updates the quantities in a `Map` based on specific conditions. This function demonstrates manipulation of `Map` objects and error handling when the argument is not as expected.
+- `10-main.js`: Script to test the `updateUniqueItems` function by displaying changes in the grocery list `Map`.
 
 
 ## Installation
@@ -272,3 +273,18 @@ The console will display the `Map` object listing the grocery items and their qu
 This demonstrates the `groceriesList` function's ability to create a structured and easily manipulatable collection of grocery items using the `Map` data structure, which is ideal for scenarios where key uniqueness and order are important.
 
 ### Task 10
+To test the `updateUniqueItems` function and observe how it modifies a `Map` of groceries, use the following command:
+```
+npm run dev 10-main.js
+```
+
+This command executes the `10-main.js` script, which uses both `groceriesList` to generate a grocery list `Map` and `updateUniqueItems` to update quantities in this map.
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/f8d422f2-50d4-4b7a-84e2-fd1cebe0d5c4)
+
+
+- Before updating, the `Map` shows various grocery items with their initial quantities.
+- After invoking `updateUniqueItems`, the quantities of items that were initially 1 are updated to 100.
+
+This output shows that only the items with an initial quantity of 1 (Pasta and Rice) are updated to 100, demonstrating effective map manipulation based on a condition. The map's other entries remain unchanged, showcasing selective updating based on specific criteria.
+
