@@ -19,15 +19,19 @@
 
 ### Task 0
 
-Create a function named getResponseFromAPI that returns a Promise. This simple Promise does not resolve or reject, it remains in the pending state indefinitely. This task is important for understanding the instantiation and basic structure of a Promise.
+Create a function named `getResponseFromAPI` that returns a Promise. This simple Promise does not resolve or reject, it remains in the pending state indefinitely. This task is important for understanding the instantiation and basic structure of a Promise.
 
 ### Task 1
 
-Create a function getFullResponseFromAPI that returns a promise based on a boolean input. If true, the promise resolves with an object containing status and body attributes. If false, it rejects with an error message indicating that the API is not working.
+Create a function `getFullResponseFromAPI` that returns a promise based on a boolean input. If true, the promise resolves with an object containing status and body attributes. If false, it rejects with an error message indicating that the API is not working.
 
 ### Task 2
 
-
+Utilize the `handleResponseFromAPI` function to manage promise resolutions and rejections. The function appends handlers to a promise to process its outcome—either resolved or rejected.
+- Resolved Promise: Returns an object { status: 200, body: 'success' } and logs "Got a response from the API."
+- 
+- Rejected Promise: Returns a new Error object indicating a failure.
+- 
 ### Task 3
 
 
@@ -63,7 +67,8 @@ Create a function getFullResponseFromAPI that returns a promise based on a boole
 `1-main.js`: Testing script that validates the function `getFullResponseFromAPI` with both true and false conditions, demonstrating promise resolution and rejection.
 
 ### Task 2
-
+`2-then.js`: Contains the `handleResponseFromAPI` function which manages the response from a promise by implementing handlers using the .then() and .catch() methods.
+`2-main.js`: A testing script for the `handleResponseFromAPI` function. This script imports the function and applies it to a resolved Promise to check how the function handles resolved and possibly rejected states. 
 
 ### Task 3
 
@@ -155,6 +160,14 @@ The actual output on the console will be abbreviated to show only the most relev
 The ellipsis (...) represents truncated parts of the output, which will contain error stack traces and additional messages. This abbreviation helps focus on the key result without the excessive detail.
 
 ### Task 2
+To test the functionality of handleResponseFromAPI, execute the following command:
+```
+npm run dev 2-main.js
+```
+
+This runs the 2-main.js script, which imports and uses the handleResponseFromAPI function with a resolved promise. The function logs "Got a response from the API" to the console, indicating that the promise was successfully handled. The function demonstrates handling both resolved and rejected states, showing how to  use promises for asynchronous operations.
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/de0df3f7-d42b-47fb-845e-73d706f63cd0)
 
 
 ### Task 3
