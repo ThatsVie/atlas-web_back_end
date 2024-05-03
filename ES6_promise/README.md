@@ -23,6 +23,7 @@ Create a function named getResponseFromAPI that returns a Promise. This simple P
 
 ### Task 1
 
+Create a function getFullResponseFromAPI that returns a promise based on a boolean input. If true, the promise resolves with an object containing status and body attributes. If false, it rejects with an error message indicating that the API is not working.
 
 ### Task 2
 
@@ -53,12 +54,13 @@ Create a function named getResponseFromAPI that returns a Promise. This simple P
 ## File Overview
 
 ### Task 0
-`0-promise.js`: Contains the getResponseFromAPI function which returns a new, unresolved Promise.
+`0-promise.js`: Contains the `getResponseFromAPI` function which returns a new, unresolved Promise.
 
-`0-main.js`: A test script that imports getResponseFromAPI and checks if the returned object is an instance of a Promise, confirming the correct implementation.
+`0-main.js`: A test script that imports `getResponseFromAPI` and checks if the returned object is an instance of a Promise, confirming the correct implementation.
 
 ### Task 1
-
+`1-promise.js`: Contains the `getFullResponseFromAPI` function which returns a promise that either resolves or rejects based on the provided boolean argument.
+`1-main.js`: Testing script that validates the function `getFullResponseFromAPI` with both true and false conditions, demonstrating promise resolution and rejection.
 
 ### Task 2
 
@@ -135,7 +137,21 @@ This executes the script 0-main.js, which imports the function and logs whether 
 
 
 ### Task 1
+To test promise resolution and rejection, run:
+```
+npm run dev 1-main.js
+```
+This command executes the 1-main.js script
 
+When getFullResponseFromAPI(true) is called, it returns a Promise that resolves to { status: 200, body: 'Success' }.
+
+When getFullResponseFromAPI(false) is called, it returns a Promise that rejects with an error "The fake API is not working currently".
+
+The actual output on the console will be abbreviated to show only the most relevant parts:
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/e218ed05-db9e-4439-8459-ee75a353d7db)
+
+The ellipsis (...) represents truncated parts of the output, which will contain error stack traces and additional messages. This abbreviation helps focus on the key result without the excessive detail.
 
 ### Task 2
 
