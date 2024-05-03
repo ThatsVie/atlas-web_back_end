@@ -29,9 +29,8 @@ Create a function `getFullResponseFromAPI` that returns a promise based on a boo
 
 Utilize the `handleResponseFromAPI` function to manage promise resolutions and rejections. The function appends handlers to a promise to process its outcome—either resolved or rejected.
 - Resolved Promise: Returns an object { status: 200, body: 'success' } and logs "Got a response from the API."
-- 
 - Rejected Promise: Returns a new Error object indicating a failure.
-- 
+
 ### Task 3
 
 
