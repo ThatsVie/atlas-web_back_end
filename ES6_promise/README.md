@@ -149,7 +149,8 @@ When getFullResponseFromAPI(false) is called, it returns a Promise that rejects 
 
 The actual output on the console will be abbreviated to show only the most relevant parts:
 
-![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/e218ed05-db9e-4439-8459-ee75a353d7db)
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/cbe45f19-858f-4eff-b314-3e8265b2e155)
+
 
 The ellipsis (...) represents truncated parts of the output, which will contain error stack traces and additional messages. This abbreviation helps focus on the key result without the excessive detail.
 
