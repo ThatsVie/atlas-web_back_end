@@ -33,6 +33,7 @@ Utilize the `handleResponseFromAPI` function to manage promise resolutions and r
 
 ### Task 3
 
+Implement the `handleProfileSignup` function to manage the signup process using promises. This function coordinates the execution of two asynchronous operations: uploading a photo and creating a user profile. Both operations return promises, and their results are handled collectively.
 
 ### Task 4
 
@@ -70,7 +71,8 @@ Utilize the `handleResponseFromAPI` function to manage promise resolutions and r
 `2-main.js`: A testing script for the `handleResponseFromAPI` function. This script imports the function and applies it to a resolved Promise to check how the function handles resolved and possibly rejected states. 
 
 ### Task 3
-
+`3-all.js`: Contains the `handleProfileSignup` function which utilizes Promise.all to handle the promises returned by `uploadPhoto` and `createUser`.
+`3-main.js`: A script that imports and executes the `handleProfileSignup` function, demonstrating the aggregation of promises and error handling.
 
 ### Task 4
 
@@ -170,8 +172,14 @@ This runs the 2-main.js script, which imports and uses the handleResponseFromAPI
 
 
 ### Task 3
+To execute the handleProfileSignup function and observe the output:
+```
+npm run dev 3-main.js
+```
 
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/9d8c34e9-d124-4efb-806f-ea3ea7702eb2)
 
+Both promises resolve successfully. Console logs a concatenated string of the photo body, user's first name, and last name to the console.
 
 ### Task 4
 
