@@ -96,39 +96,60 @@ Implement the `Car` class with enhanced cloning capabilities:
 - **Cloning**: Incorporate a `cloneCar` method that leverages `Symbol.species` to return a new, uninitialized instance of the same class, ensuring type preservation without copying initial attribute values.
 - This task demonstrates class inheritance, symbol usage, and dynamic instance creation.
 
+### Tak 11:
+Implement `EVCar` class
+-**Objective**: Extend the Car class to include an additional property, range, and override the cloneCar method.
+-**Description**: Implement the `EVCar` class that extends from the `Car` class with extra attributes and modified cloning functionality. The `EVCar` includes all properties of `Car` plus a new attribute for the `range`. The `cloneCar` method should return an instance of `Car` instead of `EVCar` to ensure privacy.
+
 ## File Overview
+
+### Task 0
 - `0-classroom.js`: Contains the implementation of the `ClassRoom` class. This class accepts a `maxStudentsSize` parameter in its constructor and assigns it to a private property `_maxStudentsSize`.
 - `0-main.js`: A testing script used to validate the functionality of the `ClassRoom` class by creating an instance and logging the `_maxStudentsSize` property.
-
+- 
+### Task 1
 - `1-make_classrooms.js`: Contains the `initializeRooms` function which creates and returns an array of `ClassRoom` objects with predefined sizes.
 - `1-main.js`: A testing script used to validate the functionality of the `initializeRooms` function by logging the array of `ClassRoom` objects.
 
+### Task 2
 - `2-hbtn_course.js`: Contains the `HolbertonCourse` class with getters and setters for name, length, and students.
 - `2-main.js`: A testing script for `HolbertonCourse`.
 
+### Task 3
 - `3-currency.js`: Contains the `Currency` class with methods to handle currency attributes and display them.
 - `3-main.js`: A testing script for `Currency`.
 
+### Task 4
 - `4-pricing.js`: Contains the `Pricing` class which deals with the pricing information, includes type checks, and methods for display and conversion.
 - `4-main.js`: A testing script for `Pricing`.
 
+### Task 5
 - `5-building.js`: Defines the `Building` class, enforcing an abstract-like behavior for subclasses.
 - `5-main.js`: A testing script for `Building`, demonstrating enforcement of subclass method implementation and error handling.
 
+### Task 6
 - `6-sky_high.js`: Defines the `SkyHighBuilding` class that extends `Building`.
 - `6-main.js`: A testing script for `SkyHighBuilding`.
 
+### Task 7
 - `7-airport.js`: Defines the `Airport` class with customized toString method.
 - `7-main.js`: A testing script for `Airport`.
 
+### Task 8
 - `8-hbtn_class.js`: Defines the `HolbertonClass` with customized type coercion.
 - `8-main.js`: A testing script for `HolbertonClass`.
 
+### Task 9
 - `9-hoisting.js`: Corrects the implementation of `HolbertonClass` and `StudentHolberton`.
 - `9-main.js`: Demonstrates and tests the corrected implementations.
 
+### Task 10
 - `10-car.js`: Implements the `Car` class with cloning functionality using `Symbol.species`.
 - `10-main.js`: Tests the cloning method of the `Car` class.
+
+### Task 11
+- `100-evcar.js`: Contains the implementation of the `EVCar` class which extends the functionality of the `Car` class. It adds a new attribute- `range`, and modifies the `cloneCar` method to return a generic `Car` instance.
+- `100-main.js`: A script to demonstrate creating an EVCar instance, showing its properties and the functionality of cloning that returns an instance of `Car` instead of `EVCar`.
 
 ## Installation
 Clone this repository and navigate to the project directory.
@@ -350,3 +371,20 @@ This script will:
 - `false` indicates that the original and cloned cars are not the same object, demonstrating successful cloning with type preservation.
 
 This setup ensures that the `Car` class correctly implements cloning in a way that can be extended and used in more complex class hierarchies.
+
+### Task 11
+To test the functionality of the EVCar class, you can use the following command:
+```
+npm run dev 100-main.js
+```
+This will execute the 100-main.js script, which imports the EVCar class, creates an instance of it, and tests its functionality including the overridden cloneCar method:
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/11744306-2b6f-46db-b5e4-7a01ddf23179)
+
+An `EVCar` object is instantiated with properties `brand`, `motor`, `color`, and `range`.
+
+It displays the properties of the EVCar instance.
+
+It tests the `cloneCar` method to verify that it returns an instance of `Car` instead of `EVCar` for privacy reasons. The output shows the properties of a generic `Car` without the details set by the `EVCar` constructor, indicating the cloning process does not carry over specific properties or behaviors of the `EVCar` class.
+
+This setup confirms that the EVCar class correctly inherits from the Car class and appropriately modifies the cloneCar method to enhance privacy by returning a generic Car instance.
