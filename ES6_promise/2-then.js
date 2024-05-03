@@ -8,8 +8,6 @@ export default function handleResponseFromAPI(promise) {
   }).catch(() => {
     // This block executes if the promise is rejected
     console.log('Got a response from the API');
-    // Instead of returning new Error(), it should return an object
-    // or throw an Error
-    throw new Error('The fake API is not working currently');
+    return new Error();
   });
 }
