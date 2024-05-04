@@ -45,6 +45,7 @@ Write and export a function named uploadPhoto that rejects a Promise with an err
 
 ### Task 6
 
+Integrate functionality from previous tasks. The task involves creating a function `handleProfileSignup` that takes three arguments: `firstName`, `lastName`, and `fileName`. It uses these to call `signUpUser` and `uploadPhoto`, which return promises. `handleProfileSignup` must handle these promises and return their results in a structured array format, indicating whether each promise was fulfilled or rejected and their corresponding values or error messages.
 
 ### Task 7
 
@@ -89,7 +90,9 @@ Write and export a function named uploadPhoto that rejects a Promise with an err
 
 `5-main.js`: Tests the `uploadPhoto` function by attempting to process a file and logging the result.
 ### Task 6
+`6-final-user.js`: Implements the `handleProfileSignup` function which calls `signUpUser` and `uploadPhoto`, handling their completion with Promise.allSettled.
 
+`6-main.js`: A script to test the `handleProfileSignup` function, demonstrating how it handles multiple asynchronous operations.
 
 ### Task 7
 
@@ -212,7 +215,19 @@ This command executes the script, which imports and calls `uploadPhoto` with a f
 The ellipsis (...) in the output represents truncated error stack trace details, which are omitted for brevity.
 
 ### Task 6
+To use the `handleProfileSignup` function, run the 6-main.js script using the following command:
+```
+npm run dev 6-main.js
+```
 
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/14256683-dd69-453c-ab0a-76d3b565a901)
+
+
+This output indicates that the promise is still in the process of settling. Once settled, it will provide an array of results for each promise, formatted to show the status and outcome (value or error) of each operation.
+
+**Note:**
+
+The console output Promise { <pending> } is due to the asynchronous nature of promises. If we were to attach .then() or use async/await to handle these promises, we would see the resolved values.
 
 ### Task 7
 
