@@ -1,19 +1,64 @@
 # ES6 Promises
 
+This project covers the functionality and applications of ES6 Promises, focusing on understanding asynchronous operations in JavaScript. Various tasks implement and handle promises using methods like `.then()`, `.catch()`, and `Promise.allSettled()`, alongside employing `async/await` syntax.
+
 ### Learning Objectives
 
 ### Promises (how, why, and what)
 
+**How and What**: A Promise in JavaScript is an object representing the eventual completion or failure of an asynchronous operation. It provides a way to handle asynchronous operations by offering three states: pending, fulfilled, and rejected.
+
+**Why**: Promises simplify deferred and asynchronous computations, making it easier to manage complex code that depends on the successful execution of asynchronous operations.
+
+**Example from Task 0**: The function `getResponseFromAPI` demonstrates a basic Promise creation that doesn't resolve or reject, covering the core concept of a Promise as a placeholder for future data.
+
 ### How to use the then, resolve, catch methods
+
+**How**:
+
+`.then()` is used to schedule a callback to be executed when the Promise is resolved.
+
+`.catch()` is for scheduling a callback to handle the possibility of a rejected Promise.
+
+`resolve` is a method used within the executor function of a Promise to indicate successful completion.
+
+**Examples**:
+
+**Task 1** uses `.then()` and `resolve` to handle successful API simulation, returning a structured object upon success.
+
+**Task 2** uses both `.then()` and `.catch()` to handle different outcomes of a Promise. A resolved promise logs a successful message, while a rejection logs an error.
 
 ### How to use every method of the Promise object
 
+Every method of the Promise object includes `Promise.all()`, `Promise.race()`, `Promise.allSettled()`, and `Promise.any()`, among others, which handle different scenarios of promise resolution and rejection.
+
+**Examples**:
+
+**Task 6** uses `Promise.allSettled()` to handle multiple promises, showing how it resolves all given promises regardless of whether they are fulfilled or rejected, then processing results accordingly.
+
 ### Throw / Try
+
+**How and Why**: `try/catch` is used to handle exceptions synchronously. The `throw` keyword is used to throw custom errors, which can be caught and handled appropriately.
+
+**Examples**:
+
+**Task 8** shows `throw` within a function to handle division by zero, using `try/catch` within subsequent tasks to manage errors.
 
 ### The await operator
 
+**How and Why**: `await` is used to pause async function execution until a Promise is settled, simplifying the way asynchronous results are handled without blocking the main thread.
+
+**Examples**:
+
+**Task 10** covers using `await` to handle responses from `uploadPhoto` and `createUser` sequentially, simplifying the management of asynchronous calls within an `async` function.
+
 ### How to use an async function
 
+**How**: `async` functions enable writing promise-based behavior as though it were synchronous, but without blocking the main thread. Every `async` function returns a Promise implicitly, and the return value of the function is used to resolve this Promise.
+
+``Examples``:
+
+**Task 10** features an `async` function `asyncUploadUser` that shows how to handle operations that involve waiting for asynchronous operations like uploading a photo and creating a user.
 
 ## Task Overview
 
