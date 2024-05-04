@@ -37,6 +37,7 @@ Implement the `handleProfileSignup` function to manage the signup process using 
 
 ### Task 4
 
+Implement the `signUpUser` function that returns a promise which resolves immediately with an object containing the user's first and last names. This task demonstrates the creation of a promise that resolves immediately, useful for simulating asynchronous operations that complete successfully without any delay.
 
 ### Task 5
 
@@ -64,18 +65,23 @@ Implement the `handleProfileSignup` function to manage the signup process using 
 
 ### Task 1
 `1-promise.js`: Contains the `getFullResponseFromAPI` function which returns a promise that either resolves or rejects based on the provided boolean argument.
+
 `1-main.js`: Testing script that validates the function `getFullResponseFromAPI` with both true and false conditions, demonstrating promise resolution and rejection.
 
 ### Task 2
 `2-then.js`: Contains the `handleResponseFromAPI` function which manages the response from a promise by implementing handlers using the .then() and .catch() methods.
+
 `2-main.js`: A testing script for the `handleResponseFromAPI` function. This script imports the function and applies it to a resolved Promise to check how the function handles resolved and possibly rejected states. 
 
 ### Task 3
 `3-all.js`: Contains the `handleProfileSignup` function which utilizes Promise.all to handle the promises returned by `uploadPhoto` and `createUser`.
+
 `3-main.js`: A script that imports and executes the `handleProfileSignup` function, demonstrating the aggregation of promises and error handling.
 
 ### Task 4
+`4-user-promise.js`: Contains the implementation of the `signUpUser` function which returns a resolved promise containing user details.
 
+`4-main.js`: A testing script that imports and utilizes the `signUpUser` function to demonstrate promise resolution.
 
 ### Task 5
 
@@ -182,7 +188,15 @@ npm run dev 3-main.js
 Both promises resolve successfully. Console logs a concatenated string of the photo body, user's first name, and last name to the console.
 
 ### Task 4
+To run the 4-main.js script and test the signUpUser function, use the following command:
+```
+npm run dev 4-main.js
+```
+When you execute the command, it runs the 4-main.js script which calls signUpUser with the arguments "Bob" and "Dylan". The output should be a promise that resolves to an object displaying the names provided:
 
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/7988ecab-e399-4537-9c28-7a5661bb995e)
+
+This confirms that the signUpUser function correctly returns a promise which resolves with the expected user details.
 
 ### Task 5
 
