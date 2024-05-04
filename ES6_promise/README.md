@@ -41,6 +41,7 @@ Implement the `signUpUser` function that returns a promise which resolves immedi
 
 ### Task 5
 
+Write and export a function named uploadPhoto that rejects a Promise with an error message stating that a specified file cannot be processed.
 
 ### Task 6
 
@@ -84,8 +85,9 @@ Implement the `signUpUser` function that returns a promise which resolves immedi
 `4-main.js`: A testing script that imports and utilizes the `signUpUser` function to demonstrate promise resolution.
 
 ### Task 5
+`5-photo-reject.js`: Contains the `uploadPhoto` function that returns a Promise. This Promise always rejects with an Error, stating that the file cannot be processed.
 
-
+`5-main.js`: Tests the `uploadPhoto` function by attempting to process a file and logging the result.
 ### Task 6
 
 
@@ -167,7 +169,7 @@ The actual output on the console will be abbreviated to show only the most relev
 The ellipsis (...) represents truncated parts of the output, which will contain error stack traces and additional messages. This abbreviation helps focus on the key result without the excessive detail.
 
 ### Task 2
-To test the functionality of handleResponseFromAPI, execute the following command:
+To test the functionality of `handleResponseFromAPI`, execute the following command:
 ```
 npm run dev 2-main.js
 ```
@@ -178,7 +180,7 @@ This runs the 2-main.js script, which imports and uses the handleResponseFromAPI
 
 
 ### Task 3
-To execute the handleProfileSignup function and observe the output:
+To execute the `handleProfileSignup` function and observe the output:
 ```
 npm run dev 3-main.js
 ```
@@ -188,7 +190,7 @@ npm run dev 3-main.js
 Both promises resolve successfully. Console logs a concatenated string of the photo body, user's first name, and last name to the console.
 
 ### Task 4
-To run the 4-main.js script and test the signUpUser function, use the following command:
+To run the 4-main.js script and test the `signUpUser` function, use the following command:
 ```
 npm run dev 4-main.js
 ```
@@ -199,7 +201,15 @@ When you execute the command, it runs the 4-main.js script which calls signUpUse
 This confirms that the signUpUser function correctly returns a promise which resolves with the expected user details.
 
 ### Task 5
+To test the `uploadPhoto` function, run the 5-main.js script using the following command:
+```
+npm run dev 5-main.js
+```
+This command executes the script, which imports and calls `uploadPhoto` with a filename argument. If the Promise is rejected, it logs the Error message:
 
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/26e59062-6d5b-4cde-b6da-82b8479343fd)
+
+The ellipsis (...) in the output represents truncated error stack trace details, which are omitted for brevity.
 
 ### Task 6
 
