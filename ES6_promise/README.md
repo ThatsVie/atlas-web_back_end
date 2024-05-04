@@ -61,6 +61,8 @@ Implement a function called `guardrail` that manages a mathematical function's e
 
 ### Task 10
 
+Create an asynchronous function named `asyncUploadUser` that utilizes promises to manage asynchronous operations effectively. The function aims to call `uploadPhoto` and `createUser`, both of which return promises, and then constructs an object with the results of these operations
+
 ## File Overview
 
 ### Task 0
@@ -113,7 +115,9 @@ Implement a function called `guardrail` that manages a mathematical function's e
 `9-main.js`: A script to test the `guardrail` function by providing it with math functions that compute division. It tests both successful execution and error handling.
 
 ### Task 10
+`100-await.js`: Contains the `asyncUploadUser` function that integrates asynchronous calls to `uploadPhoto` and `createUser` from `utils.js`. This function uses async-await syntax for handling promises and includes error handling to return an object with null values if any promise fails.
 
+`100-main.js`: A test script for `asyncUploadUser`, demonstrating the function's ability to handle both successful and unsuccessful promise resolutions.
 
 ## Installation
 Clone this repository and navigate to the project directory.
@@ -275,3 +279,12 @@ This executes the guardrail function with a math function that successfully comp
 ![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/a2ffbcc4-9933-4b43-a26d-5fae2cbc6198)
 
 ### Task 10
+To run the test script
+```
+npm run dev 100-main.js
+```
+This command will execute the `100-main.js` script, which imports and runs the `asyncUploadUser` function. 
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/3546d8f7-5db9-42f9-9721-82054e59e1c9)
+
+
