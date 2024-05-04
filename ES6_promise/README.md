@@ -53,6 +53,7 @@ Implement the `loadBalancer` function which accepts two arguments, both of which
 
 ### Task 8
 
+Create a function `divideFunction` that divides a numerator by a denominator. If the denominator is zero, it throws an error to avoid division by zero, otherwise, it returns the result of the division.
 
 ### Task 9
 
@@ -101,7 +102,9 @@ Implement the `loadBalancer` function which accepts two arguments, both of which
 `7-main.js`: A testing script to demonstrate the usage of the `loadBalancer` function with simulated download promises.
 
 ### Task 8
+`8-try.js`: Contains the `divideFunction` which performs division and handles division by zero with error handling.
 
+`8-main.js`: A testing script for `divideFunction` which tests dividing a number by another and by zero to demonstrate error handling.
 
 ### Task 9
 
@@ -243,7 +246,20 @@ The script in `7-main.js` includes two promise scenarios simulating file downloa
 ![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/0330028c-63e3-46be-8d21-722a84a5b94c)
 
 ### Task 8
+To run the `8-main.js` script and test the `divideFunction`, use the following command:
+```
+npm run dev 8-main.js
+```
 
+This command executes the script, which attempts to divide 10 by 2 and then 10 by 0. The expected outputs are:
+
+5 when dividing 10 by 2.
+
+An error message when attempting to divide by zero. 
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/affddf65-b80b-406d-8345-15a2305536e9)
+
+The ellipsis (...) in the output represents truncated stack trace details. These details are typically long error messages and paths which have been shortened here for clarity and brevity
 
 ### Task 9
 
