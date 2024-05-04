@@ -49,6 +49,7 @@ Integrate functionality from previous tasks. The task involves creating a functi
 
 ### Task 7
 
+Implement the `loadBalancer` function which accepts two arguments, both of which are Promises (`chinaDownload` and `USDownload`).
 
 ### Task 8
 
@@ -95,7 +96,9 @@ Integrate functionality from previous tasks. The task involves creating a functi
 `6-main.js`: A script to test the `handleProfileSignup` function, demonstrating how it handles multiple asynchronous operations.
 
 ### Task 7
+`7-load_balancer.js`: Contains the `loadBalancer` function which uses Promise.race() to return the result of the first resolved promise between two download operations.
 
+`7-main.js`: A testing script to demonstrate the usage of the `loadBalancer` function with simulated download promises.
 
 ### Task 8
 
@@ -230,7 +233,14 @@ This output indicates that the promise is still in the process of settling. Once
 The console output Promise { <pending> } is due to the asynchronous nature of promises. If we were to attach .then() or use async/await to handle these promises, we would see the resolved values.
 
 ### Task 7
+To test the loadBalancer function, run the following command:
+```
+npm run dev 7-main.js
+```
 
+The script in `7-main.js` includes two promise scenarios simulating file downloads from different servers with varied response times. The output demonstrates the effectiveness of `loadBalancer` in selecting the faster response:
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/0330028c-63e3-46be-8d21-722a84a5b94c)
 
 ### Task 8
 
