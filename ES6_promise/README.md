@@ -57,6 +57,7 @@ Create a function `divideFunction` that divides a numerator by a denominator. If
 
 ### Task 9
 
+Implement a function called `guardrail` that manages a mathematical function's execution. It takes a function as input and ensures that whether the function executes successfully or throws an error, the process is handled. The output from the function or the error message is captured in a queue along with a confirmation message indicating that the guardrail has processed.
 
 ### Task 10
 
@@ -107,7 +108,9 @@ Create a function `divideFunction` that divides a numerator by a denominator. If
 `8-main.js`: A testing script for `divideFunction` which tests dividing a number by another and by zero to demonstrate error handling.
 
 ### Task 9
+`9-try.js`: Contains the `guardrail` function which takes a math function as an argument. The function tries to execute the math function and captures the result or error in a queue along with a process confirmation message.
 
+`9-main.js`: A script to test the `guardrail` function by providing it with math functions that compute division. It tests both successful execution and error handling.
 
 ### Task 10
 
@@ -262,6 +265,13 @@ An error message when attempting to divide by zero.
 The ellipsis (...) in the output represents truncated stack trace details. These details are typically long error messages and paths which have been shortened here for clarity and brevity
 
 ### Task 9
+To see how the `guardrail` function manages both successful and error conditions, you can run '9-main.js` like this:
+```
+npm run dev 9-main.js
+```
 
+This executes the guardrail function with a math function that successfully computes a division (10 divided by 2). The expected output will display the result of the division followed by the confirmation message. It also uses a math function that attempts to divide by zero, which throws an error. The function captures this error and logs it along with the process confirmation message.
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/a2ffbcc4-9933-4b43-a26d-5fae2cbc6198)
 
 ### Task 10
