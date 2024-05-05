@@ -1,9 +1,8 @@
-// Import the Building class from '5-building.js'
 import Building from './5-building';
 
-// Define the SkyHighBuilding class that extends from Building
+// Define class that extends from Building
 export default class SkyHighBuilding extends Building {
-  // Constructor for SkyHighBuilding takes parameters sqft and floors
+  // Constructor takes parameters sqft and floors
   constructor(sqft, floors) {
     super(sqft); // Call superclass constructor with sqft to handle the Building setup
     this._floors = floors; // Initialize  _floors property, storing it privately

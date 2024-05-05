@@ -1,12 +1,11 @@
-// Import the Currency class from '3-currency.js'
 import Currency from './3-currency';
 
-// Define Pricing class which handles values associated with currency
+// Pricing class handles values associated with currency
 export default class Pricing {
   // Constructor initializes Pricing object with amount and currency
   constructor(amount, currency) {
     this._amount = amount; // Store the amount privately to encapsulate the data
-    this._currency = currency; // Store the currency object privately to encapsulate the data
+    this._currency = currency;
   }
 
   // Getter for amount returns the private _amount variable
@@ -42,7 +41,7 @@ export default class Pricing {
     return `${this._amount} ${this._currency.name} (${this._currency.code})`;
   }
 
-  // Static method to convert price using a given conversion rate
+  // Static method to convert price using given conversion rate
   static convertPrice(amount, conversionRate) {
     // Calculates and returns the converted amount
     return amount * conversionRate; // Multiplies the amount by the conversion rate

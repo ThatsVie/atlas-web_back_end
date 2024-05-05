@@ -5,8 +5,8 @@ export default class Airport {
     // Initialize private variables _name and _code with the provided arguments
     // prefixed with an underscore to indicate that they are private
     // and should not be accessed directly outside of this class.
-    this._name = name; // Store the name of the airport
-    this._code = code; // Store the code of the airport
+    this._name = name;
+    this._code = code;
   }
 
   // Getter for the name property
@@ -26,7 +26,6 @@ export default class Airport {
 
   // Override the default toString() method
   // customizes the default string representation of objects of this class
-  // useful for debugging and logging, providing a clear and concise description of an object.
   // Instead of returning a generic object description, returns airport code
   toString() {
     return `[object ${this._code}]`; // Customize the output to show the airport code
