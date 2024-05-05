@@ -1,11 +1,11 @@
-// Define the HolbertonCourse class with type validation on its properties
+// Class with type validation on its properties
 export default class HolbertonCourse {
   // Constructor to initialize the HolbertonCourse object
   constructor(name, length, students) {
-    // Assign properties using setters to enforce type checks
-    this.name = name; // Set the name via the setter to validate type
-    this.length = length; // Set the length via the setter to validate type
-    this.students = students; // Set the students via the setter to validate type
+    // Assign properties using setters
+    this.name = name; // Set the name w/ the setter to validate type
+    this.length = length; // Set the length w/ the setter to validate type
+    this.students = students; // Set the students w/ the setter to validate type
   }
 
   // Getter for the name property
@@ -16,7 +16,7 @@ export default class HolbertonCourse {
 
   // Setter for the name property
   set name(newName) {
-    // Check if newName is a string; throw error if not
+    // Check if newName is a string throw error if not
     if (typeof newName !== 'string') {
       throw new TypeError('Name must be a string');
     }
@@ -32,7 +32,7 @@ export default class HolbertonCourse {
 
   // Setter for the length property
   set length(newLength) {
-    // Check if newLength is a number; throw error if not
+    // Check if newLength is a number- throw error if not
     if (typeof newLength !== 'number') {
       throw new TypeError('Length must be a number');
     }
@@ -48,7 +48,7 @@ export default class HolbertonCourse {
 
   // Setter for the students property
   set students(newStudents) {
-    // Check if newStudents is an array of strings; throw error if not
+    // Check if newStudents is an array of strings-throw error if not
     if (!Array.isArray(newStudents) || newStudents.some((s) => typeof s !== 'string')) {
       throw new TypeError('Students must be an array of strings');
     }

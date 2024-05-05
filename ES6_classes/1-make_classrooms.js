@@ -1,7 +1,7 @@
 // Import the ClassRoom class from the file where it's defined
 import ClassRoom from './0-classroom';
 
-// Define the initializeRooms function which creates and returns an array of ClassRoom instances
+// Function creates and returns an array of ClassRoom instances
 function initializeRooms() {
   // Create an array of ClassRoom instances with specified sizes
   const rooms = [
