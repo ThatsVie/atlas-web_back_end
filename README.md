@@ -10,7 +10,7 @@ To view a README.md file for ES6 Basic visit [this link](https://github.com/That
 
 This project covers ES6 classes including creating and managing different classes and subclasses, showcasing essential concepts like inheritance, method overriding, and data encapsulation. It also  covers static methods and metaprogramming with symbols to dynamically control how classes behave, especially when cloning objects. 
 
-To view a README.md file for ES6 Classes visit[this link](https://github.com/ThatsVie/atlas-web_back_end/blob/main/ES6_classes/README.md)
+To view a README.md file for ES6 Classes visit [this link](https://github.com/ThatsVie/atlas-web_back_end/blob/main/ES6_classes/README.md)
 
 ## ES6 Data Manipulation
 
