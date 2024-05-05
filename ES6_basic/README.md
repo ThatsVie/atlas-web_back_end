@@ -82,6 +82,12 @@ Create a function that dynamically generates objects with department names as ke
 ### Task 12 
 Enhance the `createReportObject` function to use internal state with `this` for method operations. 
 
+### Task 13
+This task involves writing a function named `createIteratorObject` that accepts a report object (produced by the `createReportObject` function).
+
+### Task 14
+
+
 ## File Overview
 
 ### Task 0
@@ -162,6 +168,13 @@ This file contains the `getSumOfHoods` function, demonstrating how to effectivel
 `12-main.js`: Demonstrates the functionality of the `createReportObject` by using it to manage and report on employee department data dynamically.
 
 `12-createReportObject.js`:  This file defines `createReportObject`, a function that encapsulates employee data and provides a method to count the number of departments. This exemplifies the use of ES6 features to create more interactive and self-contained modules.
+
+### Task 13
+`100-main.js`: This script serves as a test for the functionality provided by the `createIteratorObject` function.
+
+`100-createIteratorObject.js`: This file contains the `createIteratorObject` function, which creates an iterator for iterating through all employees listed under any department. It utilizes ES6 features like the iterator protocol and computed property names.
+
+### Task 14
 
 ## Installation
 Clone this repository and navigate to the project directory.
@@ -364,3 +377,15 @@ Runs the `createReportObject` function, showing how the internal methods utilize
 ![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/c184cb4e-5dc5-4494-b4e4-74f4e858ece7)
 
 This output displays the structured grouping of employees by department and the total number of departments, showing the practical use of modern JavaScript techniques to manage and interact with complex data structures effectively.
+
+### Task 13
+To execute the function `createIteratorObject` and display each employee's name across different departments, you can use the following command:
+```
+npm run dev 100-main.js
+```
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/8978aef2-3833-4439-8cba-a3d1fe55299f)
+
+
+Each name printed to the console represents an employee in various departments processed by the iterator. This output confirms that the iterator successfully traverses all employees in the given structure.
+
+### Task 14
