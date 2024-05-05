@@ -1,45 +1,52 @@
 # ES6 Basic
 
-This project covers ES6 (ECMAScript 2015) features and best practices in modern JavaScript development. It covers topics such as variable declaration with let and const, block-scoped variables, arrow functions, template literals, spread/rest operators, object creation, and iterators. 
+This project covers ES6 (ECMAScript 2015) features and best practices in modern JavaScript development. It covers topics such as variable declaration with `let` and `const`, block-scoped variables, arrow functions, template literals, `spread/rest operators`, object creation, and iterators. 
 
 ## Learning Objectives
-**What ES6 is**
+### What ES6 is
 
 ES6, also known as ECMAScript 2015, is the sixth edition of the ECMAScript standard, which defines the scripting language JavaScript.
 
-**New features introduced in ES6**
+### New features introduced in ES6
 
-ES6 introduced several new features to JavaScript, including let and const for variable declaration, arrow functions for concise function syntax, template literals for enhanced string formatting, and the spread and rest operators for working with arrays and function parameters.
+ES6 introduced several new features to JavaScript, including `let` and `const` for variable declaration, arrow functions for concise function syntax, template literals for enhanced string formatting, and the spread and rest operators for working with arrays and function parameters.
 
-**The difference between a constant and a variable**
+### The difference between a constant and a variable
 
-Constants, declared using the const keyword, are immutable and cannot be reassigned, while variables, declared using let, can be reassigned within their scope.
+Constants are declared with `const` and cannot be reassigned once set, providing a reliable and secure way to handle values that shouldn't change after initialization. This was demonstrated in **Task 0** where constants were used to prevent reassignment.
 
-**Block-scoped variables**
+Variables can vary and are declared with `let` or `var`. `let` has block scope, reducing issues related to scope leak which `var` might cause.
 
-Block-scoped variables, declared using let and const, are scoped to the nearest enclosing block, allowing for more precise variable scoping compared to var, which is function-scoped
+### Block-scoped variables
 
-
-**Arrow functions and function parameters default to them**
-
-Arrow functions provide a concise syntax for writing functions, and they automatically bind the this value to the enclosing lexical context, making them particularly useful for callback functions and event handlers.
+Block-scoped variables, declared using `let` and `const`, are scoped to the nearest enclosing block. This was covered in **Task 1**, where `let` and `const` were used inside functions to limit the scope of variables to the blocks they were defined in, preventing unexpected behavior from hoisting.
 
 
-**Rest and spread function parameters**
+### Arrow functions and function parameters default to them
 
-Rest parameters, denoted by three dots (...), allow functions to accept an indefinite number of arguments as an array, while spread syntax, also denoted by three dots (...), allows for the expansion of arrays and objects into individual elements or properties.
+Arrow functions provide a concise syntax for writing functions and do not have their own `this` context. **Task 2** utilized arrow functions to simplify the method definitions inside an object.
 
-**String templating in ES6**
+### Rest and spread function parameters
 
-String templating in ES6, also known as template literals, allows for embedding expressions and variables directly within strings using the ${} syntax, enabling more readable and maintainable string construction.
+The rest parameter (`...args`) allows functions to accept an indefinite number of arguments as an array. In **Task 4**, the rest parameter was used to capture all arguments passed to a function.
+
+The spread operator (`...`) allows an iterable like an array or string to be expanded in places where zero or more arguments (for function calls) or elements (for array literals) are expected. **Task 5** demonstrated this by merging arrays and spreading strings into an array.
+
+### String templating in ES6
+
+Template literals (enclosed by backticks ``) allow embedded expressions, which were used in **Task 6**. This feature makes it easier to create complex strings and can include variables and expressions within a string.
 
 **Object creation and their properties in ES6**
 
-Object creation in ES6 supports concise syntax for defining object literals, as well as features such as computed property names, method shorthand notation, and property value shorthand notation, enhancing object-oriented programming in JavaScript.
+Computed property names, as used in **Task 8**, allow you to specify keys of object properties using expressions.
 
-**Iterators and for-of loops**
+Property shorthand, demonstrated in **Task 7**, lets you quickly assign properties to objects where the variable name matches the property name.
 
-ES6 introduces iterators and the for-of loop, providing a more convenient and readable way to iterate over iterable objects such as arrays, strings, and collections, compared to traditional for loops and forEach methods.
+Method properties in ES6 simplify the syntax for defining methods of objects, as shown in **Task 9**.
+
+### Iterators and for-of loops
+
+ES6 introduced a new iteration protocol that simplifies the process of accessing elements in a collection sequentially. Iterators are designed to handle the iteration by maintaining track of their current position within the data structure. **Task 13** utilized this concept by creating a custom iterator to traverse all employees across different departments. It  prepared an iterator for use with a `for...of loop`, an ES6 construct that iterates over iterable objects. This loop automatically invokes the iterator's `next()` method to access each employee, demonstrating the application of both iterators and `for...of` loops in handling grouped data.
 
 ## Tasks Overview
 
@@ -399,4 +406,4 @@ npm run dev 101-main.js
 
 ![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/d283051a-c844-4c2e-9a66-119cf1ae97e7)
 
-This output demonstrates the function's capability to iterate through the employee data, regardless of department, and compile the names into a string where each name is separated by a vertical bar (|). This functionality is especially useful for generating simple, readable reports or lists from more complex data structures.
+This output demonstrates the function's capability to iterate through the employee data, regardless of department, and compile the names into a string where each name is separated by a pipe (|). This functionality is especially useful for generating simple, readable reports or lists from more complex data structures.
