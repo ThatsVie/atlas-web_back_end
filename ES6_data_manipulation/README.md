@@ -16,7 +16,7 @@ Task 5 focused on demonstrating typed arrays through the creation and manipulati
 
 The manipulation of advanced data structures like `Set` and `Map` was also covered in these tasks. Task 6 demonstrated the use of `Set` by converting an array into a set, ensuring all elements were unique and showing the automatic duplication property of sets. In Tasks 9 and 10, `Map` was extensively used; Task 9 created a `Map` to store and retrieve grocery items along with their quantities, while Task 10 updated the quantities in a `Map` based on certain conditions. These tasks show the utility of `Map` for efficient key-value storage and manipulation, showcasing how real-world applications like inventory management can benefit from such data structures.
 
-While `WeakMap` and `WeakSet` were not explicitly covered in the tasks, they function similarly to Map and Set but with weak references that do not prevent garbage collection if they are the only remaining references to an object. This makes them particularly useful in performance-sensitive applications where memory management is a concern.
+Task 11 covered WeakMap, using it to track the number of API calls for each endpoint. By storing endpoints as keys and their call counts as values, WeakMap manages memory by allowing garbage collection of keys when no longer referenced elsewhere, which prevents potential memory leaks in applications where control over memory usage is crucial.
 
 ## Task Overview
 
