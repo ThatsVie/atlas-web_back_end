@@ -1,7 +1,7 @@
 // Import the getBudgetObject function
 import getBudgetObject from './7-getBudgetObject';
 
-// function to extend basic budget object with additional methods 
+// function to extend basic budget object with additional methods
 export default function getFullBudgetObject(income, gdp, capita) {
   // retrieve the basic budget object
   const budget = getBudgetObject(income, gdp, capita);
