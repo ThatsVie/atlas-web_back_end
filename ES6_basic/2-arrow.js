@@ -1,7 +1,7 @@
 // Defines a constructor function for creating an object
 export default function getNeighborhoodsList() {
   // Initializes a property sanFranciscoNeighborhoods on the object being created
-  // This property is an array of string names 
+  // This property is an array of string names
   this.sanFranciscoNeighborhoods = ['SOMA', 'Union Square'];
 
   // Defines a method addNeighborhood on the object using ES6 arrow syntax.
