@@ -4,10 +4,9 @@ export default function iterateThroughObject(report) {
 
   for (const employee of report) {
     // append each employee's name followed by a pipe | separator to the string.
-    employeeNames += `${employee} |`;
+    employeeNames += ` ${employee} |`;
   }
-
   // Remove the last pipe from the string and return the result
   // so that the string does not end with an unnecessary separator.
-  return employeeNames.slice(0, -1);
+  return employeeNames.substring(1, employeeNames.length - 2);
 }
