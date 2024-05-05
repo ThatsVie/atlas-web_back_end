@@ -1,10 +1,7 @@
 // Define the function getSanFranciscoDescription, which does not take any parameters.
 export default function getSanFranciscoDescription() {
-  // Declare a constant 'year' and initialize it with the value 2017.
   const year = 2017;
 
-  // Declare a constant 'budget' and initialize it as an object with three properties:
-  // 'income', 'gdp', and 'capita', each set to a string representing financial figures.
   const budget = {
     income: '$119,868',
     gdp: '$154.2 billion',
