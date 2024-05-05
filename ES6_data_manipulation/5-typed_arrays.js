@@ -5,7 +5,6 @@ export default function createInt8TypedArray(length, position, value) {
     throw new Error('Position outside range');
   }
 
-  // Create a new ArrayBuffer of the specified length
   const buffer = new ArrayBuffer(length);
   // Create a DataView for the buffer to manipulate its contents
   const dataView = new DataView(buffer);
