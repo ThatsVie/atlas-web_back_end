@@ -1,19 +1,19 @@
-// Defines the Currency class
+// Defines Currency class
 export default class Currency {
   // Constructor to initialize the Currency object with code and name attributes
   constructor(code, name) {
     this.code = code; // Assign the code using the setter to ensure it's a string
-    this.name = name; // Assign the name using the setter to ensure it's a string
+    this.name = name;
   }
 
   // Getter for the code attribute
-  // This method allows external access to the private _code attribute in a controlled manner
+  // Allows external access to the private _code attribute
   get code() {
     return this._code;
   }
 
   // Setter for the code attribute
-  // This method ensures that only string values are assigned to _code
+  // Ensures that only string values are assigned to _code
   // If a non-string value is assigned, it throws a TypeError
   set code(newCode) {
     if (typeof newCode !== 'string') {
@@ -23,14 +23,14 @@ export default class Currency {
   }
 
   // Getter for the name attribute
-  // This method allows external access to the private _name attribute in a controlled manner
+  // Allows external access to the private _name attribute
   get name() {
     return this._name;
   }
 
   // Setter for the name attribute
-  // This method ensures that only string values are assigned to _name
-  // If a non-string value is assigned, it throws a TypeError
+  // ensures that only string values are assigned to _name
+  // If a non-string value is assigned it throws a TypeError
   set name(newName) {
     if (typeof newName !== 'string') {
       throw new TypeError('Name must be a string');
@@ -39,7 +39,7 @@ export default class Currency {
   }
 
   // Method to display the full currency information in a specific format "name (code)"
-  // This method combines the name and code using a template literal for easy reading
+  // Combines the name and code using a template literal
   displayFullCurrency() {
     return `${this.name} (${this.code})`; // Returns the formatted string
   }
