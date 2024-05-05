@@ -1,4 +1,4 @@
-// Define the HolbertonClass with a constructor and getters.
+// Constructor and getters
 export class HolbertonClass {
   // Constructor initializes each instance with a year and a location.
   constructor(year, location) {
@@ -21,7 +21,7 @@ export class HolbertonClass {
 const class2019 = new HolbertonClass(2019, 'San Francisco');
 const class2020 = new HolbertonClass(2020, 'San Francisco');
 
-// Define the StudentHolberton class which also includes a constructor and getters.
+// class which also includes a constructor and getters.
 export class StudentHolberton {
   constructor(firstName, lastName, holbertonClass) {
     this._firstName = firstName;

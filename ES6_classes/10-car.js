@@ -1,4 +1,3 @@
-// Export the Car class as the default export of the module
 export default class Car {
   // Constructor initializes a new Car instance with specified brand, motor, and color
   constructor(brand, motor, color) {
