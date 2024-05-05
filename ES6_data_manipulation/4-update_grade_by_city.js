@@ -10,7 +10,6 @@ export default function updateStudentGradeByCity(students, city, updatedGrades) 
     .filter((student) => student.location === city)
     .map((student) => {
       // For each student in the filtered list, find a matching grade object
-      // 'updatedGrades' should contain objects with a 'studentId' and 'grade'
       const studentGrade = updatedGrades.find((grade) => grade.studentId === student.id);
 
       // Construct a new student object that includes all properties of the original student
