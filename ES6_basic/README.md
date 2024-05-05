@@ -83,10 +83,10 @@ Create a function that dynamically generates objects with department names as ke
 Enhance the `createReportObject` function to use internal state with `this` for method operations. 
 
 ### Task 13
-This task involves writing a function named `createIteratorObject` that accepts a report object (produced by the `createReportObject` function).
+Write a function named `createIteratorObject` that accepts a report object (produced by the `createReportObject` function).
 
 ### Task 14
-
+Write a function `iterateThroughObject` that takes a report object containing employees organized by department and returns a string of all employee names, separated by (|).
 
 ## File Overview
 
@@ -175,6 +175,9 @@ This file contains the `getSumOfHoods` function, demonstrating how to effectivel
 `100-createIteratorObject.js`: This file contains the `createIteratorObject` function, which creates an iterator for iterating through all employees listed under any department. It utilizes ES6 features like the iterator protocol and computed property names.
 
 ### Task 14
+`101-main.js`: This script file imports and utilizes functions from other modules to demonstrate the functionality of the `iterateThroughObject` function. 
+
+`101-iterateThroughObject.js`: Contains the `iterateThroughObject` function that processes an iterable report object to format employee names into a single string separated by |.
 
 ## Installation
 Clone this repository and navigate to the project directory.
@@ -389,3 +392,11 @@ npm run dev 100-main.js
 Each name printed to the console represents an employee in various departments processed by the iterator. This output confirms that the iterator successfully traverses all employees in the given structure.
 
 ### Task 14
+The iterateThroughObject function is used to generate a concatenated string of employee names from various departments, providing a compact and readable format of all employees listed in a report. 
+```
+npm run dev 101-main.js
+```
+
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/d283051a-c844-4c2e-9a66-119cf1ae97e7)
+
+This output demonstrates the function's capability to iterate through the employee data, regardless of department, and compile the names into a string where each name is separated by a vertical bar (|). This functionality is especially useful for generating simple, readable reports or lists from more complex data structures.
