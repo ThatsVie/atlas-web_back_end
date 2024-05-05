@@ -53,6 +53,9 @@ Create a function named `groceriesList` that constructs a `Map` of grocery items
 ### Task 10: updateUniqueItems Function
 Create a function named `updateUniqueItems` that modifies a `Map` by updating all entries with a quantity of 1 to 100. The function demonstrates handling data structures and ensuring type safety by throwing an error if the provided argument is not a `Map`.
 
+### Task 11:  WeakMap and queryAPI
+Task 11 introduces the use of a `WeakMap` to track the number of times an API endpoint is queried. The function `queryAPI` increments a count for each call associated with a specific endpoint. If an endpoint is queried five times or more, it throws an error indicating high load.
+
 ## File Overview
 
 ### Task 0
@@ -99,6 +102,9 @@ Create a function named `updateUniqueItems` that modifies a `Map` by updating al
 - `10-update_uniq_items.js`: Contains the `updateUniqueItems` function which updates the quantities in a `Map` based on specific conditions. This function demonstrates manipulation of `Map` objects and error handling when the argument is not as expected.
 - `10-main.js`: Script to test the `updateUniqueItems` function by displaying changes in the grocery list `Map`.
 
+### Task 11
+- `100-weak.js`: Contains the `queryAPI` function and the `weakMap` instance. The function manages the count of API calls per endpoint using `weakMap` and controls the request load by throwing an error when the count exceeds a threshold.
+- `100-main.js`: Demonstrates the usage of `queryAPI` and how it interacts with `weakMap` to track and manage API call limits.
 
 ## Installation
 Clone this repository and navigate to the project directory.
@@ -301,3 +307,13 @@ This command executes the `10-main.js` script, which uses both `groceriesList` t
 
 This output shows that only the items with an initial quantity of 1 (Pasta and Rice) are updated to 100, demonstrating effective map manipulation based on a condition. The map's other entries remain unchanged, showcasing selective updating based on specific criteria.
 
+### Task 11
+To test the `queryAPI` function, the `100-main.js` file is used. The script creates an endpoint and attempts to query it multiple times, logging the count of queries until the limit is reached and an error is thrown.
+```
+npm run dev 100-main.js
+```
+![image](https://github.com/ThatsVie/atlas-web_back_end/assets/143755961/4285ae07-d302-4765-9047-3d2b93872baf)
+
+This output shows the function in action, successfully counting and limiting the API queries, throwing an error when the maximum allowed queries are exceeded, ensuring the system's stability by preventing overload.
+
+The ellipses (...) are used to indicate that parts of the error traceback and additional command line logs are omitted to simplify the display.
