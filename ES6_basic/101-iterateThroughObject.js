@@ -1,9 +1,8 @@
-export default function iterateThroughObject(reportWithIterator) {
+export default function iterateThroughObject(report) {
   // empty string to hold the concatenated names.
   let employeeNames = '';
 
-  // Iterate through the reportWithIterator object.
-  for (const employee of reportWithIterator) {
+  for (const employee of report) {
     // append each employee's name followed by a pipe | separator to the string.
     employeeNames += `${employee} |`;
   }
