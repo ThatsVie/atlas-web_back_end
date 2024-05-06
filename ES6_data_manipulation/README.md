@@ -1,6 +1,6 @@
 # ES6 Data Manipulation
 
-This project focuses on array methods, typed arrays, and complex data structures like `Set` and `Map`. The tasks cover how to manipulate data efficiently, applying methods such as `map`, `filter`, `reduce`, and exploring how `Sets` and `Maps` can be used to handle unique data and key-value storage. This project reinfonforces JavaScript skills and highlights real-world applicability of ES6 features.
+This project focuses on array methods, typed arrays, and complex data structures like `Set` and `Map`. The tasks cover how to manipulate data efficiently, applying methods such as `map`, `filter`, `reduce`, and exploring how `Sets` and `Maps` can be used to handle unique data and key-value storage.
 
 ## Learning Objectives
 
