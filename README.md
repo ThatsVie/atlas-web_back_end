@@ -14,7 +14,7 @@ To view a README.md file for ES6 Classes visit [this link.](https://github.com/T
 
 ## ES6 Data Manipulation
 
-This project focuses on array methods, typed arrays, and complex data structures like `Set` and `Map`. The tasks cover how to manipulate data efficiently, applying methods such as `map`, `filter`, `reduce`, and exploring how `Sets` and `Maps` can be used to handle unique data and key-value storage. This project reinfonforces JavaScript skills and highlights real-world applicability of ES6 features.
+This project focuses on array methods, typed arrays, and complex data structures like `Set` and `Map`. The tasks cover how to manipulate data efficiently, applying methods such as `map`, `filter`, `reduce`, and exploring how `Sets` and `Maps` can be used to handle unique data and key-value storage.
 
 To view a README.md file for ES6 Data Manipulation visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/ES6_data_manipulation/README.md)
 
