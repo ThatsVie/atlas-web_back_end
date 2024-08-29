@@ -30,101 +30,105 @@ This project focuses on understanding and applying variable annotations in Pytho
 <details>
   <summary>Click to expand</summary>
 
-Python’s dynamic typing allows variables to take on any type at runtime, making it flexible but prone to type-related errors if misused. For example:
+  Python’s dynamic typing allows variables to take on any type at runtime, making it flexible but prone to type-related errors if misused. For example:
 
-```python
-def fn(a, b):
-    return a + b
-```
+  ```python
+  def fn(a, b):
+      return a + b
+  ```
 
-In this function, the types of `a` and `b` are not known until runtime. If called with incompatible types, such as `fn("a", 1)`, a `TypeError` occurs:
+  In this function, the types of `a` and `b` are not known until runtime. If called with incompatible types, such as `fn("a", 1)`, a `TypeError` occurs:
 
-```python
->>> fn("a", 1)
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-TypeError: can only concatenate str (not "int") to str
-```
+  ```python
+  >>> fn("a", 1)
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+  TypeError: can only concatenate str (not "int") to str
+  ```
 
-Type annotations help mitigate these issues by documenting the expected types, though they do not enforce type checking at runtime.
+  Type annotations help mitigate these issues by documenting the expected types, though they do not enforce type checking at runtime.
+
 </details>
+
 ## Learning Objectives
+
 <details>
   <summary>Click to expand</summary>
 
-### 1. Type Annotations in Python 3
+  ### 1. Type Annotations in Python 3
 
-Type annotations in Python 3 allow developers to explicitly specify the expected types of variables, function parameters, and return values. These annotations help improve code readability, provide better documentation, and aid in catching errors early through tools like linters and type checkers.
+  Type annotations in Python 3 allow developers to explicitly specify the expected types of variables, function parameters, and return values. These annotations help improve code readability, provide better documentation, and aid in catching errors early through tools like linters and type checkers.
 
-**Example from Task 0**:
-In Task 0, the function `add` is annotated to take two float arguments and return their sum as a float:
+  **Example from Task 0**:
+  In Task 0, the function `add` is annotated to take two float arguments and return their sum as a float:
 
-```python
-def add(a: float, b: float) -> float:
-    '''Return the sum of two float numbers.'''
-    return a + b
-```
+  ```python
+  def add(a: float, b: float) -> float:
+      '''Return the sum of two float numbers.'''
+      return a + b
+  ```
 
-Here, `a` and `b` are both annotated as floats, and the function's return type is also specified as a float.
+  Here, `a` and `b` are both annotated as floats, and the function's return type is also specified as a float.
 
-### 2. How You Can Use Type Annotations to Specify Function Signatures and Variable Types
+  ### 2. How You Can Use Type Annotations to Specify Function Signatures and Variable Types
 
-Type annotations are used to specify the types of function parameters and return values, providing a clear and unambiguous function signature. This helps other developers understand the expected input and output of functions without having to read the entire implementation.
+  Type annotations are used to specify the types of function parameters and return values, providing a clear and unambiguous function signature. This helps other developers understand the expected input and output of functions without having to read the entire implementation.
 
-**Example from Task 4**:
-In Task 4, variables are defined and annotated with their respective types:
+  **Example from Task 4**:
+  In Task 4, variables are defined and annotated with their respective types:
 
-```python
-a: int = 1
-pi: float = 3.14
-i_understand_annotations: bool = True
-school: str = "Holberton"
-```
+  ```python
+  a: int = 1
+  pi: float = 3.14
+  i_understand_annotations: bool = True
+  school: str = "Holberton"
+  ```
 
-These annotations make it explicit that `a` is an integer, `pi` is a float, `i_understand_annotations` is a boolean, and `school` is a string.
+  These annotations make it explicit that `a` is an integer, `pi` is a float, `i_understand_annotations` is a boolean, and `school` is a string.
 
-**Example from Task 6**:
-The function `sum_mixed_list` takes a list of integers and floats, and the annotations specify both the input list and the return type:
+  **Example from Task 6**:
+  The function `sum_mixed_list` takes a list of integers and floats, and the annotations specify both the input list and the return type:
 
-```python
-from typing import List, Union
+  ```python
+  from typing import List, Union
 
-def sum_mixed_list(mxd_lst: List[Union[int, float]]) -> float:
-    '''Return the sum of a list of integers and floats.'''
-    return sum(mxd_lst)
-```
+  def sum_mixed_list(mxd_lst: List[Union[int, float]]) -> float:
+      '''Return the sum of a list of integers and floats.'''
+      return sum(mxd_lst)
+  ```
 
-Here, `mxd_lst` is annotated as a list containing either integers or floats (`List[Union[int, float]]`), and the return type is annotated as a float.
+  Here, `mxd_lst` is annotated as a list containing either integers or floats (`List[Union[int, float]]`), and the return type is annotated as a float.
 
-### 3. Duck Typing
+  ### 3. Duck Typing
 
-Duck typing is a concept in Python where the type or class of an object is less important than the methods it defines. If an object implements the necessary methods or behaviors, it can be used regardless of its specific type.
+  Duck typing is a concept in Python where the type or class of an object is less important than the methods it defines. If an object implements the necessary methods or behaviors, it can be used regardless of its specific type.
 
-**Example from Task 9**:
-In Task 9, the function `element_length` uses duck typing by working with any iterable of sequences, without requiring the elements to be of a specific type:
+  **Example from Task 9**:
+  In Task 9, the function `element_length` uses duck typing by working with any iterable of sequences, without requiring the elements to be of a specific type:
 
-```python
-from typing import Iterable, Sequence, List, Tuple
+  ```python
+  from typing import Iterable, Sequence, List, Tuple
 
-def element_length(lst: Iterable[Sequence]) -> List[Tuple[Sequence, int]]:
-    '''Return a list of tuples with each sequence and its length.'''
-    return [(i, len(i)) for i in lst]
-```
+  def element_length(lst: Iterable[Sequence]) -> List[Tuple[Sequence, int]]:
+      '''Return a list of tuples with each sequence and its length.'''
+      return [(i, len(i)) for i in lst]
+  ```
 
-Here, `lst` can be any iterable of sequences, demonstrating duck typing. The function doesn’t care about the specific type of each sequence; it only requires that each element has a `len()` method.
+  Here, `lst` can be any iterable of sequences, demonstrating duck typing. The function doesn’t care about the specific type of each sequence; it only requires that each element has a `len()` method.
 
-### 4. How to Validate Your Code with `mypy`
+  ### 4. How to Validate Your Code with `mypy`
 
-`mypy` is a static type checker for Python that helps validate your code against the specified type annotations. It checks whether the types used in the code match the annotations, catching potential type-related errors before runtime.
+  `mypy` is a static type checker for Python that helps validate your code against the specified type annotations. It checks whether the types used in the code match the annotations, catching potential type-related errors before runtime.
 
-**Example**:
-To validate the functions with `mypy`, you can run:
+  **Example**:
+  To validate the functions with `mypy`, you can run:
 
-```bash
-mypy 0-add.py 1-concat.py 2-floor.py 3-to_str.py 4-define_variables.py 5-sum_list.py 6-sum_mixed_list.py 7-to_kv.py 8-make_multiplier.py 9-element_length.py
-```
+  ```bash
+  mypy 0-add.py 1-concat.py 2-floor.py 3-to_str.py 4-define_variables.py 5-sum_list.py 6-sum_mixed_list.py 7-to_kv.py 8-make_multiplier.py 9-element_length.py
+  ```
 
-This command checks all the files for type consistency as per the annotations. For example, if a function is expected to return a float but returns a string instead, `mypy` will flag this as an error.
+  This command checks all the files for type consistency as per the annotations. For example, if a function is expected to return a float but returns a string instead, `mypy` will flag this as an error.
+
 </details>
 
 
