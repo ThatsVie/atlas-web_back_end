@@ -27,6 +27,8 @@ This project focuses on understanding and applying variable annotations in Pytho
 ## Concepts
 
 ### Advanced Python
+<details>
+  <summary>Click to expand</summary>
 
 Python’s dynamic typing allows variables to take on any type at runtime, making it flexible but prone to type-related errors if misused. For example:
 
@@ -45,7 +47,7 @@ TypeError: can only concatenate str (not "int") to str
 ```
 
 Type annotations help mitigate these issues by documenting the expected types, though they do not enforce type checking at runtime.
-
+</details>
 ## Learning Objectives
 <details>
   <summary>Click to expand</summary>
