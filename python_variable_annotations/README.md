@@ -1,24 +1,6 @@
 # Python - Variable Annotations
 This project focuses on understanding and applying variable annotations in Python. Python is a dynamically-typed language, meaning variable types are set at runtime upon assignment. In Python 3, type annotations allow developers to specify expected types for variables, parameters, and return values, enhancing code readability and validation.
 
-## Table of Contents
-- [Concepts](#concepts)
-  - [Advanced Python](#advanced-python)
-- [Learning Objectives](#learning-objectives)
-- [Resources](#resources)
-- [Requirements](#requirements)
-- [Tasks and Detailed Usage](#tasks-and-detailed-usage)
-  - [Task 0: Basic Annotations - Add](#task-0-basic-annotations---add)
-  - [Task 1: Basic Annotations - Concat](#task-1-basic-annotations---concat)
-  - [Task 2: Basic Annotations - Floor](#task-2-basic-annotations---floor)
-  - [Task 3: Basic Annotations - To String](#task-3-basic-annotations---to-string)
-  - [Task 4: Define Variables](#task-4-define-variables)
-  - [Task 5: Complex Types - List of Floats](#task-5-complex-types---list-of-floats)
-  - [Task 6: Complex Types - Mixed List](#task-6-complex-types---mixed-list)
-  - [Task 7: Complex Types - String and Int/Float to Tuple](#task-7-complex-types---string-and-intfloat-to-tuple)
-  - [Task 8: Complex Types - Functions](#task-8-complex-types---functions)
-  - [Task 9: Let's Duck Type an Iterable Object](#task-9-lets-duck-type-an-iterable-object)
-
 
 ## Concepts
 
@@ -47,9 +29,7 @@ This project focuses on understanding and applying variable annotations in Pytho
 ## Learning Objectives
 
 <details>
-  <summary>Click to expand</summary>
-
-  ### 1. Type Annotations in Python 3
+  <summary>1. Type Annotations in Python 3</summary>
 
   Type annotations in Python 3 allow developers to explicitly specify the expected types of variables, function parameters, and return values. These annotations help improve code readability, provide better documentation, and aid in catching errors early through tools like linters and type checkers.
 
@@ -63,8 +43,10 @@ This project focuses on understanding and applying variable annotations in Pytho
   ```
 
   Here, `a` and `b` are both annotated as floats, and the function's return type is also specified as a float.
+</details>
 
-  ### 2. How You Can Use Type Annotations to Specify Function Signatures and Variable Types
+  <details>
+  <summary> 2. How You Can Use Type Annotations to Specify Function Signatures and Variable Types</summary>
 
   Type annotations are used to specify the types of function parameters and return values, providing a clear and unambiguous function signature. This helps other developers understand the expected input and output of functions without having to read the entire implementation.
 
@@ -92,8 +74,10 @@ This project focuses on understanding and applying variable annotations in Pytho
   ```
 
   Here, `mxd_lst` is annotated as a list containing either integers or floats (`List[Union[int, float]]`), and the return type is annotated as a float.
+</details>
 
-  ### 3. Duck Typing
+<details>
+  <summary>3. Duck Typing</summary>
 
   Duck typing is a concept in Python where the type or class of an object is less important than the methods it defines. If an object implements the necessary methods or behaviors, it can be used regardless of its specific type.
 
@@ -109,8 +93,10 @@ This project focuses on understanding and applying variable annotations in Pytho
   ```
 
   Here, `lst` can be any iterable of sequences, demonstrating duck typing. The function doesn’t care about the specific type of each sequence; it only requires that each element has a `len()` method.
+</details>
 
-  ### 4. How to Validate Your Code with `mypy`
+<details>
+  <summary>4. How to Validate Your Code with `mypy`</summary>
 
   `mypy` is a static type checker for Python that helps validate your code against the specified type annotations. It checks whether the types used in the code match the annotations, catching potential type-related errors before runtime.
 
@@ -148,9 +134,7 @@ Below, each task will be explained in detail, including code snippets, expected 
 
 ### Task 0: Basic Annotations - Add
 <details>
-  <summary>Click to expand</summary>
-
-**Objective**: Write a type-annotated function `add` that takes two float arguments `a` and `b` and returns their sum as a float.
+  <summary>Write a type-annotated function `add` that takes two float arguments `a` and `b` and returns their sum as a float.</summary>
 
 **Code**:
 
@@ -205,10 +189,8 @@ This output confirms that the function correctly adds two floats and that the an
 ### Task 1: Basic Annotations - Concat
 
 <details>
-  <summary>Click to expand</summary>
-
-**Objective**: Write a type-annotated function `concat` that takes two string arguments `str1` and `str2` and returns their concatenated result as a string.
-
+  <summary>Write a type-annotated function `concat` that takes two string arguments `str1` and `str2` and returns their concatenated result as a string.</summary>
+  
 **Code**:
 
 File: `1-concat.py`
@@ -264,9 +246,7 @@ This output confirms that the function correctly concatenates two strings and th
 
 ### Task 2: Basic Annotations - Floor
 <details>
-  <summary>Click to expand</summary>
-
-**Objective**: Write a type-annotated function `floor` that takes a float `n` as an argument and returns the floor of the float as an integer.
+  <summary>Write a type-annotated function `floor` that takes a float `n` as an argument and returns the floor of the float as an integer.</summary>
 
 **Code**:
 
@@ -328,9 +308,7 @@ This output confirms that the function correctly calculates the floor of a float
 
 ### Task 3: Basic Annotations - To String
 <details>
-  <summary>Click to expand</summary>
-
-**Objective**: Write a type-annotated function `to_str` that takes a float `n` as an argument and returns its string representation.
+  <summary>Write a type-annotated function `to_str` that takes a float `n` as an argument and returns its string representation.</summary>
 
 **Code**:
 
@@ -389,13 +367,11 @@ This output confirms that the function correctly converts a float to its string 
 ### Task 4: Define Variables
 
 <details>
-  <summary>Click to expand</summary>
-
-**Objective**: Define and annotate the following variables with the specified values:
+  <summary>Define and annotate the following variables with the specified values:
 - `a`: an integer with a value of 1
 - `pi`: a float with a value of 3.14
 - `i_understand_annotations`: a boolean with a value of True
-- `school`: a string with a value of "Holberton"
+- `school`: a string with a value of "Holberton"</summary>
 
 **Code**:
 
@@ -461,9 +437,7 @@ This output confirms that the variables are defined and annotated correctly as p
 ### Task 5: Complex Types - List of Floats
 
 <details>
-  <summary>Click to expand</summary>
-
-**Objective**: Write a type-annotated function `sum_list` that takes a list `input_list` of floats as an argument and returns their sum as a float.
+  <summary>Write a type-annotated function `sum_list` that takes a list `input_list` of floats as an argument and returns their sum as a float.</summary>
 
 **Code**:
 
@@ -524,9 +498,7 @@ This output confirms that the function correctly sums a list of floats and that 
 ### Task 6: Complex Types - Mixed List
 
 <details>
-  <summary>Click to expand</summary>
-
-**Objective**: Write a type-annotated function `sum_mixed_list` that takes a list `mxd_lst` of integers and floats and returns their sum as a float.
+  <summary>Write a type-annotated function `sum_mixed_list` that takes a list `mxd_lst` of integers and floats and returns their sum as a float.</summary>
 
 **Code**:
 
@@ -587,9 +559,7 @@ This output confirms that the function correctly sums a mixed list of integers a
 ### Task 7: Complex Types - String and Int/Float to Tuple
 
 <details>
-  <summary>Click to expand</summary>
-
-**Objective**: Write a type-annotated function `to_kv` that takes a string `k` and an int or float `v` as arguments and returns a tuple. The first element of the tuple is the string `k`, and the second element is the square of the int/float `v`, annotated as a float.
+  <summary>Write a type-annotated function `to_kv` that takes a string `k` and an int or float `v` as arguments and returns a tuple. The first element of the tuple is the string `k`, and the second element is the square of the int/float `v`, annotated as a float.</summary>
 
 **Code**:
 
@@ -652,9 +622,7 @@ This output confirms that the function correctly returns a tuple with a string a
 ### Task 8: Complex Types - Functions
 
 <details>
-  <summary>Click to expand</summary>
-
-**Objective**: Write a type-annotated function `make_multiplier` that takes a float `multiplier` as an argument and returns a function that multiplies a float by the given multiplier.
+  <summary>Write a type-annotated function `make_multiplier` that takes a float `multiplier` as an argument and returns a function that multiplies a float by the given multiplier.</summary>
 
 **Code**:
 
@@ -713,9 +681,7 @@ This output confirms that the function correctly returns a function that multipl
 ### Task 9: Let's Duck Type an Iterable Object
 
 <details>
-  <summary>Click to expand</summary>
-
-**Objective**: Annotate the function `element_length` to take an iterable of sequences and return a list of tuples containing each sequence and its length.
+  <summary> Annotate the function `element_length` to take an iterable of sequences and return a list of tuples containing each sequence and its length.</summary>
 
 **Code**:
 
