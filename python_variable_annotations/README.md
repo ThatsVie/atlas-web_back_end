@@ -1,7 +1,7 @@
 # Python - Variable Annotations
+This project focuses on understanding and applying variable annotations in Python. Python is a dynamically-typed language, meaning variable types are set at runtime upon assignment. In Python 3, type annotations allow developers to specify expected types for variables, parameters, and return values, enhancing code readability and validation.
 
 ## Table of Contents
-- [Project Overview](#project-overview)
 - [Concepts](#concepts)
   - [Advanced Python](#advanced-python)
 - [Learning Objectives](#learning-objectives)
@@ -19,18 +19,12 @@
   - [Task 8: Complex Types - Functions](#task-8-complex-types---functions)
   - [Task 9: Let's Duck Type an Iterable Object](#task-9-lets-duck-type-an-iterable-object)
 
-## Project Overview
-
-This project focuses on understanding and applying variable annotations in Python. Python is a dynamically-typed language, meaning variable types are set at runtime upon assignment. In Python 3, type annotations allow developers to specify expected types for variables, parameters, and return values, enhancing code readability and validation.
-
 
 ## Concepts
 
 ### Advanced Python
 <details>
-  <summary>Click to expand</summary>
-
-  Python’s dynamic typing allows variables to take on any type at runtime, making it flexible but prone to type-related errors if misused. For example:
+  <summary>Python’s dynamic typing allows variables to take on any type at runtime, making it flexible but prone to type-related errors if misused. For example: </summary>
 
   ```python
   def fn(a, b):
