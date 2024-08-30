@@ -23,3 +23,15 @@ To view a README.md file for ES6 Data Manipulation visit [this link.](https://gi
 This project covers the functionality and applications of ES6 Promises, focusing on understanding asynchronous operations in JavaScript. Various tasks implement and handle promises using methods like `.then()`, `.catch()`, and `Promise.allSettled()`, alongside employing `async/await` syntax.
 
 To view a README.md file for ES6 Promises visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/ES6_promise/README.md)
+
+## Python - Variable Annotations
+
+This project focuses on understanding and applying variable annotations in Python. Python is a dynamically-typed language, meaning variable types are set at runtime upon assignment. In Python 3, type annotations allow developers to specify expected types for variables, parameters, and return values, enhancing code readability and validation.
+
+To view a README.md file for Python - Variable Annotation visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/python_variable_annotations/README.md)
+
+## Python- Async Function
+
+This project covers asynchronous programming in Python using coroutines and the async/await syntax to handle concurrent tasks. It demonstrates managing multiple asynchronous operations, measuring performance, and creating tasks with the asyncio library. It covers concepts like running coroutines concurrently, measuring execution time, and managing tasks which is ideal for optimizing I/O-bound operations such as web requests or database queries.
+
+To view a README.md for Python- Async Function visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/python_async_function/README.md)
