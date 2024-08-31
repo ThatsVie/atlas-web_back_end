@@ -30,8 +30,13 @@ This project focuses on understanding and applying variable annotations in Pytho
 
 To view a README.md file for Python - Variable Annotation visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/python_variable_annotations/README.md)
 
-## Python- Async Function
+## Python - Async Function
 
 This project covers asynchronous programming in Python using coroutines and the async/await syntax to handle concurrent tasks. It demonstrates managing multiple asynchronous operations, measuring performance, and creating tasks with the asyncio library. It covers concepts like running coroutines concurrently, measuring execution time, and managing tasks which is ideal for optimizing I/O-bound operations such as web requests or database queries.
 
-To view a README.md for Python- Async Function visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/python_async_function/README.md)
+To view a README.md file for Python - Async Function visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/python_async_function/README.md)
+
+## Python - Async Comprehension
+This project focuses on using Python's asynchronous capabilities to handle tasks concurrently and efficiently. It demonstrates the creation of asynchronous generators, the use of async comprehensions to gather data, and the measurement of runtime for parallel tasks using asyncio. Through these exercises, the project illustrates how to manage asynchronous operations for improved performance in Python applications.
+
+to view a README.md file for Python - Async Comprehension visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/python_async_comprehension/README.md)
