@@ -156,12 +156,9 @@ This module contains an async generator that yields random numbers
 between 0 and 10.
 '''
 
-
 import asyncio
 import random
 from typing import Generator
-
-
 
 
 async def async_generator() -> Generator[float, None, None]:
@@ -176,13 +173,27 @@ async def async_generator() -> Generator[float, None, None]:
         await asyncio.sleep(1)
         yield random.uniform(0, 10)
 
-
-
 ```
 
 **Usage:**
 
 To test the `async_generator`, you can use the provided `0-main.py` script:
+
+```python
+#!/usr/bin/env python3
+
+import asyncio
+
+async_generator = __import__('0-async_generator').async_generator
+
+async def print_yielded_values():
+    result = []
+    async for i in async_generator():
+        result.append(i)
+    print(result)
+
+asyncio.run(print_yielded_values())
+```
 
 1. Make the script executable:
 
@@ -232,17 +243,13 @@ The `async_comprehension` function is implemented in `1-async_comprehension.py`:
 
 ```python
 #!/usr/bin/env python3
-#!/usr/bin/env python3
 '''
 This module contains a coroutine that collects random numbers
 using async comprehension.
 '''
 
-
 from typing import List
 async_generator = __import__('0-async_generator').async_generator
-
-
 
 
 async def async_comprehension() -> List[float]:
@@ -298,14 +305,11 @@ You should see an output similar to the following, with 10 random numbers betwee
 
 </details>
 
-
-
 ### Task 2: Run time for four parallel comprehensions
 
 <details> <summary>Import async_comprehension from the previous file and write a measure_runtime coroutine that will execute async_comprehension four times in parallel using asyncio.gather.
 measure_runtime should measure the total runtime and return it.
 Notice that the total runtime is roughly 10 seconds, explain it to yourself. </summary>
-
 
 **Description:**
 
@@ -327,13 +331,10 @@ This module contains a coroutine for measuring the runtime of
 executing async comprehensions in parallel.
 '''
 
-
 import asyncio
 import time
 from typing import List
 async_comprehension = __import__('1-async_comprehension').async_comprehension
-
-
 
 
 async def measure_runtime() -> float:
@@ -348,7 +349,6 @@ async def measure_runtime() -> float:
 
     # Execute four async comprehensions in parallel
     await asyncio.gather(*(async_comprehension() for _ in range(4)))
-
 
     total_time = time.perf_counter() - start_time
     return total_time
@@ -385,7 +385,6 @@ print(
    ```bash
    ./2-main.py
    ```
-
 
 **Expected Output:**
 
