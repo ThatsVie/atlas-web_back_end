@@ -1,4 +1,3 @@
-
 # Python - Async Comprehension
 This project focuses on using Python's asynchronous capabilities to handle tasks concurrently and efficiently. It demonstrates the creation of asynchronous generators, the use of async comprehensions to gather data, and the measurement of runtime for parallel tasks using asyncio. Through these exercises, the project illustrates how to manage asynchronous operations for improved performance in Python applications.
 
