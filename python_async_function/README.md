@@ -208,7 +208,7 @@ In many modern applications, a combination of both coroutines and threads (or pr
 </details>
 
 <details>
-<summary>Python - Asynchronous Programming Public</summary>
+<summary>Python - Asynchronous Programming </summary>
 What is Asynchronous Programming?
 In traditional synchronous programming, each operation is executed one after the other. If one operation takes time (like fetching data from the internet), the entire program waits and nothing else progresses.
 
