@@ -1,3 +1,6 @@
+
+![pythonpuggie](https://github.com/user-attachments/assets/c7ab9d75-99f8-4b33-919b-de93cbbd3c44)
+
 # Python - Variable Annotations
 This project focuses on understanding and applying variable annotations in Python. Python is a dynamically-typed language, meaning variable types are set at runtime upon assignment. In Python 3, type annotations allow developers to specify expected types for variables, parameters, and return values, enhancing code readability and validation.
 
@@ -937,7 +940,7 @@ from typing import Tuple, List
 
 
 def zoom_array(lst: Tuple, factor: int = 2) -> List:
-    '''Return a list that repeats each element of the tuple a specified number of times.'''
+    '''Repeat each element of the tuple a given number of times.'''
     zoomed_in: List[int] = [
         item for item in lst
         for i in range(factor)
