@@ -1,3 +1,6 @@
+![pythonpuggie](https://github.com/user-attachments/assets/8cbf3ac3-658e-47cc-851c-ea81adb3703b)
+
+
 # Python - Async Comprehension
 This project focuses on using Python's asynchronous capabilities to handle tasks concurrently and efficiently. It demonstrates the creation of asynchronous generators, the use of async comprehensions to gather data, and the measurement of runtime for parallel tasks using asyncio. Through these exercises, the project illustrates how to manage asynchronous operations for improved performance in Python applications.
 
