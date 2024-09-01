@@ -37,6 +37,6 @@ This project covers asynchronous programming in Python using coroutines and the 
 To view a README.md file for Python - Async Function visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/python_async_function/README.md)
 
 ## Python - Async Comprehension
-This project focuses on using Python's asynchronous capabilities to handle tasks concurrently and efficiently. It demonstrates the creation of asynchronous generators, the use of async comprehensions to gather data, and the measurement of runtime for parallel tasks using asyncio. Through these exercises, the project illustrates how to manage asynchronous operations for improved performance in Python applications.
+This project focuses on using Python's asynchronous capabilities to handle tasks concurrently and efficiently. It demonstrates the creation of asynchronous generators, the use of async comprehensions to gather data, and the measurement of runtime for parallel tasks using asyncio.
 
-to view a README.md file for Python - Async Comprehension visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/python_async_comprehension/README.md)
+To view a README.md file for Python - Async Comprehension visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/python_async_comprehension/README.md)
