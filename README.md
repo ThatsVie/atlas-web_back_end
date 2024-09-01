@@ -1,4 +1,7 @@
-# Atlas - Web Back End
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/6fc7aca7-45e5-48f6-81e5-4de2350c1b01" alt="atlaswebbackendpuggy">
+</div>
 
 ## ES6 Basic
 
