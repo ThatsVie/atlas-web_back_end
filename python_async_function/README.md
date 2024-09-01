@@ -1,3 +1,6 @@
+
+![pythonpuggie](https://github.com/user-attachments/assets/7ac2f9ec-9af8-4fb4-b018-1d2d0fdaa556)
+
 # Python- Async Function
 This project covers asynchronous programming in Python using coroutines and the `async/await` syntax to handle concurrent tasks. It demonstrates managing multiple asynchronous operations, measuring performance, and creating tasks with the asyncio library.
 It covers concepts like running coroutines concurrently, measuring execution time, and managing tasks which is ideal for optimizing I/O-bound operations such as web requests or database queries.
