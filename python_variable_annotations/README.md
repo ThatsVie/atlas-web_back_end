@@ -936,7 +936,7 @@ This module uses type checking with mypy to validate and apply type annotations
 from typing import Tuple, List
 
 
-def zoom_array(lst: Tuple[int, ...], factor: int = 2) -> List[int]:
+def zoom_array(lst: Tuple, factor: int = 2) -> List:
     '''Return a list that repeats each element of the tuple a specified number of times.'''
     zoomed_in: List[int] = [
         item for item in lst
@@ -954,9 +954,10 @@ zoom_3x = zoom_array(array, 3)
 ```
 
 **Explanation**:
-- Correctly annotates the parameters and return type to align with Python’s typing conventions.
-- Fixes the function call with the correct parameter types (`factor` as an integer).
-- Adjusts the input data to match the expected input type (`Tuple`).
+- The function `zoom_array` takes a parameter `lst` annotated as a generic tuple (`Tuple`) and a parameter `factor` annotated as an integer (`int`).
+- The function returns a generic list (`List`) which repeats each element of the tuple a specified number of times.
+- Adjustments were made to match the expected generic type requirements of the checker.
+
 
 **Usage**:
 

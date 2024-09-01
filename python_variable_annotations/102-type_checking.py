@@ -5,7 +5,7 @@ This module uses type checking with mypy to validate and apply type annotations
 from typing import Tuple, List
 
 
-def zoom_array(lst: Tuple[int, ...], factor: int = 2) -> List[int]:
+def zoom_array(lst: Tuple, factor: int = 2) -> List:
     '''Return a list that repeats each element of the tuple a specified number of times.'''
     zoomed_in: List[int] = [
         item for item in lst
