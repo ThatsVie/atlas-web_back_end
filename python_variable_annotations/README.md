@@ -114,11 +114,12 @@ This project focuses on understanding and applying variable annotations in Pytho
 
 ## Resources
 
-To aid your learning, refer to:
-
 - [Python Typing Documentation](https://docs.python.org/3/library/typing.html)
 - [Mypy Cheat Sheet](https://mypy.readthedocs.io/en/latest/cheat_sheet_py3.html)
 
+- [Type Hints in Python](https://www.geeksforgeeks.org/type-hints-in-python/): An overview of type hints and how they are used in Python to improve code clarity and catch errors early.
+- [Gradual Typing in Python](https://www.geeksforgeeks.org/gradual-typing-in-python/): A discussion on gradual typing in Python, which allows the use of type hints and type checking incrementally.
+- [Function Annotations in Python](https://www.geeksforgeeks.org/function-annotations-python/): Explains how to use function annotations to document expected input and output types in Python functions.
 ## Requirements
 
 - **Editors**: vi, vim, emacs
@@ -732,5 +733,258 @@ Expected Output:
 ```
 
 This output confirms that the function correctly annotates the parameters and return type as specified, handling any iterable of sequences and returning the appropriate types.
+
+</details>
+
+### Task 10: Duck Typing - First Element of a Sequence
+
+<details>
+  <summary>Augment the following code with the correct duck-typed annotations:</summary>
+
+**Provided Code**:
+```python
+# The types of the elements of the input are not known
+def safe_first_element(lst):
+    if lst:
+        return lst[0]
+    else:
+        return None
+```
+
+**Code**:
+
+File: `100-safe_first_element.py`
+
+```python
+#!/usr/bin/env python3
+'''
+This module defines a duck-typed function to return the first element of
+a sequence, if present.
+'''
+from typing import Sequence, Any, Optional
+
+
+def safe_first_element(lst: Sequence[Any]) -> Optional[Any]:
+    '''Return the first element of a sequence, if it exists.
+    If it doesnt exist return None.'''
+    if lst:
+        return lst[0]
+    else:
+        return None
+
+```
+
+**Explanation**:
+- The function `safe_first_element` takes a parameter `lst` which is annotated as a `Sequence` containing any type (`Sequence[Any]`).
+- The return type is annotated as `Optional[Any]`, indicating that it could return either the first element (of any type) or `None`.
+
+**Usage**:
+
+To test the function, use the provided main script (`100-main.py`):
+
+File: `100-main.py`
+
+```python
+#!/usr/bin/env python3
+
+safe_first_element =  __import__('100-safe_first_element').safe_first_element
+
+print(safe_first_element.__annotations__)
+```
+
+Run the main script:
+
+```bash
+chmod +x 100-main.py
+./100-main.py
+```
+
+Expected Output:
+
+```
+{'lst': typing.Sequence[typing.Any], 'return': typing.Optional[typing.Any]}
+```
+
+This output confirms that the function is correctly annotated to handle any sequence and return the first element or `None`.
+
+</details>
+
+### Task 11: More Involved Type Annotations
+
+<details>
+  <summary>Given the parameters and the return values, add type annotations to the function
+Hint: look into TypeVar
+</summary>
+
+**Provided Code**:
+```python
+def safely_get_value(dct, key, default = None):
+    if key in dct:
+        return dct[key]
+    else:
+        return default
+
+```
+
+**Code**:
+
+File: `101-safely_get_value.py`
+
+```python
+#!/usr/bin/env python3
+'''
+This module defines a function with advanced type annotations using TypeVar.
+'''
+from typing import TypeVar, Mapping, Any, Union
+
+
+T = TypeVar('T')
+
+
+
+
+def safely_get_value(dct: Mapping, key: Any,
+                     default: Union[T, None] = None) -> Union[Any, T]:
+    '''Return the value from the dictionary if the key exists.
+    If it doesnt exist return the default.'''
+    if key in dct:
+        return dct[key]
+    else:
+        return default
+
+
+
+```
+
+**Explanation**:
+- The function `safely_get_value` takes three parameters:
+  - `dct`: a mapping (dictionary-like object).
+  - `key`: any type.
+  - `default`: a value of type `T` or `None`, where `T` is a generic type variable.
+- The function returns a value that could be of any type (`Any`) or of type `T`.
+
+**Usage**:
+
+To test the function, use the provided main script (`101-main.py`):
+
+File: `101-main.py`
+
+```python
+#!/usr/bin/env python3
+
+safely_get_value = __import__('101-safely_get_value').safely_get_value
+annotations = safely_get_value.__annotations__
+
+print("Here's what the mappings should look like")
+for k, v in annotations.items():
+    print( ("{}: {}".format(k, v)))
+```
+
+Run the main script:
+
+```bash
+chmod +x 101-main.py
+./101-main.py
+```
+
+Expected Output:
+
+```
+Here's what the mappings should look like
+dct: typing.Mapping
+key: typing.Any
+default: typing.Union[~T, NoneType]
+return: typing.Union[typing.Any, ~T]
+```
+
+This output confirms that the function correctly uses `TypeVar` to handle more complex type annotations.
+
+</details>
+
+### Task 12: Type Checking
+
+<details>
+  <summary>Use mypy to validate the following piece of code and apply any necessary changes.</summary>
+
+**Provided code**:
+```python
+def zoom_array(lst: Tuple, factor: int = 2) -> Tuple:
+    zoomed_in: Tuple = [
+        item for item in lst
+        for i in range(factor)
+    ]
+    return zoomed_in
+
+
+array = [12, 72, 91]
+
+zoom_2x = zoom_array(array)
+
+zoom_3x = zoom_array(array, 3.0)
+
+```
+
+**Code**:
+
+File: `102-type_checking.py`
+
+```python
+#!/usr/bin/env python3
+'''
+This module uses type checking with mypy to validate and apply type annotations
+'''
+from typing import Tuple, List
+
+
+def zoom_array(lst: Tuple[int, ...], factor: int = 2) -> List[int]:
+    '''Return a list that repeats each element of the tuple a specified number of times.'''
+    zoomed_in: List[int] = [
+        item for item in lst
+        for i in range(factor)
+    ]
+    return zoomed_in
+
+
+array = (12, 72, 91)
+
+zoom_2x = zoom_array(array)
+
+zoom_3x = zoom_array(array, 3)
+
+```
+
+**Explanation**:
+- Correctly annotates the parameters and return type to align with Python’s typing conventions.
+- Fixes the function call with the correct parameter types (`factor` as an integer).
+- Adjusts the input data to match the expected input type (`Tuple`).
+
+**Usage**:
+
+To test the function, use the provided main script (`102-main.py`):
+
+File: `102-main.py`
+
+```python
+#!/usr/bin/env python3
+
+zoom_array = __import__('102-type_checking').zoom_array
+
+print(zoom_array.__annotations__)
+```
+
+Run the main script:
+
+```bash
+chmod +x 102-main.py
+./102-main.py
+```
+
+Expected Output:
+
+```
+{'lst': typing.Tuple[int, ...], 'factor': <class 'int'>, 'return': typing.List[int]}
+```
+
+This output confirms that the function is correctly type-annotated and passes `mypy` validation.
 
 </details>
