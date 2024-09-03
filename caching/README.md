@@ -35,7 +35,8 @@ To complete this project, refer to the following resources:
 
 ## BaseCaching Class
 
-The `BaseCaching` class serves as the parent class for all your caching systems. Here is the provided implementation:
+<details> <summary>The `BaseCaching` class serves as the parent class for all your caching systems. Here is the provided implementation:</summary>
+
 
 ```python
 #!/usr/bin/python3
@@ -71,6 +72,7 @@ class BaseCaching():
         """
         raise NotImplementedError("get must be implemented in your cache class")
 ```
+</details>
 
 ## Tasks and Detailed Usage
 
@@ -86,16 +88,14 @@ If key or item is None, this method should not do anything.
 def get(self, key):
 Must return the value in self.cache_data linked to key.
 If key is None or if the key doesn’t exist in self.cache_data, return None.
-<summary>
+</summary>
+<br>
 
 **Description:**
 The `BasicCache` class is a simple caching system that inherits from the `BaseCaching` parent class. Unlike other caching systems, this cache has no limit on the number of items it can store. The class provides two primary methods:
 
 - `put(key, item)`: Adds an item to the cache.
 - `get(key)`: Retrieves an item by key from the cache.
-
-
-**Usage:**
 
 **Implementation**:
 ```python
@@ -129,6 +129,9 @@ class BasicCache(BaseCaching):
         return self.cache_data[key]
 
 ```
+
+**Usage:**
+
 
 1. **Initialization**:
    To use the `BasicCache` class, import it from the `0-basic_cache.py` file and create an instance:
