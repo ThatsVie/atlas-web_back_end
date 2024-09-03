@@ -1386,9 +1386,7 @@ M: M
 
 **Explanation**
 
-- **`put` Method**: Adds an item to the cache if both `key` and `item` are not `None`. If the cache exceeds `MAX_ITEMS`, the least frequently used item
-
- is discarded, with LRU as a tie-breaker.
+- **`put` Method**: Adds an item to the cache if both `key` and `item` are not `None`. If the cache exceeds `MAX_ITEMS`, the least frequently used item is discarded, with LRU as a tie-breaker.
 - **`get` Method**: Retrieves the value associated with the `key` from the cache. Updates the usage order and frequency to reflect recent access. Returns `None` if `key` is `None` or does not exist in the cache.
 - **Cache Display**: The cache state is printed using the `print_cache` method, and items are evicted based on the LFU policy with LRU tie-breaking.
 
