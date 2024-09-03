@@ -1,4 +1,6 @@
-# Caching
+
+![cachingpuggie!](https://github.com/user-attachments/assets/3f7251bf-3f91-4930-860b-edf12b357843)
+
 
 In this project, we will learn different caching algorithms and their implementations in Python. Caching is a technique that improves performance by storing frequently accessed data in a temporary storage area, or "cache." Various caching strategies are used to decide which data to store in the cache and which to evict when the cache is full.
 
