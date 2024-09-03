@@ -169,7 +169,7 @@ class BasicCache(BaseCaching):
    ```
 
 5. **Running the script to test the class**:
-   To test the functionality of the `BasicCache` class, create a test script named `0-main.py` with the following content:
+   To test the functionality of the `BasicCache` class, use `0-main.py`:
 
    ```python
    #!/usr/bin/python3
@@ -255,5 +255,796 @@ Street
 - **`get` Method**: Retrieves the value associated with the `key` from the cache. Returns `None` if `key` is `None` or does not exist in the cache.
 - **Cache Display**: The cache state is printed using the `print_cache` method.
 
+
+</details>
+
+### Task 1: FIFO caching
+
+<details> 
+<summary> Create a class FIFOCache that inherits from BaseCaching and implements a FIFO (First In, First Out) caching system:
+You must use self.cache_data - dictionary from the parent class BaseCaching
+You can overload def __init__(self): but don’t forget to call the parent init: super().__init__()
+def put(self, key, item):
+Must assign to the dictionary self.cache_data the item value for the key key.
+If key or item is None, this method should not do anything.
+If the number of items in self.cache_data is higher than BaseCaching.MAX_ITEMS:
+you must discard the first item put in cache (FIFO algorithm)
+you must print DISCARD: with the key discarded followed by a new line
+def get(self, key):
+Must return the value in self.cache_data linked to key.
+If key is None or if the key doesn’t exist in self.cache_data, return None.
+</summary>
+<br>
+
+**Description:**
+The `FIFOCache` class is a caching system that inherits from the `BaseCaching` parent class. It uses a FIFO (First In, First Out) caching algorithm. The class maintains the order in which items are added to the cache and removes the oldest item when the cache exceeds its size limit (`MAX_ITEMS`).
+
+- `put(key, item)`: Adds an item to the cache. If the cache exceeds its size limit, it discards the oldest item following the FIFO policy.
+- `get(key)`: Retrieves an item by key from the cache.
+
+**Implementation**:
+```python
+#!/usr/bin/env python3
+'''
+This module contains the FIFOCache class, a caching system
+that inherits from the BaseCaching parent class. It uses the
+FIFO (First In, First Out) caching algorithm.
+'''
+BaseCaching = __import__('base_caching').BaseCaching
+
+
+class FIFOCache(BaseCaching):
+    ''' FIFOCache defines a caching system with a FIFO eviction policy.
+    '''
+
+    def __init__(self):
+        '''
+        Calls the parent class' init method and initializes
+        an order list to keep track of the insertion order.
+        '''
+        super().__init__()
+        self.order = []
+
+    def put(self, key, item):
+        ''' Add an item to the cache.
+        If key or item is None this method does nothing.
+        If the number of items in the cache exceeds MAX_ITEMS
+        the first item added is discarded following FIFO.
+        '''
+        if key is not None and item is not None:
+            if key not in self.cache_data:
+                self.order.append(key)
+            self.cache_data[key] = item
+
+            if len(self.cache_data) > BaseCaching.MAX_ITEMS:
+                first_key = self.order.pop(0)
+                del self.cache_data[first_key]
+                print(f"DISCARD: {first_key}")
+
+    def get(self, key):
+        ''' Retrieve an item by key from the cache.
+        If key is None or doesn't exist in the cache, returns None.
+        '''
+        if key is None or key not in self.cache_data:
+            return None
+        return self.cache_data[key]
+
+```
+
+**Usage:**
+
+1. **Initialization**:
+   To use the `FIFOCache` class, import it from the `1-fifo_cache.py` file and create an instance:
+
+   ```python
+   FIFOCache = __import__('1-fifo_cache').FIFOCache
+
+   my_cache = FIFOCache()
+   ```
+
+2. **Adding items to the cache**:
+   Use the `put` method to add key-value pairs to the cache. If either the `key` or `item` is `None`, the method does nothing. If the cache exceeds its size limit, the oldest item will be removed following the FIFO algorithm.
+
+   ```python
+   my_cache.put("A", "Hello")
+   my_cache.put("B", "World")
+   my_cache.put("C", "Holberton")
+   my_cache.put("D", "School")
+   my_cache.print_cache()
+   ```
+
+3. **Evicting items based on FIFO**:
+   When the cache exceeds `MAX_ITEMS`, the `put` method discards the first item added to the cache and prints a message indicating which item was discarded.
+
+4. **Retrieving items from the cache**:
+   Use the `get` method to retrieve values from the cache using their keys. If the `key` is `None` or doesn't exist, the method returns `None`.
+
+   ```python
+   print(my_cache.get("A"))  # May output: None (if "A" has been discarded)
+   print(my_cache.get("B"))  # Output: World
+   ```
+
+5. **Running the script to test the class**:
+   To test the functionality of the `FIFOCache` class, use `1-main.py`:
+
+   ```python
+   #!/usr/bin/python3
+   """ 1-main """
+   FIFOCache = __import__('1-fifo_cache').FIFOCache
+
+   my_cache = FIFOCache()
+   my_cache.put("A", "Hello")
+   my_cache.put("B", "World")
+   my_cache.put("C", "Holberton")
+   my_cache.put("D", "School")
+   my_cache.print_cache()
+   my_cache.put("E", "Battery")
+   my_cache.print_cache()
+   my_cache.put("C", "Street")
+   my_cache.print_cache()
+   my_cache.put("F", "Mission")
+   my_cache.print_cache()
+   ```
+
+   Make the script executable by running:
+
+   ```sh
+   chmod +x 1-main.py
+   ```
+
+   Then, run the script to test:
+
+   ```sh
+   ./1-main.py
+   ```
+
+   Verify the output matches the expected results.
+
+**Expected Output:**
+```bash
+Current cache:
+A: Hello
+B: World
+C: Holberton
+D: School
+DISCARD: A
+Current cache:
+B: World
+C: Holberton
+D: School
+E: Battery
+Current cache:
+B: World
+C: Street
+D: School
+E: Battery
+DISCARD: B
+Current cache:
+C: Street
+D: School
+E: Battery
+F: Mission
+```
+
+**Explanation**
+
+- **`put` Method**: Adds an item to the cache if both `key` and `item` are not `None`. If the cache exceeds `MAX_ITEMS`, the first item is discarded.
+- **`get` Method**: Retrieves the value associated with the `key` from the cache. Returns `None` if `key` is `None` or does not exist in the cache.
+- **Cache Display**: The cache state is printed using the `print_cache` method, and items are evicted based on the FIFO policy.
+
+</details>
+
+### Task 2: LIFO Caching
+
+<details> 
+<summary> Create a class LIFOCache that inherits from BaseCaching and implements a LIFO (Last In, First Out) caching system:
+You must use `self.cache_data` - dictionary from the parent class `BaseCaching`.
+You can overload `__init__()` but don't forget to call the parent init: `super().__init__()`.
+`put(self, key, item)`: Must assign to the dictionary `self.cache_data` the item value for the key `key`. If `key` or `item` is `None`, this method should not do anything. If the number of items in `self.cache_data` is higher than `BaseCaching.MAX_ITEMS`, discard the last item put in cache (LIFO algorithm) and print `DISCARD:` with the key discarded followed by a new line.
+`get(self, key)`: Must return the value in `self.cache_data` linked to `key`. If `key` is `None` or if the key doesn’t exist in `self.cache_data`, return `None`.
+</summary>
+<br>
+
+**Description:**
+The `LIFOCache` class is a caching system that inherits from the `BaseCaching` parent class. It uses a LIFO (Last In, First Out) caching algorithm. The class removes the most recently added item from the cache when the cache exceeds its size limit (`MAX_ITEMS`).
+
+- `put(key, item)`: Adds an item to the cache. If the cache exceeds its size limit, it discards the last item added following the LIFO policy.
+- `get(key)`: Retrieves an item by key from the cache.
+
+**Implementation:**
+```python
+#!/usr/bin/env python3
+'''
+This module contains the LIFOCache class, a caching system
+that inherits from the BaseCaching parent class. It uses the
+LIFO (Last In, First Out) caching algorithm.
+'''
+BaseCaching = __import__('base_caching').BaseCaching
+
+
+class LIFOCache(BaseCaching):
+    ''' LIFOCache defines a caching system with a LIFO eviction policy.
+    '''
+
+    def __init__(self):
+        '''
+        Calls the parent class' init method and initializes
+        a list to keep track of the order of insertion.
+        '''
+        super().__init__()
+        self.stack = []
+
+    def put(self, key, item):
+        ''' Add an item to the cache.
+        If key or item is None this method does nothing.
+        If the number of items in the cache exceeds MAX_ITEMS,
+        the last item added is discarded following LIFO.
+        '''
+        if key is not None and item is not None:
+            self.cache_data[key] = item
+            self.stack.append(key)
+
+            if len(self.cache_data) > BaseCaching.MAX_ITEMS:
+                # Remove the most recently added item
+                last_key = self.stack.pop(-2)
+                del self.cache_data[last_key]
+                print(f"DISCARD: {last_key}")
+
+    def get(self, key):
+        ''' Retrieve an item by key from the cache.
+        If key is None or doesn't exist in the cache, it returns None.
+        '''
+        return self.cache_data.get(key, None)
+```
+
+**Usage:**
+
+1. **Initialization**:
+   To use the `LIFOCache` class, import it from the `2-lifo_cache.py` file and create an instance:
+
+   ```python
+   LIFOCache = __import__('2-lifo_cache').LIFOCache
+
+   my_cache = LIFOCache()
+   ```
+
+2. **Adding items to the cache**:
+   Use the `put` method to add key-value pairs to the cache. If either the `key` or `item` is `None`, the method does nothing. If the cache exceeds its size limit, the most recently added item will be removed following the LIFO algorithm.
+
+   ```python
+   my_cache.put("A", "Hello")
+   my_cache.put("B", "World")
+   my_cache.put("C", "Holberton")
+   my_cache.put("D", "School")
+   my_cache.print_cache()
+   ```
+
+3. **Evicting items based on LIFO**:
+   When the cache exceeds `MAX_ITEMS`, the `put` method discards the most recently added item to the cache and prints a message indicating which item was discarded.
+
+4. **Retrieving items from the cache**:
+   Use the `get` method to retrieve values from the cache using their keys. If the `key` is `None` or doesn't exist, the method returns `None`.
+
+   ```python
+   print(my_cache.get("A"))  # Output: Hello
+   print(my_cache.get("B"))  # Output: World
+   ```
+
+5. **Running the script to test the class**:
+   To test the functionality of the `LIFOCache` class, use `2-main.py`:
+   ```python
+   #!/usr/bin/python3
+   """ 2-main """
+   LIFOCache = __import__('2-lifo_cache').LIFOCache
+
+   my_cache = LIFOCache()
+   my_cache.put("A", "Hello")
+   my_cache.put("B", "World")
+   my_cache.put("C", "Holberton")
+   my_cache.put("D", "School")
+   my_cache.print_cache()
+   my_cache.put("E", "Battery")
+   my_cache.print_cache()
+   my_cache.put("C", "Street")
+   my_cache.print_cache()
+   my_cache.put("F", "Mission")
+   my_cache.print_cache()
+   my_cache.put("G", "San Francisco")
+   my_cache.print_cache()
+   ```
+
+   Make the script executable by running:
+
+   ```sh
+   chmod +x 2-main.py
+   ```
+
+   Then, run the script to test:
+
+   ```sh
+   ./2-main.py
+   ```
+
+   Verify the output matches the expected results.
+
+**Expected Output:**
+```bash
+Current cache:
+A: Hello
+B: World
+C: Holberton
+D: School
+DISCARD: D
+Current cache:
+A: Hello
+B: World
+C: Holberton
+E: Battery
+Current cache:
+A: Hello
+B: World
+C: Street
+E: Battery
+DISCARD: C
+Current cache:
+A: Hello
+B: World
+E: Battery
+F: Mission
+DISCARD: F
+Current cache:
+A: Hello
+B: World
+E: Battery
+G: San Francisco
+```
+
+**Explanation**
+
+- **`put` Method**: Adds an item to the cache if both `key` and `item` are not `None`. If the cache exceeds `MAX_ITEMS`, the most recently added item is discarded.
+- **`get` Method**: Retrieves the value associated with the `key` from the cache. Returns `None` if `key` is `None` or does not exist in the cache.
+- **Cache Display**: The cache state is printed using the `print_cache` method, and items are evicted based on the LIFO policy.
+
+</details>
+
+### Task 3: LRU Caching
+
+<details> 
+<summary> Create a class LRUCache that inherits from BaseCaching and implements an LRU (Least Recently Used) caching system:
+You must use `self.cache_data` - dictionary from the parent class `BaseCaching`.
+You can overload `__init__()` but don't forget to call the parent init: `super().__init__()`.
+`put(self, key, item)`: Must assign to the dictionary `self.cache_data` the item value for the key `key`. If `key` or `item` is `None`, this method should not do anything. If the number of items in `self.cache_data` is higher than `BaseCaching.MAX_ITEMS`, discard the least recently used item (LRU algorithm) and print `DISCARD:` with the key discarded followed by a new line.
+`get(self, key)`: Must return the value in `self.cache_data` linked to `key`. If `key` is `None` or if the key doesn’t exist in `self.cache_data`, return `None`.
+</summary>
+<br>
+
+**Description:**
+The `LRUCache` class is a caching system that inherits from the `BaseCaching` parent class. It uses an LRU (Least Recently Used) caching algorithm. The class keeps track of the order in which keys are accessed and removes the least recently used item from the cache when it exceeds its size limit (`MAX_ITEMS`).
+
+- `put(key, item)`: Adds an item to the cache. If the cache exceeds its size limit, it discards the least recently used item following the LRU policy.
+- `get(key)`: Retrieves an item by key from the cache.
+
+**Implementation:**
+```python
+#!/usr/bin/env python3
+'''
+This module contains the LRUCache class, a caching system
+that inherits from the BaseCaching parent class. It uses the
+LRU (Least Recently Used) caching algorithm.
+'''
+BaseCaching = __import__('base_caching').BaseCaching
+
+
+class LRUCache(BaseCaching):
+    ''' LRUCache defines a caching system with an LRU eviction policy.
+    '''
+
+    def __init__(self):
+        '''
+        Calls the parent class' init method and initializes
+        an ordered list to keep track of the usage order.
+        '''
+        super().__init__()
+        self.usage_order = []
+
+    def put(self, key, item):
+        ''' Add an item to the cache.
+        If key or item is None this method does nothing.
+        If the number of items in the cache exceeds MAX_ITEMS,
+        the least recently used item is discarded following LRU.
+        '''
+        if key is not None and item is not None:
+            # If the key already exists update the item and move key to the end
+            if key in self.cache_data:
+                self.usage_order.remove(key)
+            self.cache_data[key] = item
+            self.usage_order.append(key)
+
+            # If cache exceeds the max size remove the LRU item
+            if len(self.cache_data) > BaseCaching.MAX_ITEMS:
+                lru_key = self.usage_order.pop(0)
+                del self.cache_data[lru_key]
+                print(f"DISCARD: {lru_key}")
+
+    def get(self, key):
+        ''' Retrieve an item by key from the cache.
+        If key is None or doesn't exist in the cache it returns None.
+        '''
+        if key is not None and key in self.cache_data:
+            # Since this key was recently accessed update the usage order
+            self.usage_order.remove(key)
+            self.usage_order.append(key)
+            return self.cache_data[key]
+        return None
+```
+
+**Usage:**
+
+1. **Initialization**:
+   To use the `LRUCache` class, import it from the `3-lru_cache.py` file and create an instance:
+
+   ```python
+   LRUCache = __import__('3-lru_cache').LRUCache
+
+   my_cache = LRUCache()
+   ```
+
+2. **Adding items to the cache**:
+   Use the `put` method to add key-value pairs to the cache. If either the `key` or `item` is `None`, the method does nothing. If the cache exceeds its size limit, the least recently used item will be removed following the LRU algorithm.
+
+   ```python
+   my_cache.put("A", "Hello")
+   my_cache.put("B", "World")
+   my_cache.put("C", "Holberton")
+   my_cache.put("D", "School")
+   my_cache.print_cache()
+   ```
+
+3. **Evicting items based on LRU**:
+   When the cache exceeds `MAX_ITEMS`, the `put` method discards the least recently used item in the cache and prints a message indicating which item was discarded.
+
+4. **Retrieving items from the cache**:
+   Use the `get` method to retrieve values from the cache using their keys. If the `key` is `None` or doesn't exist, the method returns `None`.
+
+   ```python
+   print(my_cache.get("B"))  # Output: World
+   ```
+
+5. **Running the script to test the class**:
+   To test the functionality of the `LRUCache` class, use `3-main.py`:
+
+   ```python
+   #!/usr/bin/python3
+   """ 3-main """
+   LRUCache = __import__('3-lru_cache').LRUCache
+
+   my_cache = LRUCache()
+   my_cache.put("A", "Hello")
+   my_cache.put("B", "World")
+   my_cache.put("C", "Holberton")
+   my_cache.put("D", "School")
+   my_cache.print_cache()
+   print(my_cache.get("B"))
+   my_cache.put("E", "Battery")
+   my_cache.print_cache()
+   my_cache.put("C", "Street")
+   my_cache.print_cache()
+   print(my_cache.get("A"))
+   print(my_cache.get("B"))
+   print(my_cache.get("C"))
+   my_cache.put("F", "Mission")
+   my_cache.print_cache()
+   my_cache.put("G", "San Francisco")
+   my_cache.print_cache()
+   my_cache.put("H", "H")
+   my_cache.print_cache()
+   my_cache.put("I", "I")
+   my_cache.print_cache()
+   my_cache.put("J", "J")
+   my_cache.print_cache()
+   my_cache.put("K", "K")
+   my_cache.print_cache()
+   ```
+
+   Make the script executable by running:
+
+   ```sh
+   chmod +x 3-main.py
+   ```
+
+   Then, run the script to test:
+
+   ```sh
+   ./3-main.py
+   ```
+
+   Verify the output matches the expected results.
+
+**Expected Output:**
+```bash
+Current cache:
+A: Hello
+B: World
+C: Holberton
+D: School
+World
+DISCARD: A
+Current cache:
+B: World
+C: Holberton
+D: School
+E: Battery
+Current cache:
+B: World
+C: Street
+D: School
+E: Battery
+None
+World
+Street
+DISCARD: D
+Current cache:
+B: World
+C: Street
+E: Battery
+F: Mission
+DISCARD: E
+Current cache:
+B: World
+C: Street
+F: Mission
+G: San Francisco
+DISCARD: B
+Current cache:
+C: Street
+F: Mission
+G: San Francisco
+H: H
+DISCARD: C
+Current cache:
+F: Mission
+G: San Francisco
+H: H
+I: I
+DISCARD: F
+Current cache:
+G: San Francisco
+H: H
+I: I
+J: J
+DISCARD: G
+Current cache:
+H: H
+I: I
+J: J
+K: K
+```
+
+**Explanation**
+
+- **`put` Method**: Adds an item to the cache if both `key` and `item` are not `None`. If the cache exceeds `MAX_ITEMS`, the least recently used item is discarded.
+- **`get` Method**: Retrieves the value associated with the `key` from the cache. Updates the usage order to reflect recent access. Returns `None` if `key` is `None` or does not exist in the cache.
+- **Cache Display**: The cache state is printed using the `print_cache` method, and items are evicted based on the LRU policy.
+
+</details>
+
+### Task 4: MRU Caching
+
+<details> 
+<summary> Create a class MRUCache that inherits from BaseCaching and implements an MRU (Most Recently Used) caching system:
+You must use `self.cache_data` - dictionary from the parent class `BaseCaching`.
+You can overload `__init__()` but don't forget to call the parent init: `super().__init__()`.
+`put(self, key, item)`: Must assign to the dictionary `self.cache_data` the item value for the key `key`. If `key` or `item` is `None`, this method should not do anything. If the number of items in `self.cache_data` is higher than `BaseCaching.MAX_ITEMS`, discard the most recently used item (MRU algorithm) and print `DISCARD:` with the key discarded followed by a new line.
+`get(self, key)`: Must return the value in `self.cache_data` linked to `key`. If `key` is `None` or if the key doesn’t exist in `self.cache_data`, return `None`.
+</summary>
+<br>
+
+**Description:**
+The `MRUCache` class is a caching system that inherits from the `BaseCaching` parent class. It uses an MRU (Most Recently Used) caching algorithm. The class keeps track of the order in which keys are accessed and removes the most recently used item from the cache when it exceeds its size limit (`MAX_ITEMS`).
+
+- `put(key, item)`: Adds an item to the cache. If the cache exceeds its size limit, it discards the most recently used item following the MRU policy.
+- `get(key)`: Retrieves an item by key from the cache.
+
+**Implementation:**
+```python
+#!/usr/bin/env python3
+'''
+This module contains the MRUCache class, a caching system
+that inherits from the BaseCaching parent class. It uses the
+MRU (Most Recently Used) caching algorithm.
+'''
+BaseCaching = __import__('base_caching').BaseCaching
+
+
+class MRUCache(BaseCaching):
+    ''' MRUCache defines a caching system with an MRU eviction policy.
+    '''
+
+    def __init__(self):
+        '''
+        Calls the parent class' init method and initializes
+        a list to keep track of the usage order.
+        '''
+        super().__init__()
+        self.usage_order = []
+
+    def put(self, key, item):
+        ''' Add an item to the cache.
+        If key or item is None this method does nothing.
+        If the number of items in the cache exceeds MAX_ITEMS
+        the most recently used item is discarded following MRU.
+        '''
+        if key is not None and item is not None:
+            # If the key already exists update the item and move key to the end
+            if key in self.cache_data:
+                self.usage_order.remove(key)
+            self.cache_data[key] = item
+            self.usage_order.append(key)
+
+            # If cache exceeds the maximum size remove the MRU item
+            if len(self.cache_data) > BaseCaching.MAX_ITEMS:
+                mru_key = self.usage_order.pop(-2)
+                del self.cache_data[mru_key]
+                print(f"DISCARD: {mru_key}")
+
+    def get(self, key):
+        ''' Retrieve an item by key from the cache.
+        If key is None or doesn't exist in the cache it returns None.
+        '''
+        if key is not None and key in self.cache_data:
+            # Since this key was recently accessed update the usage order
+            self.usage_order.remove(key)
+            self.usage_order.append(key)
+            return self.cache_data[key]
+        return None
+```
+
+**Usage:**
+
+1. **Initialization**:
+   To use the `MRUCache` class, import it from the `4-mru_cache.py` file and create an instance:
+
+   ```python
+   MRUCache = __import__('4-mru_cache').MRUCache
+
+   my_cache = MRUCache()
+   ```
+
+2. **Adding items to the cache**:
+   Use the `put` method to add key-value pairs to the cache. If either the `key` or `item` is `None`, the method does nothing. If the cache exceeds its size limit, the most recently used item will be removed following the MRU algorithm.
+
+   ```python
+   my_cache.put("A", "Hello")
+   my_cache.put("B", "World")
+   my_cache.put("C", "Holberton")
+   my_cache.put("D", "School")
+   my_cache.print_cache()
+   ```
+
+3. **Evicting items based on MRU**:
+   When the cache exceeds `MAX_ITEMS`, the `put` method discards the most recently used item in the cache and prints a message indicating which item was discarded.
+
+4. **Retrieving items from the cache**:
+   Use the `get` method to retrieve values from the cache using their keys. If the `key` is `None` or doesn't exist, the method returns `None`.
+
+   ```python
+   print(my_cache.get("B"))  # Output: World
+   ```
+
+5. **Running the script to test the class**:
+   To test the functionality of the `MRUCache` class, use `4-main.py`:
+
+   ```python
+   #!/usr/bin/python3
+   """ 4-main """
+   MRUCache = __import__('4-mru_cache').MRUCache
+
+   my_cache = MRUCache()
+   my_cache.put("A", "Hello")
+   my_cache.put("B", "World")
+   my_cache.put("C", "Holberton")
+   my_cache.put("D", "School")
+   my_cache.print_cache()
+   print(my_cache.get("B"))
+   my_cache.put("E", "Battery")
+   my_cache.print_cache()
+   my_cache.put("C", "Street")
+   my_cache.print_cache()
+   print(my_cache.get("A"))
+   print(my_cache.get("B"))
+   print(my_cache.get("C"))
+   my_cache.put("F", "Mission")
+   my_cache.print_cache()
+   my_cache.put("G", "San Francisco")
+   my_cache.print_cache()
+   my_cache.put("H", "H")
+   my_cache.print_cache()
+   my_cache.put("I", "I")
+   my_cache.print_cache()
+   my_cache.put("J", "J")
+   my_cache.print_cache()
+   my_cache.put("K", "K")
+   my_cache.print_cache()
+   ```
+
+   Make the script executable by running:
+
+   ```sh
+   chmod +x 4-main.py
+   ```
+
+   Then, run the script to test:
+
+   ```sh
+   ./4-main.py
+   ```
+
+   Verify the output matches the expected results.
+
+**Expected Output:**
+```bash
+Current cache:
+A: Hello
+B: World
+C: Holberton
+D: School
+World
+DISCARD: B
+Current cache:
+A: Hello
+C: Holberton
+D: School
+E: Battery
+Current cache:
+A: Hello
+C: Street
+D: School
+E: Battery
+Hello
+None
+Street
+DISCARD: C
+Current cache:
+A: Hello
+D: School
+E: Battery
+F: Mission
+DISCARD: F
+Current cache:
+A: Hello
+D: School
+E: Battery
+G: San Francisco
+DISCARD: G
+Current cache:
+A: Hello
+D: School
+E: Battery
+H: H
+DISCARD: H
+Current cache:
+A: Hello
+D: School
+E: Battery
+I: I
+DISCARD: I
+Current cache:
+A: Hello
+D: School
+E: Battery
+J: J
+DISCARD: J
+Current cache:
+A: Hello
+D: School
+E: Battery
+K: K
+```
+
+**Explanation**
+
+- **`put` Method**: Adds an item to the cache if both `key` and `item` are not `None`. If the cache exceeds `MAX_ITEMS`, the most recently used item is discarded.
+- **`get` Method**: Retrieves the value associated with the `key` from the cache. Updates the usage order to reflect recent access. Returns `None` if `key` is `None` or does not exist in the cache.
+- **Cache Display**: The cache state is printed using the `print_cache` method, and items are evicted based on the MRU policy.
 
 </details>
