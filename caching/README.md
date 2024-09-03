@@ -2,30 +2,100 @@
 ![cachingpuggie!](https://github.com/user-attachments/assets/3f7251bf-3f91-4930-860b-edf12b357843)
 
 
-In this project, we will learn different caching algorithms and their implementations in Python. Caching is a technique that improves performance by storing frequently accessed data in a temporary storage area, or "cache." Various caching strategies are used to decide which data to store in the cache and which to evict when the cache is full.
+This project covers different caching algorithms, including FIFO, LIFO, LRU, MRU, and LFU, to optimize data retrieval performance by managing temporary storage of frequently accessed data. It demonstrates various cache replacement strategies to efficiently handle limited cache size and improve system responsiveness. By implementing these algorithms, the project highlights the trade-offs and effectiveness of each caching method in different scenarios.
 
 ## Learning Objectives
 
-By the end of this project, you will be able to explain:
+<details>
+<summary>What a caching system is</summary>
+  
+A caching system temporarily stores frequently accessed data to improve data retrieval speed and reduce the need to access the underlying slower storage. By keeping a small amount of frequently or recently used data in a cache, a system can significantly reduce the time it takes to retrieve that data.  
+Covered in **all tasks**.
 
-- What a caching system is
-- What FIFO (First In, First Out) means
-- What LIFO (Last In, First Out) means
-- What LRU (Least Recently Used) means
-- What MRU (Most Recently Used) means
-- What LFU (Least Frequently Used) means
-- The purpose of a caching system
-- The limitations of a caching system
+</details>
+
+<details>
+<summary>What FIFO (First In, First Out) means</summary>
+
+FIFO is a cache replacement policy where the oldest added item (first in) is the first to be removed (first out) when the cache reaches its maximum size. This strategy is simple but may not always provide the best performance if the older data is frequently accessed.  
+Covered in **Task 1: FIFO Caching**.
+
+</details>
+
+<details>
+<summary>What LIFO (Last In, First Out) means</summary>
+
+LIFO is a cache replacement policy where the most recently added item (last in) is the first to be removed (first out) when the cache reaches its maximum size. This strategy prioritizes keeping older data while discarding the newest, which might not be optimal if new data is frequently accessed.  
+Covered in **Task 2: LIFO Caching**.
+
+</details>
+
+<details>
+<summary>What LRU (Least Recently Used) means</summary>
+
+LRU is a cache replacement policy that removes the least recently accessed item when the cache reaches its maximum size. This strategy assumes that items not recently used are less likely to be accessed soon, making it a good choice for workloads where data locality is important.  
+Covered in **Task 3: LRU Caching**.
+
+</details>
+
+<details>
+<summary>What MRU (Most Recently Used) means</summary>
+
+MRU is a cache replacement policy that removes the most recently accessed item when the cache reaches its maximum size. This strategy assumes that the most recently used items are less likely to be accessed again soon. It can be useful in scenarios where older data is more likely to be reused than the newest data.  
+Covered in **Task 4: MRU Caching**.
+
+</details>
+
+<details>
+<summary>What LFU (Least Frequently Used) means</summary>
+
+LFU is a cache replacement policy that removes the item with the least frequency of access when the cache reaches its maximum size. If multiple items have the same frequency, the least recently used (LRU) item among them is discarded. This strategy is effective when items are frequently reused over time.  
+Covered in **Task 5: LFU Caching**.
+
+</details>
+
+<details>
+<summary>The purpose of a caching system</summary>
+
+The primary purpose of a caching system is to reduce data access times and improve overall system performance by temporarily storing frequently or recently accessed data in a faster storage medium. Caching reduces the need to repeatedly access slower backend storage, thereby speeding up data retrieval and reducing the load on the main storage.  
+Covered in **all tasks**.
+
+</details>
+
+<details>
+<summary>The limitations of a caching system</summary>
+
+Caching systems have several limitations:  
+- **Limited Size:** Caches have a limited size and can only store a small subset of the total data, requiring an effective replacement strategy to manage the cache contents.  
+- **Cache Invalidation:** Data in the cache may become outdated (stale), requiring mechanisms to invalidate or update cache entries.  
+- **Increased Complexity:** Implementing caching adds complexity to the system design, including cache management, eviction strategies, and synchronization with the main storage.  
+- **Cache Misses:** When a requested item is not in the cache (cache miss), there is an added cost of fetching data from the slower backend storage.  
+
+</details>
+
 
 ## Resources
 
-To complete this project, refer to the following resources:
+- [Cache replacement policies - FIFO](https://en.wikipedia.org/wiki/Cache_replacement_policies#First_In_First_Out_%28FIFO%29): Describes the FIFO (First In, First Out) policy, where the oldest cached data is removed first when the cache is full.
+  
+- [Cache replacement policies - LIFO](https://en.wikipedia.org/wiki/Cache_replacement_policies#Last_In_First_Out_%28LIFO%29): Explains the LIFO (Last In, First Out) policy, which removes the most recently added data from the cache first.
+  
+- [Cache replacement policies - LRU](https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_%28LRU%29): Details the LRU (Least Recently Used) policy, which discards the least recently accessed data to manage cache size.
+  
+- [Cache replacement policies - MRU](https://en.wikipedia.org/wiki/Cache_replacement_policies#Most_Recently_Used_%28MRU%29): Covers the MRU (Most Recently Used) policy, where the most recently accessed data is discarded first when the cache needs to be cleared.
+  
+- [Cache replacement policies - LFU](https://en.wikipedia.org/wiki/Cache_replacement_policies#Least-Frequently_Used_%28LFU%29): Discusses the LFU (Least Frequently Used) policy, which removes the data with the lowest access frequency, using LRU as a tie-breaker if needed.
 
-- [Cache replacement policies - FIFO](https://en.wikipedia.org/wiki/Cache_replacement_policies#First_In_First_Out_%28FIFO%29)
-- [Cache replacement policies - LIFO](https://en.wikipedia.org/wiki/Cache_replacement_policies#Last_In_First_Out_%28LIFO%29)
-- [Cache replacement policies - LRU](https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_%28LRU%29)
-- [Cache replacement policies - MRU](https://en.wikipedia.org/wiki/Cache_replacement_policies#Most_Recently_Used_%28MRU%29)
-- [Cache replacement policies - LFU](https://en.wikipedia.org/wiki/Cache_replacement_policies#Least-Frequently_Used_%28LFU%29)
+- [Difference Between LRU and FIFO Page Replacement Algorithms in Operating Systems](https://www.geeksforgeeks.org/difference-between-lru-and-fifo-page-replacement-algorithms-in-operating-system/?ref=gcse_ind): Compares LRU (Least Recently Used) and FIFO (First In, First Out) algorithms, explaining their differences and suitable use cases.
+
+- [Page Replacement Algorithms in Operating Systems](https://www.geeksforgeeks.org/page-replacement-algorithms-in-operating-systems/?ref=gcse_ind): Provides an overview of various page replacement algorithms, including FIFO, LRU, LFU, and others, used in operating systems.
+
+- [Least Frequently Used (LFU) Cache Implementation](https://www.geeksforgeeks.org/least-frequently-used-lfu-cache-implementation/?ref=header_outind): Explains the LFU (Least Frequently Used) caching algorithm with an example implementation in Python.
+
+- [LRU Cache Implementation](https://www.geeksforgeeks.org/lru-cache-implementation/?ref=header_outind): Details the LRU (Least Recently Used) caching algorithm and provides a step-by-step guide to implementing it in Python.
+
+- [Cache Eviction Policies | System Design](https://www.geeksforgeeks.org/cache-eviction-policies-system-design/?ref=header_outind): Discusses different cache eviction policies like LRU, LFU, FIFO, and others, focusing on their applications in system design.
+
 
 ## Requirements
 
@@ -1048,5 +1118,278 @@ K: K
 - **`put` Method**: Adds an item to the cache if both `key` and `item` are not `None`. If the cache exceeds `MAX_ITEMS`, the most recently used item is discarded.
 - **`get` Method**: Retrieves the value associated with the `key` from the cache. Updates the usage order to reflect recent access. Returns `None` if `key` is `None` or does not exist in the cache.
 - **Cache Display**: The cache state is printed using the `print_cache` method, and items are evicted based on the MRU policy.
+
+</details>
+
+### Task 5: LFU Caching
+
+<details> 
+<summary> Create a class LFUCache that inherits from BaseCaching and implements an LFU (Least Frequently Used) caching system:
+You must use `self.cache_data` - dictionary from the parent class `BaseCaching`.
+You can overload `__init__()` but don't forget to call the parent init: `super().__init__()`.
+`put(self, key, item)`: Must assign to the dictionary `self.cache_data` the item value for the key `key`. If `key` or `item` is `None`, this method should not do anything. If the number of items in `self.cache_data` is higher than `BaseCaching.MAX_ITEMS`, discard the least frequently used item (LFU algorithm). If multiple items have the same frequency, use the LRU algorithm to discard the least recently used item.
+`get(self, key)`: Must return the value in `self.cache_data` linked to `key`. If `key` is `None` or if the key doesn’t exist in `self.cache_data`, return `None`.
+</summary>
+<br>
+
+**Description:**
+The `LFUCache` class is a caching system that inherits from the `BaseCaching` parent class. It uses an LFU (Least Frequently Used) caching algorithm with LRU (Least Recently Used) as a tie-breaker. The class keeps track of both the frequency of accesses and the order in which keys are accessed.
+
+- `put(key, item)`: Adds an item to the cache. If the cache exceeds its size limit, it discards the least frequently used item. If there is a tie, it uses LRU as a tie-breaker.
+- `get(key)`: Retrieves an item by key from the cache.
+
+**Implementation:**
+```python
+#!/usr/bin/env python3
+'''
+This module contains the LFUCache class, a caching system
+that inherits from the BaseCaching parent class. It uses the
+LFU (Least Frequently Used) caching algorithm with LRU as a
+tie-breaker.
+'''
+BaseCaching = __import__('base_caching').BaseCaching
+
+
+class LFUCache(BaseCaching):
+    ''' LFUCache defines a caching system with an LFU eviction policy.
+    '''
+
+    def __init__(self):
+        '''
+        Calls the parent class' init method and initializes
+        a dictionary to keep track of usage frequency and order.
+        '''
+        super().__init__()
+        self.usage_frequency = {}
+        self.usage_order = []
+
+    def put(self, key, item):
+        ''' Add an item to the cache.
+        If key or item is None this method does nothing.
+        If the number of items in the cache exceeds MAX_ITEMS
+        the least frequently used item is discarded
+        Uses LRU as a tie-breaker.
+        '''
+        if key is None or item is None:
+            return
+
+        # If the key already exists update the item and usage frequency
+        if key in self.cache_data:
+            self.cache_data[key] = item
+            self.usage_frequency[key] += 1
+            self.usage_order.remove(key)
+            self.usage_order.append(key)
+        else:
+            # If the cache is full remove the LFU item
+            if len(self.cache_data) >= BaseCaching.MAX_ITEMS:
+                # Find the least frequently used items
+                min_freq = min(self.usage_frequency.values())
+                lfu_keys = [k for k in self.usage_order
+                            if self.usage_frequency[k] == min_freq]
+
+                # Discard least recently used among the least frequently used
+                lfu_key = lfu_keys[0]
+                del self.cache_data[lfu_key]
+                del self.usage_frequency[lfu_key]
+                self.usage_order.remove(lfu_key)
+                print(f"DISCARD: {lfu_key}")
+
+            # Add the new item to the cache
+            self.cache_data[key] = item
+            self.usage_frequency[key] = 1
+            self.usage_order.append(key)
+
+    def get(self, key):
+        ''' Retrieve an item by key from the cache.
+        If key is None or doesn't exist in the cache it returns None.
+        '''
+        if key is None or key not in self.cache_data:
+            return None
+
+        # Since this key was recently accessed, update the usage order
+        # and frequency
+        self.usage_frequency[key] += 1
+        self.usage_order.remove(key)
+        self.usage_order.append(key)
+        return self.cache_data[key]
+```
+
+**Usage:**
+
+1. **Initialization**:
+   To use the `LFUCache` class, import it from the `100-lfu_cache.py` file and create an instance:
+
+   ```python
+   LFUCache = __import__('100-lfu_cache').LFUCache
+
+   my_cache = LFUCache()
+   ```
+
+2. **Adding items to the cache**:
+   Use the `put` method to add key-value pairs to the cache. If either the `key` or `item` is `None`, the method does nothing. If the cache exceeds its size limit, the least frequently used item will be removed, with LRU as a tie-breaker.
+
+   ```python
+   my_cache.put("A", "Hello")
+   my_cache.put("B", "World")
+   my_cache.put("C", "Holberton")
+   my_cache.put("D", "School")
+   my_cache.print_cache()
+   ```
+
+3. **Evicting items based on LFU with LRU tie-breaking**:
+   When the cache exceeds `MAX_ITEMS`, the `put` method discards the least frequently used item in the cache and prints a message indicating which item was discarded.
+
+4. **Retrieving items from the cache**:
+   Use the `get` method to retrieve values from the cache using their keys. If the `key` is `None` or doesn't exist, the method returns `None`.
+
+   ```python
+   print(my_cache.get("B"))  # Output: World
+   ```
+
+5. **Running the script to test the class**:
+   To test the functionality of the `LFUCache` class, use`100-main.py`:
+
+   ```python
+   #!/usr/bin/python3
+   """ 100-main """
+   LFUCache = __import__('100-lfu_cache').LFUCache
+
+   my_cache = LFUCache()
+   my_cache.put("A", "Hello")
+   my_cache.put("B", "World")
+   my_cache.put("C", "Holberton")
+   my_cache.put("D", "School")
+   my_cache.print_cache()
+   print(my_cache.get("B"))
+   my_cache.put("E", "Battery")
+   my_cache.print_cache()
+   my_cache.put("C", "Street")
+   my_cache.print_cache()
+   print(my_cache.get("A"))
+   print(my_cache.get("B"))
+   print(my_cache.get("C"))
+   my_cache.put("F", "Mission")
+   my_cache.print_cache()
+   my_cache.put("G", "San Francisco")
+   my_cache.print_cache()
+   my_cache.put("H", "H")
+   my_cache.print_cache()
+   my_cache.put("I", "I")
+   my_cache.print_cache()
+   print(my_cache.get("I"))
+   print(my_cache.get("H"))
+   print(my_cache.get("I"))
+   print(my_cache.get("H"))
+   print(my_cache.get("I"))
+   print(my_cache.get("H"))
+   my_cache.put("J", "J")
+   my_cache.print_cache()
+   my_cache.put("K", "K")
+   my_cache.print_cache()
+   my_cache.put("L", "L")
+   my_cache.print_cache()
+   my_cache.put("M", "M")
+   my_cache.print_cache()
+   ```
+
+   Make the script executable by running:
+
+   ```sh
+   chmod +x 100-main.py
+   ```
+
+   Then, run the script to test:
+
+   ```sh
+   ./100-main.py
+   ```
+
+   Verify the output matches the expected results.
+
+**Expected Output:**
+```bash
+Current cache:
+A: Hello
+B: World
+C: Holberton
+D: School
+World
+DISCARD: A
+Current cache:
+B: World
+C: Holberton
+D: School
+E: Battery
+Current cache:
+B: World
+C: Street
+D: School
+E: Battery
+None
+World
+Street
+DISCARD: D
+Current cache:
+B: World
+C: Street
+E: Battery
+F: Mission
+DISCARD: E
+Current cache:
+B: World
+C: Street
+F: Mission
+G: San Francisco
+DISCARD: F
+Current cache:
+B: World
+C: Street
+G: San Francisco
+H: H
+DISCARD: G
+Current cache:
+B: World
+C: Street
+H: H
+I: I
+I
+H
+I
+H
+I
+H
+DISCARD: B
+Current cache:
+C: Street
+H: H
+I: I
+J: J
+DISCARD: J
+Current cache:
+C: Street
+H: H
+I: I
+K: K
+DISCARD: K
+Current cache:
+C: Street
+H: H
+I: I
+L: L
+DISCARD: L
+Current cache:
+C: Street
+H: H
+I: I
+M: M
+```
+
+**Explanation**
+
+- **`put` Method**: Adds an item to the cache if both `key` and `item` are not `None`. If the cache exceeds `MAX_ITEMS`, the least frequently used item
+
+ is discarded, with LRU as a tie-breaker.
+- **`get` Method**: Retrieves the value associated with the `key` from the cache. Updates the usage order and frequency to reflect recent access. Returns `None` if `key` is `None` or does not exist in the cache.
+- **Cache Display**: The cache state is printed using the `print_cache` method, and items are evicted based on the LFU policy with LRU tie-breaking.
 
 </details>
