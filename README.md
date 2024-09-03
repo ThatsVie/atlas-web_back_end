@@ -40,6 +40,13 @@ This project covers asynchronous programming in Python using coroutines and the 
 To view a README.md file for Python - Async Function visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/python_async_function/README.md)
 
 ## Python - Async Comprehension
+
 This project focuses on using Python's asynchronous capabilities to handle tasks concurrently and efficiently. It demonstrates the creation of asynchronous generators, the use of async comprehensions to gather data, and the measurement of runtime for parallel tasks using asyncio.
 
 To view a README.md file for Python - Async Comprehension visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/python_async_comprehension/README.md)
+
+## Caching
+
+This project covers different caching algorithms, including FIFO, LIFO, LRU, MRU, and LFU, to optimize data retrieval performance by managing temporary storage of frequently accessed data. It demonstrates various cache replacement strategies to efficiently handle limited cache size and improve system responsiveness. By implementing these algorithms, the project highlights the trade-offs and effectiveness of each caching method in different scenarios.
+
+To view a README.md file for Caching visit [this link].(https://github.com/ThatsVie/atlas-web_back_end/blob/main/caching/README.md)
