@@ -705,3 +705,7 @@ The output will display a list of delays in ascending order, for example:
 
 This confirms that the function correctly creates multiple tasks and returns their results in ascending order.
 </details>
+
+## Author
+
+Vie Paula - [GitHub Profile](https://github.com/ThatsVie)
