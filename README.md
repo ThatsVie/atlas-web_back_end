@@ -50,3 +50,7 @@ To view a README.md file for Python - Async Comprehension visit [this link.](htt
 This project covers different caching algorithms, including FIFO, LIFO, LRU, MRU, and LFU, to optimize data retrieval performance by managing temporary storage of frequently accessed data. It demonstrates various cache replacement strategies to efficiently handle limited cache size and improve system responsiveness. By implementing these algorithms, the project highlights the trade-offs and effectiveness of each caching method in different scenarios.
 
 To view a README.md file for Caching visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/caching/README.md)
+
+## Author
+
+Vie Paula - [GitHub Profile](https://github.com/ThatsVie)

@@ -402,3 +402,7 @@ You should see an output similar to the following, showing the total runtime of 
 - The total runtime is approximately 10 seconds because each `async_comprehension` coroutine waits for 1 second for each of the 10 iterations.
 - Since `asyncio.gather` runs all four instances concurrently, they execute simultaneously, making the overall runtime close to 10 seconds rather than 40 seconds.
 </details>
+
+## Author
+
+Vie Paula - [GitHub Profile](https://github.com/ThatsVie)
