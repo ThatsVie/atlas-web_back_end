@@ -1,5 +1,8 @@
 
-![pythonpuggie](https://github.com/user-attachments/assets/7ac2f9ec-9af8-4fb4-b018-1d2d0fdaa556)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c7ab9d75-99f8-4b33-919b-de93cbbd3c44" alt="pythonpuggie">
+</p>
+
 
 # Python- Async Function
 This project covers asynchronous programming in Python using coroutines and the `async/await` syntax to handle concurrent tasks. It demonstrates managing multiple asynchronous operations, measuring performance, and creating tasks with the asyncio library.
