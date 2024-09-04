@@ -51,6 +51,12 @@ This project covers different caching algorithms, including FIFO, LIFO, LRU, MRU
 
 To view a README.md file for Caching visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/caching/README.md)
 
+## Pagination
+
+This project focuses on implementing efficient pagination techniques for managing large datasets in Python. It includes simple pagination using page and page_size parameters, hypermedia pagination with metadata for enhanced API navigation, and deletion-resilient pagination to maintain dataset integrity even when items are removed. The project demonstrates best practices for building scalable and user-friendly data management features in web applications
+
+To view a README.md file for Pagination visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/pagination/README.md)
+
 ## Author
 
 Vie Paula - [GitHub Profile](https://github.com/ThatsVie)
