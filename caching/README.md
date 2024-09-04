@@ -1391,3 +1391,7 @@ M: M
 - **Cache Display**: The cache state is printed using the `print_cache` method, and items are evicted based on the LFU policy with LRU tie-breaking.
 
 </details>
+
+## Author
+
+Vie Paula - [GitHub Profile](https://github.com/ThatsVie)
