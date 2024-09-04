@@ -1,4 +1,9 @@
-# Pagination
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/4a4a7eee-1a6e-4acb-bceb-dbf4e73e0f86" alt="pugination">
+</p>
+
+
 This project focuses on implementing efficient pagination techniques for managing large datasets in Python. It includes simple pagination using page and page_size parameters, hypermedia pagination with metadata for enhanced API navigation, and deletion-resilient pagination to maintain dataset integrity even when items are removed. The project demonstrates best practices for building scalable and user-friendly data management features in web applications
 
 ### Resources
@@ -388,7 +393,8 @@ The `get_hyper` method extends the `Server` class to provide hypermedia-style pa
 ```python
 #!/usr/bin/env python3
 '''
-This module contains a Server class to paginate a database of popular baby names with hypermedia pagination.
+This module contains a Server class to paginate a database of popular
+baby names with hypermedia pagination.
 '''
 
 import csv
@@ -434,7 +440,7 @@ class Server:
         assert isinstance(page_size, int) and page_size > 0
 
         start_index, end_index = index_range(page, page_size)
-        
+
         dataset = self.dataset()
 
         if start_index >= len(dataset):
