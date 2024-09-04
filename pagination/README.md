@@ -6,25 +6,6 @@
 
 This project focuses on implementing efficient pagination techniques for managing large datasets in Python. It includes simple pagination using page and page_size parameters, hypermedia pagination with metadata for enhanced API navigation, and deletion-resilient pagination to maintain dataset integrity even when items are removed. The project demonstrates best practices for building scalable and user-friendly data management features in web applications
 
-### Resources
-
-- [REST API Design: Pagination](https://www.moesif.com/blog/technical/api-design/REST-API-Design-Filtering-Sorting-and-Pagination/#pagination)  
-  This article explains different pagination strategies in REST APIs, including offset-based, cursor-based, and keyset pagination, and their impact on API performance and user experience.
-
-- [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)  
-  The Wikipedia entry on HATEOAS describes Hypermedia as the Engine of Application State, a constraint of REST application architecture that allows clients to interact dynamically with the server through hypermedia links.
-
-- [How to Do Pagination in Python](https://www.geeksforgeeks.org/how-to-do-pagination-in-python/?ref=header_outind)  
-  This guide demonstrates implementing pagination in Python using various techniques and libraries, focusing on efficient data management in web applications.
-
-- [Pagination Design Pattern](https://www.geeksforgeeks.org/pagination-design-pattern/?ref=header_outind)  
-  This article covers the pagination design pattern, including its purpose, benefits, and different approaches like numbered pages, "Load More" buttons, and infinite scrolling.
-
-- [HATEOAS and Why It’s Needed in RESTful API](https://www.geeksforgeeks.org/hateoas-and-why-its-needed-in-restful-api/?ref=header_outind)  
-  An explanation of HATEOAS, its importance in RESTful APIs, and how it enhances the flexibility and usability of API-driven applications.
-
-- [Pagination on an API](https://www.geeksforgeeks.org/pagination-on-an-api/?ref=header_outind)  
-  This resource discusses implementing pagination on an API, covering different techniques and best practices for managing large datasets efficiently.
 
 
 ## Learning Objectives
@@ -79,6 +60,26 @@ Key elements include:
 
  In **Task 3**, we implemented the `get_hyper_index` method, which maintains the pagination state even when items are deleted from the dataset. The method ensures that users do not miss any items by calculating the `next_index` based on the current data and any deletions that may have occurred.
 </details>
+
+## Resources
+
+- [REST API Design: Pagination](https://www.moesif.com/blog/technical/api-design/REST-API-Design-Filtering-Sorting-and-Pagination/#pagination)  
+  This article explains different pagination strategies in REST APIs, including offset-based, cursor-based, and keyset pagination, and their impact on API performance and user experience.
+
+- [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)  
+  The Wikipedia entry on HATEOAS describes Hypermedia as the Engine of Application State, a constraint of REST application architecture that allows clients to interact dynamically with the server through hypermedia links.
+
+- [How to Do Pagination in Python](https://www.geeksforgeeks.org/how-to-do-pagination-in-python/?ref=header_outind)  
+  This guide demonstrates implementing pagination in Python using various techniques and libraries, focusing on efficient data management in web applications.
+
+- [Pagination Design Pattern](https://www.geeksforgeeks.org/pagination-design-pattern/?ref=header_outind)  
+  This article covers the pagination design pattern, including its purpose, benefits, and different approaches like numbered pages, "Load More" buttons, and infinite scrolling.
+
+- [HATEOAS and Why It’s Needed in RESTful API](https://www.geeksforgeeks.org/hateoas-and-why-its-needed-in-restful-api/?ref=header_outind)  
+  An explanation of HATEOAS, its importance in RESTful APIs, and how it enhances the flexibility and usability of API-driven applications.
+
+- [Pagination on an API](https://www.geeksforgeeks.org/pagination-on-an-api/?ref=header_outind)  
+  This resource discusses implementing pagination on an API, covering different techniques and best practices for managing large datasets efficiently.
 
 
 ## Requirements
