@@ -1,4 +1,7 @@
-![pythonpuggie](https://github.com/user-attachments/assets/8cbf3ac3-658e-47cc-851c-ea81adb3703b)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c7ab9d75-99f8-4b33-919b-de93cbbd3c44" alt="pythonpuggie">
+</p>
+
 
 
 # Python - Async Comprehension
