@@ -1,5 +1,8 @@
 
-![pythonpuggie](https://github.com/user-attachments/assets/c7ab9d75-99f8-4b33-919b-de93cbbd3c44)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c7ab9d75-99f8-4b33-919b-de93cbbd3c44" alt="pythonpuggie">
+</p>
+
 
 # Python - Variable Annotations
 This project focuses on understanding and applying variable annotations in Python. Python is a dynamically-typed language, meaning variable types are set at runtime upon assignment. In Python 3, type annotations allow developers to specify expected types for variables, parameters, and return values, enhancing code readability and validation.
