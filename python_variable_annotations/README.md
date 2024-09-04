@@ -992,3 +992,7 @@ Expected Output:
 This output confirms that the function is correctly type-annotated and passes `mypy` validation.
 
 </details>
+
+## Author
+
+Vie Paula - [GitHub Profile](https://github.com/ThatsVie)
