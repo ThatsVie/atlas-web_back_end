@@ -1,5 +1,7 @@
 
-![cachingpuggie!](https://github.com/user-attachments/assets/3f7251bf-3f91-4930-860b-edf12b357843)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3f7251bf-3f91-4930-860b-edf12b357843" alt="cachingpuggie!">
+</p>
 
 
 This project covers different caching algorithms, including FIFO, LIFO, LRU, MRU, and LFU, to optimize data retrieval performance by managing temporary storage of frequently accessed data. It demonstrates various cache replacement strategies to efficiently handle limited cache size and improve system responsiveness. By implementing these algorithms, the project highlights the trade-offs and effectiveness of each caching method in different scenarios.
