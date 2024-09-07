@@ -1,5 +1,9 @@
-# Personal Data
 
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/339a329c-681f-4e1e-9d60-f8c2aedf1f39" alt="detectivepuggy">
+</div>
+
+<br>
 This project focuses on understanding and handling Personally Identifiable Information (PII) and implementing best practices for data privacy and security in Python. It covers how to filter logs, encrypt passwords, and authenticate securely using environment variables.
 
 ## Resources
