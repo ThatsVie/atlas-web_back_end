@@ -52,6 +52,8 @@ separator: a string representing by which character is separating all fields in 
 The function should use a regex to replace occurrences of certain field values.
 filter_datum should be less than 5 lines long and use re.sub to perform the substitution with a single regex.
 
+
+
 **Description:**
 
 The `filter_datum` function is designed to obfuscate sensitive fields in log messages using regular expressions (regex). This function ensures that Personally Identifiable Information (PII) like `password` and `date_of_birth` are replaced with a redaction string to maintain data privacy and security.
@@ -67,7 +69,8 @@ This module contains a function for filtering log messages.
 import re  # Import the 're' module for regular expression operations
 from typing import List  # Import 'List' from 'typing' module for type annotations
 
-def filter_datum(fields: List[str], redaction: str, message: str, separator: str) -> str:
+def filter_datum(fields: List[str], redaction: str, message: str,
+                 separator: str) -> str:
     '''
     Obfuscates fields in a log message.
 
@@ -81,15 +84,16 @@ def filter_datum(fields: List[str], redaction: str, message: str, separator: str
         str: A string with specified fields obfuscated.
     '''
     # Create a regex pattern that matches any of the fields to be obfuscated
-    # '|' is used to join the fields list into an alternation pattern (e.g., "password|date_of_birth")
+    # '|' joins the fields list into an alternation pattern (e.g., "password|date_of_birth")
     # '.+?' matches any character(s) non-greedily up to the next separator
     pattern = f"({'|'.join(fields)})=.+?{separator}"
 
     # Use re.sub to substitute the matched pattern with the redacted value
     # The lambda function ensures that the field name is preserved and only the value is replaced
     # m.group(1) extracts the field name that was matched by the regex
-    return re.sub(pattern, lambda m: f"{m.group(1)}={redaction}{separator}", message)
-
+    return re.sub(
+        pattern, lambda m: f"{m.group(1)}={redaction}{separator}", message
+    )
 ```
 
 **Usage:**
@@ -160,6 +164,9 @@ name=bob;email=bob@dylan.com;password=xxx;date_of_birth=xxx;
 
 **Explanation:**
 
-- **`filter_datum` Function:** Uses regex to identify and obfuscate sensitive fields specified in the `fields` list. The function replaces the field values with the `redaction` string, while keeping the rest of the log message intact.
+- **`filter_datum` Function:**
+  - **Regex Pattern Creation**: The pattern is constructed dynamically to match any of the field names in the `fields` list followed by `=` and any characters up to the next `separator`. The pattern uses `('|'.join(fields))` to create an alternation group that matches any of the fields listed.
+  - **Regex Substitution**: The `re.sub` method replaces the matched patterns with the redaction string using a lambda function. The lambda function takes the match object `m` and formats it to retain the field name (`m.group(1)`) while substituting its value with the redaction string.
+  - **Purpose**: This method ensures sensitive data fields are obfuscated effectively while keeping the log structure intact.
   
 </details>
