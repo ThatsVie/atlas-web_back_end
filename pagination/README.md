@@ -203,7 +203,6 @@ def index_range(page: int, page_size: int) -> Tuple[int, int]:
 **Explanation:**
 
 - **`index_range` Function:** Computes the range of indices for pagination based on the `page` and `page_size` parameters.
-- **Usage Example:** The example shows how to determine the start and end indices for various pages and page sizes.
   
 </details>
 
