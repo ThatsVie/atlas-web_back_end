@@ -168,5 +168,374 @@ name=bob;email=bob@dylan.com;password=xxx;date_of_birth=xxx;
   - **Regex Pattern Creation**: The pattern is constructed dynamically to match any of the field names in the `fields` list followed by `=` and any characters up to the next `separator`. The pattern uses `('|'.join(fields))` to create an alternation group that matches any of the fields listed.
   - **Regex Substitution**: The `re.sub` method replaces the matched patterns with the redaction string using a lambda function. The lambda function takes the match object `m` and formats it to retain the field name (`m.group(1)`) while substituting its value with the redaction string.
   - **Purpose**: This method ensures sensitive data fields are obfuscated effectively while keeping the log structure intact.
+
+</details>
+
+### Task 1: Log Formatter
+
+<details> 
+<summary>Write a class named `RedactingFormatter` that redacts sensitive information in log records:</summary>
+<br>
+
+
+Copy the following code into filtered_logger.py.
+```python
+import logging
+
+
+class RedactingFormatter(logging.Formatter):
+    """ Redacting Formatter class
+        """
+
+    REDACTION = "***"
+    FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
+    SEPARATOR = ";"
+
+    def __init__(self):
+        super(RedactingFormatter, self).__init__(self.FORMAT)
+
+    def format(self, record: logging.LogRecord) -> str:
+        NotImplementedError
+```
+Update the class to accept a list of strings fields constructor argument.
+Implement the format method to filter values in incoming log records using filter_datum. Values for fields in fields should be filtered.
+DO NOT extrapolate FORMAT manually. The format method should be less than 5 lines long.
+
+
+**Description:**
+
+The `RedactingFormatter` class extends the `logging.Formatter` class and is used to format log records while redacting specified sensitive fields. It takes advantage of the `filter_datum` function to ensure that fields such as `email`, `ssn`, and `password` are replaced with a redaction string (`***`) to maintain privacy and security.
+
+**Implementation:**
+
+```python
+#!/usr/bin/env python3
+'''
+This module contains a function for filtering log messages and a formatter
+class that redacts sensitive information in log records.
+'''
+
+import re  # For regular expression operations
+import logging  # To handle logging and formatting
+from typing import List  # For type annotations
+
+
+def filter_datum(fields: List[str], redaction: str, message: str,
+                 separator: str) -> str:
+    '''
+    Obfuscates fields in a log message.
+
+    Args:
+        fields (List[str]): A list of strings representing all fields to
+                            obfuscate.
+        redaction (str): A string representing the text to replace each field
+                         value.
+        message (str): A string representing the log line.
+        separator (str): A string representing the character that separates
+                         fields in the log line.
+
+    Returns:
+        str: A string with specified fields obfuscated.
+    '''
+    pattern = f"({'|'.join(fields)})=.+?{separator}"
+
+    return re.sub(
+        pattern, lambda m: f"{m.group(1)}={redaction}{separator}", message
+    )
+
+
+class RedactingFormatter(logging.Formatter):
+    '''
+    Redacting Formatter class
+    '''
+
+    REDACTION = "***"
+    FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
+    SEPARATOR = ";"
+
+    def __init__(self, fields: List[str]):
+        '''
+        Initializes the formatter with the specified fields to redact.
+
+        Args:
+            fields (List[str]): A list of strings representing the fields to
+                                obfuscate.
+        '''
+        super(RedactingFormatter, self).__init__(self.FORMAT)
+        self.fields = fields
+
+    def format(self, record: logging.LogRecord) -> str:
+        '''
+        Formats the log record, redacting specified fields.
+
+        Args:
+            record (logging.LogRecord): The log record to format.
+
+        Returns:
+            str: The formatted and redacted log record as a string.
+        '''
+        original_message = super().format(record)
+        return filter_datum(self.fields, self.REDACTION, original_message,
+                            self.SEPARATOR)
+```
+
+**Usage:**
+
+1. **Class Purpose:**
+   The `RedactingFormatter` class formats log messages while redacting sensitive fields specified in the `fields` list. It uses the `filter_datum` function to replace the values of these fields with a redaction string (`***`).
+
+2. **Examples of Using the `RedactingFormatter` Class:**
+
+   You can use the `RedactingFormatter` class to redact sensitive information in log records:
+
+   ```python
+   # Example
+   import logging
+   from filtered_logger import RedactingFormatter
+
+   message = "name=Bob;email=bob@dylan.com;ssn=000-123-0000;password=bobby2019;"
+   log_record = logging.LogRecord("my_logger", logging.INFO, None, None, message, None, None)
+   formatter = RedactingFormatter(fields=["email", "ssn", "password"])
+   print(formatter.format(log_record))
+   ```
+
+3. **Running the script to test the class:**
+
+   To test the functionality of the `RedactingFormatter` class, use `1-main.py`:
+
+   ```python
+   #!/usr/bin/env python3
+   """
+   Main file
+   """
+
+   import logging
+   from filtered_logger import RedactingFormatter
+
+   message = "name=Bob;email=bob@dylan.com;ssn=000-123-0000;password=bobby2019;"
+   log_record = logging.LogRecord("my_logger", logging.INFO, None, None, message, None, None)
+   formatter = RedactingFormatter(fields=["email", "ssn", "password"])
+   print(formatter.format(log_record))
+   ```
+
+   Make the script executable by running:
+
+   ```sh
+   chmod +x 1-main.py
+   ```
+
+   Then, run the script to test:
+
+   ```sh
+   ./1-main.py
+   ```
+
+   Verify the output matches the expected results.
+
+**Expected Output:**
+
+```bash
+[HOLBERTON] my_logger INFO 2024-09-07 13:59:45,095: name=Bob;email=***;ssn=***;password=***;
+```
+
+**Explanation:**
+
+- **`RedactingFormatter` Class:**
+  - **Constructor (`__init__` Method):** Accepts a list of fields to be redacted and initializes the formatter.
+  - **`format` Method:** Formats the log record using the base formatter and then applies the `filter_datum` function to redact sensitive fields specified in the `fields` list.
+  - **Purpose:** This class ensures that sensitive information in log messages is properly obfuscated to maintain privacy and security.
+
+</details>
+
+### Task 2: Create Logger
+
+<details>
+<summary>Implement a `get_logger` function that creates and returns a configured logger object:</summary>
+<br>
+
+Use user_data.csv for this task
+
+The logger should be named "user_data" and only log up to logging.INFO level. It should not propagate messages to other loggers. It should have a StreamHandler with RedactingFormatter as formatter.
+Create a tuple PII_FIELDS constant at the root of the module containing the fields from user_data.csv that are considered PII. PII_FIELDS can contain only 5 fields - choose the right list of fields that can are considered as “important” PIIs or information that you must hide in your logs. Use it to parameterize the formatter.
+
+Tips:
+- **[What Is PII, non-PII, and personal data?](https://piwik.pro/blog/what-is-pii-personal-data/):** This article explains the differences between PII, non-PII, and personal data, and provides examples and best practices for handling such data securely.
   
+- **[Uncovering Password Habits](https://www.digitalguardian.com/blog/uncovering-password-habits-are-users%E2%80%99-password-security-habits-improving-infographic):** This infographic provides insights into users' password security habits and how they have changed over time.
+
+
+
+**Description:**
+
+The `get_logger` function creates a logger named `"user_data"` that is configured to log messages up to the `INFO` level. The logger uses a `StreamHandler` with a custom `RedactingFormatter` to redact sensitive fields in log messages, ensuring Personally Identifiable Information (PII) is protected.
+
+Atuple named `PII_FIELDS` is defined at the root of the module, containing the fields from `user_data.csv` that are considered sensitive PII. The tuple includes 5 fields that are critical to be redacted in logs.
+
+**Implementation:**
+
+```python
+#!/usr/bin/env python3
+'''
+This module contains functions and classes for filtering log messages and
+creating loggers that redact sensitive information.
+'''
+
+import re  # For regular expression operations
+import logging  # To handle logging and formatting
+from typing import List  # For type annotations
+
+
+def filter_datum(fields: List[str], redaction: str, message: str,
+                 separator: str) -> str:
+    '''
+    Obfuscates fields in a log message.
+
+    Args:
+        fields (List[str]): A list of strings representing all fields to
+                            obfuscate.
+        redaction (str): A string representing the text to replace each field
+                         value.
+        message (str): A string representing the log line.
+        separator (str): A string representing the character that separates
+                         fields in the log line.
+
+    Returns:
+        str: A string with specified fields obfuscated.
+    '''
+    pattern = f"({'|'.join(fields)})=.+?{separator}"
+
+    return re.sub(
+        pattern, lambda m: f"{m.group(1)}={redaction}{separator}", message
+    )
+
+
+class RedactingFormatter(logging.Formatter):
+    '''
+    Redacting Formatter class
+    '''
+
+    REDACTION = "***"
+    FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
+    SEPARATOR = ";"
+
+    def __init__(self, fields: List[str]):
+        '''
+        Initializes the formatter with the specified fields to redact.
+
+        Args:
+            fields (List[str]): A list of strings representing the fields to
+                                obfuscate.
+        '''
+        super(RedactingFormatter, self).__init__(self.FORMAT)
+        self.fields = fields
+
+    def format(self, record: logging.LogRecord) -> str:
+        '''
+        Formats the log record, redacting specified fields.
+
+        Args:
+            record (logging.LogRecord): The log record to format.
+
+        Returns:
+            str: The formatted and redacted log record as a string.
+        '''
+        original_message = super().format(record)
+        return filter_datum(self.fields, self.REDACTION, original_message,
+                            self.SEPARATOR)
+
+
+# Define a tuple containing fields considered as PII in user_data.csv
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
+
+
+def get_logger() -> logging.Logger:
+    '''
+    Creates and returns a logger named "user_data" that logs up to INFO level,
+    does not propagate to other loggers, and uses a StreamHandler with
+    RedactingFormatter to format log records.
+
+    Returns:
+        logging.Logger: Configured logger object.
+    '''
+    # Create a logger object named "user_data"
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)  # Set the logging level to INFO
+    logger.propagate = False  # Prevent the logger from propagating messages
+
+    # Create a StreamHandler and set its formatter to RedactingFormatter
+    stream_handler = logging.StreamHandler()
+    formatter = RedactingFormatter(fields=PII_FIELDS)
+    stream_handler.setFormatter(formatter)
+
+    # Add the handler to the logger
+    logger.addHandler(stream_handler)
+
+    return logger
+```
+
+**Usage:**
+
+1. **Function Purpose:**
+   The `get_logger` function returns a `Logger` object that is configured to log messages securely. The logger uses a `StreamHandler` with a `RedactingFormatter` to redact fields considered as PII, such as `name`, `email`, `phone`, `ssn`, and `password`.
+
+2. **Examples of Using the `get_logger` Function:**
+
+   You can use the `get_logger` function to create a logger that redacts sensitive information:
+
+   ```python
+   # Example
+   import logging
+   from filtered_logger import get_logger, PII_FIELDS
+
+   logger = get_logger()
+   logger.info("User information: name=John Doe;email=john.doe@example.com;ssn=123-45-6789;password=supersecret;")
+   ```
+
+3. **Running the script to test the function:**
+
+   To test the functionality of the `get_logger` function, use `2-main.py`:
+
+   ```python
+   #!/usr/bin/env python3
+   """
+   Main file
+   """
+
+   import logging
+   from filtered_logger import get_logger, PII_FIELDS
+
+   print(get_logger.__annotations__.get('return'))
+   print("PII_FIELDS: {}".format(len(PII_FIELDS)))
+   ```
+
+   Make the script executable by running:
+
+   ```sh
+   chmod +x 2-main.py
+   ```
+
+   Then, run the script to test:
+
+   ```sh
+   ./2-main.py
+   ```
+
+   Verify the output matches the expected results.
+
+**Expected Output:**
+
+```bash
+<class 'logging.Logger'>
+PII_FIELDS: 5
+```
+
+**Explanation:**
+
+- **`PII_FIELDS` Tuple:** A tuple containing the fields that are considered as Personally Identifiable Information (PII) in the `user_data.csv`. These fields (`"name"`, `"email"`, `"phone"`, `"ssn"`, `"password"`) should be redacted in the log messages.
+  
+- **`get_logger` Function:**
+  - **Creates a Logger** named `"user_data"` that logs messages up to `INFO` level.
+  - **Uses `RedactingFormatter`** to redact sensitive fields in log messages, ensuring that PII is not exposed in logs.
+  - **Configures the Logger** with a `StreamHandler` to display redacted log messages to the console.
+
 </details>
