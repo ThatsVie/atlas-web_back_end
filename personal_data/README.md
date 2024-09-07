@@ -539,3 +539,243 @@ PII_FIELDS: 5
   - **Configures the Logger** with a `StreamHandler` to display redacted log messages to the console.
 
 </details>
+
+### Task 3: Connect to Secure Database
+
+<details>
+<summary>Implement a `get_db` function that securely connects to a MySQL database using environment variables:</summary>
+<br>
+
+Database credentials should NEVER be stored in code or checked into version control. One secure option is to store them as environment variable on the application server.
+In this task, you will connect to a secure holberton database to read a users table. The database is protected by a username and password that are set as environment variables on the server named PERSONAL_DATA_DB_USERNAME (set the default as “root”), PERSONAL_DATA_DB_PASSWORD (set the default as an empty string) and PERSONAL_DATA_DB_HOST (set the default as “localhost”).
+The database name is stored in PERSONAL_DATA_DB_NAME.
+Implement a get_db function that returns a connector to the database (mysql.connector.connection.MySQLConnection object).
+Use the os module to obtain credentials from the environment
+Use the module mysql-connector-python to connect to the MySQL database (pip3 install mysql-connector-python)
+
+
+**Description:**
+
+The `get_db` function connects to a secure MySQL database using credentials stored in environment variables. This approach prevents sensitive information, such as usernames and passwords, from being hard-coded in the code or exposed in version control.
+
+**Implementation:**
+
+```python
+#!/usr/bin/env python3
+'''
+This module contains functions and classes for filtering log messages,
+creating loggers that redact sensitive information, and connecting securely
+to a MySQL database.
+'''
+
+import re  # For regular expression operations
+import logging  # To handle logging and formatting
+from typing import List  # For type annotations
+import os  # For environment variable access
+import mysql.connector  # For connecting to the MySQL database
+from mysql.connector import Error  # For handling MySQL errors
+
+
+def filter_datum(fields: List[str], redaction: str, message: str,
+                 separator: str) -> str:
+    '''
+    Obfuscates fields in a log message.
+    '''
+    pattern = f"({'|'.join(fields)})=.+?{separator}"
+
+    return re.sub(
+        pattern, lambda m: f"{m.group(1)}={redaction}{separator}", message
+    )
+
+
+class RedactingFormatter(logging.Formatter):
+    '''
+    Redacting Formatter class
+    '''
+
+    REDACTION = "***"
+    FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
+    SEPARATOR = ";"
+
+    def __init__(self, fields: List[str]):
+        '''
+        Initializes the formatter with the specified fields to redact.
+        '''
+        super(RedactingFormatter, self).__init__(self.FORMAT)
+        self.fields = fields
+
+    def format(self, record: logging.LogRecord) -> str:
+        '''
+        Formats the log record, redacting specified fields.
+        '''
+        original_message = super().format(record)
+        return filter_datum(self.fields, self.REDACTION, original_message,
+                            self.SEPARATOR)
+
+
+# Define a tuple containing fields considered as PII in user_data.csv
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
+
+
+def get_logger() -> logging.Logger:
+    '''
+    Creates and returns a logger named user_data that logs up to INFO level,
+    does not propagate to other loggers, and uses a StreamHandler with
+    RedactingFormatter to format log records.
+    '''
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+
+    stream_handler = logging.StreamHandler()
+    formatter = RedactingFormatter(fields=PII_FIELDS)
+    stream_handler.setFormatter(formatter)
+
+    logger.addHandler(stream_handler)
+
+    return logger
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    '''
+    Connects to a secure MySQL database using credentials from environment
+    variables and returns a MySQLConnection object.
+    '''
+    # Check for missing environment variables
+    if not all([os.getenv("PERSONAL_DATA_DB_USERNAME"),
+                os.getenv("PERSONAL_DATA_DB_PASSWORD"),
+                os.getenv("PERSONAL_DATA_DB_HOST"),
+                os.getenv("PERSONAL_DATA_DB_NAME")]):
+        raise ValueError("Some required environment variables are missing.")
+
+    try:
+        # Create a MySQL database connection using environment variables
+        connector = mysql.connector.connect(
+            user=os.getenv("PERSONAL_DATA_DB_USERNAME", "root"),
+            password=os.getenv("PERSONAL_DATA_DB_PASSWORD", ""),
+            host=os.getenv("PERSONAL_DATA_DB_HOST", "localhost"),
+            database=os.getenv("PERSONAL_DATA_DB_NAME")
+        )
+        return connector
+    except Error as e:
+        # Handle MySQL connection errors
+        print(f"Error connecting to MySQL: {e}")
+        return None
+```
+
+
+**Usage**
+
+1. **Set Environment Variables:**
+   Before running the script, you need to set the necessary environment variables to securely store your database credentials. Run the following commands in your terminal:
+
+   ```sh
+   export PERSONAL_DATA_DB_USERNAME=root
+   export PERSONAL_DATA_DB_PASSWORD=password  # Replace 'password' with your actual password
+   export PERSONAL_DATA_DB_HOST=localhost
+   export PERSONAL_DATA_DB_NAME=my_db
+   ```
+
+   Verify that the environment variables have been set correctly:
+
+   ```sh
+   echo $PERSONAL_DATA_DB_USERNAME
+   echo $PERSONAL_DATA_DB_PASSWORD
+   echo $PERSONAL_DATA_DB_HOST
+   echo $PERSONAL_DATA_DB_NAME
+   ```
+
+2. **Function Purpose:**
+   The `get_db` function establishes a secure connection to a MySQL database using credentials from environment variables. This function ensures that sensitive data like usernames and passwords are not hardcoded in the code or exposed in version control.
+
+3. **Examples of Using the `get_db` Function:**
+
+   You can use the `get_db` function to connect to a MySQL database securely:
+
+   ```python
+   # Example
+   from filtered_logger import get_db
+
+   db = get_db()
+   if db:
+       cursor = db.cursor()
+       cursor.execute("SELECT COUNT(*) FROM users;")
+       for row in cursor:
+           print(row[0])
+       cursor.close()
+       db.close()
+   else:
+       print("Failed to connect to the database.")
+   ```
+
+4. **Running the Script to Test the Function:**
+
+   To test the functionality of the `get_db` function, use `3-main.py`:
+
+   ```python
+   #!/usr/bin/env python3
+   """
+   Main file
+   """
+
+   get_db = __import__('filtered_logger').get_db
+
+   db = get_db()
+   if db:
+       cursor = db.cursor()
+       cursor.execute("SELECT COUNT(*) FROM users;")
+       for row in cursor:
+           print(row[0])
+       cursor.close()
+       db.close()
+   else:
+       print("Failed to connect to the database.")
+   ```
+
+   Make the script executable by running:
+
+   ```sh
+   chmod +x 3-main.py
+   ```
+
+   Then, run the script to test:
+
+   ```sh
+   ./3-main.py
+   ```
+
+   Verify the output matches the expected results.
+
+**Expected Output:**
+
+```bash
+2
+```
+
+**Troubleshooting:**
+
+- **Error: Some Required Environment Variables Are Missing**
+  - Make sure you have set all necessary environment variables:
+    ```sh
+    export PERSONAL_DATA_DB_USERNAME=root
+    export PERSONAL_DATA_DB_PASSWORD=<your_password>  # Replace with your actual password
+    export PERSONAL_DATA_DB_HOST=localhost
+    export PERSONAL_DATA_DB_NAME=my_db
+    ```
+
+- **Error: `Error connecting to MySQL`**
+  - Check if your MySQL server is running.
+  - Verify that the credentials (username, password, host, and database name) are correct.
+  - Ensure that the user has the necessary permissions to connect to the MySQL database.
+  - Restart the MySQL service if needed:
+    ```sh
+    sudo service mysql restart
+    ```
+
+
+**Explanation:**
+
+- **Environment Variables Usage:** The function securely uses environment variables to retrieve database credentials, enhancing security by avoiding hardcoding sensitive information.
+- **Error Handling:** The code includes checks and error handling to ensure that missing credentials or connection errors are handled gracefully, providing clear messages for easier troubleshooting.
+
+</details>
