@@ -779,3 +779,208 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
 - **Error Handling:** The code includes checks and error handling to ensure that missing credentials or connection errors are handled gracefully, providing clear messages for easier troubleshooting.
 
 </details>
+
+### Task 4: Read and Filter Data
+
+<details>
+<summary>Implement a `main` function that connects to a secure database, retrieves user data, and logs it with sensitive information redacted:</summary>
+<br>
+
+**Description:**
+
+The `main` function connects to a secure MySQL database using credentials stored in environment variables. It retrieves all rows from the `users` table and logs each row using a custom logger that redacts sensitive information (such as `name`, `email`, `phone`, `ssn`, and `password`).
+
+**Implementation:**
+
+```python
+#!/usr/bin/env python3
+'''
+This module contains functions and classes for filtering log messages,
+creating loggers that redact sensitive information, and connecting securely
+to a MySQL database.
+'''
+
+import re  # For regular expression operations
+import logging  # To handle logging and formatting
+from typing import List  # For type annotations
+import os  # For environment variable access
+import mysql.connector  # For connecting to the MySQL database
+from mysql.connector import Error  # For handling MySQL errors
+
+
+def filter_datum(fields: List[str], redaction: str, message: str,
+                 separator: str) -> str:
+    '''
+    Obfuscates fields in a log message.
+    '''
+    pattern = f"({'|'.join(fields)})=.+?{separator}"
+
+    return re.sub(
+        pattern, lambda m: f"{m.group(1)}={redaction}{separator}", message
+    )
+
+
+class RedactingFormatter(logging.Formatter):
+    '''
+    Redacting Formatter class
+    '''
+
+    REDACTION = "***"
+    FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
+    SEPARATOR = ";"
+
+    def __init__(self, fields: List[str]):
+        '''
+        Initializes the formatter with the specified fields to redact.
+        '''
+        super(RedactingFormatter, self).__init__(self.FORMAT)
+        self.fields = fields
+
+    def format(self, record: logging.LogRecord) -> str:
+        '''
+        Formats the log record, redacting specified fields.
+        '''
+        original_message = super().format(record)
+        return filter_datum(self.fields, self.REDACTION, original_message,
+                            self.SEPARATOR)
+
+
+# Define a tuple containing fields considered as PII in user_data.csv
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
+
+
+def get_logger() -> logging.Logger:
+    '''
+    Creates and returns a logger named user_data that logs up to INFO level,
+    does not propagate to other loggers, and uses a StreamHandler with
+    RedactingFormatter to format log records.
+    '''
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+
+    stream_handler = logging.StreamHandler()
+    formatter = RedactingFormatter(fields=PII_FIELDS)
+    stream_handler.setFormatter(formatter)
+
+    logger.addHandler(stream_handler)
+
+    return logger
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    '''
+    Connects to a secure MySQL database using credentials from environment
+    variables and returns a MySQLConnection object.
+    '''
+    # Check for missing environment variables
+    if not all([os.getenv("PERSONAL_DATA_DB_USERNAME"),
+                os.getenv("PERSONAL_DATA_DB_PASSWORD"),
+                os.getenv("PERSONAL_DATA_DB_HOST"),
+                os.getenv("PERSONAL_DATA_DB_NAME")]):
+        raise ValueError("Some required environment variables are missing.")
+
+    try:
+        # Create a MySQL database connection using environment variables
+        connector = mysql.connector.connect(
+            user=os.getenv("PERSONAL_DATA_DB_USERNAME", "root"),
+            password=os.getenv("PERSONAL_DATA_DB_PASSWORD", ""),
+            host=os.getenv("PERSONAL_DATA_DB_HOST", "localhost"),
+            database=os.getenv("PERSONAL_DATA_DB_NAME")
+        )
+        return connector
+    except Error as e:
+        # Handle MySQL connection errors
+        print(f"Error connecting to MySQL: {e}")
+        return None
+
+
+def main():
+    '''
+    Main function that retrieves and prints all user data from the database
+    with sensitive information redacted.
+    '''
+    db = get_db()
+    if db:
+        cursor = db.cursor()
+        cursor.execute(
+            "SELECT name, email, phone, ssn, password, ip, last_login, "
+            "user_agent FROM users;"
+        )
+
+        logger = get_logger()
+
+        for row in cursor:
+            message = (
+                f"name={row[0]}; email={row[1]}; phone={row[2]}; "
+                f"ssn={row[3]}; password={row[4]}; ip={row[5]}; "
+                f"last_login={row[6]}; user_agent={row[7]};"
+            )
+            logger.info(message)
+
+        cursor.close()
+        db.close()
+    else:
+        print("Failed to connect to the database.")
+
+
+if __name__ == "__main__":
+    main()
+
+```
+
+**Usage:**
+
+1. **Set Environment Variables:**
+   Before running the script, you need to set the necessary environment variables to securely store your database credentials:
+
+   ```sh
+   export PERSONAL_DATA_DB_USERNAME=root
+   export PERSONAL_DATA_DB_PASSWORD=password  # Replace 'password' with your actual password
+   export PERSONAL_DATA_DB_HOST=localhost
+   export PERSONAL_DATA_DB_NAME=my_db
+   ```
+
+   Verify that the environment variables have been set correctly:
+
+   ```sh
+   echo $PERSONAL_DATA_DB_USERNAME
+   echo $PERSONAL_DATA_DB_PASSWORD
+   echo $PERSONAL_DATA_DB_HOST
+   echo $PERSONAL_DATA_DB_NAME
+   ```
+
+2. **Run the Script:**
+
+   Make the script executable and run it:
+
+   ```sh
+   chmod +x filtered_logger.py
+   PERSONAL_DATA_DB_USERNAME=root PERSONAL_DATA_DB_PASSWORD=password PERSONAL_DATA_DB_HOST=localhost PERSONAL_DATA_DB_NAME=my_db ./filtered_logger.py
+   ```
+
+3. **Expected Output:**
+
+   The output should display redacted log messages for each user record in the database:
+
+   ```bash
+[HOLBERTON] user_data INFO 2024-09-08 12:41:10,638: name=***; email=***; phone=***; ssn=***; password=***; ip=60ed:c396:2ff:244:bbd0:9208:26f2:93ea; last_login=2019-11-14 06:14:24; user_agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36;
+[HOLBERTON] user_data INFO 2024-09-08 12:41:10,638: name=***; email=***; phone=***; ssn=***; password=***; ip=f724:c5d1:a14d:c4c5:bae2:9457:3769:1969; last_login=2019-11-14 06:16:19; user_agent=Mozilla/5.0 (Linux; U; Android 4.1.2; de-de; GT-I9100 Build/JZO54K) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30;
+
+   ```
+
+**Troubleshooting:**
+
+- **Error: Failed to connect to the database.**
+  - Ensure that the environment variables are set correctly.
+  - Verify that the MySQL server is running and accessible.
+
+- **Error: Some required environment variables are missing.**
+  - Make sure all necessary environment variables are exported before running the script.
+
+**Explanation:**
+
+- **Environment Variables Usage:** The function securely uses environment variables to retrieve database credentials, enhancing security by avoiding hardcoding sensitive information.
+- **Error Handling:** The code includes checks and error handling to ensure that missing credentials or connection errors are handled gracefully, providing clear messages for easier troubleshooting.
+- **Logging Redacted Information:** The `main` function uses the custom logger to log each user record with sensitive information redacted, ensuring compliance with privacy requirements.
+</details>

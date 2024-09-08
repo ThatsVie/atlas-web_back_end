@@ -95,6 +95,39 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
         )
         return connector
     except Error as e:
-        # For MySQL connection errors
+        # Handle MySQL connection errors
         print(f"Error connecting to MySQL: {e}")
         return None
+
+
+def main():
+    '''
+    Main function that retrieves and prints all user data from the database
+    with sensitive information redacted.
+    '''
+    db = get_db()
+    if db:
+        cursor = db.cursor()
+        cursor.execute(
+            "SELECT name, email, phone, ssn, password, ip, last_login, "
+            "user_agent FROM users;"
+        )
+
+        logger = get_logger()
+
+        for row in cursor:
+            message = (
+                f"name={row[0]}; email={row[1]}; phone={row[2]}; "
+                f"ssn={row[3]}; password={row[4]}; ip={row[5]}; "
+                f"last_login={row[6]}; user_agent={row[7]};"
+            )
+            logger.info(message)
+
+        cursor.close()
+        db.close()
+    else:
+        print("Failed to connect to the database.")
+
+
+if __name__ == "__main__":
+    main()
