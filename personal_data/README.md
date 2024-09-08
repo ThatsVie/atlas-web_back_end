@@ -1317,3 +1317,8 @@ True
 - **Security Measure:** This function ensures that passwords are securely validated without exposing or storing them in plain text.
 
 </details>
+
+## Author
+
+Vie Paula - [GitHub Profile](https://github.com/ThatsVie)
+
