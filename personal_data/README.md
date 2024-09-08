@@ -4,7 +4,7 @@
 </div>
 
 <br>
-This project focuses on understanding and handling Personally Identifiable Information (PII) and implementing best practices for data privacy and security in Python. It covers how to filter logs, encrypt passwords, and authenticate securely using environment variables.
+This project focuses on securely handling and managing sensitive user data by implementing robust logging, password hashing, and database authentication practices. It covers essential techniques such as obfuscating Personally Identifiable Information (PII) in log messages, securely hashing and validating passwords, and connecting to a MySQL database using environment variables. The project emphasizes best practices for data privacy and security in Python applications.
 
 ## Resources
 
