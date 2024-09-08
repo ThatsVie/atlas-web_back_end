@@ -786,6 +786,23 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
 <summary>Implement a `main` function that connects to a secure database, retrieves user data, and logs it with sensitive information redacted:</summary>
 <br>
 
+Implement a main function that takes no arguments and returns nothing.
+
+The function will obtain a database connection using get_db and retrieve all rows in the users table and display each row under a filtered format like this:
+
+```bash
+[HOLBERTON] user_data INFO 2019-11-19 18:37:59,596: name=***; email=***; phone=***; ssn=***; password=***; ip=e848:e856:4e0b:a056:54ad:1e98:8110:ce1b; last_login=2019-11-14T06:16:24; user_agent=Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; KTXN);
+```
+
+Filtered fields:
+
+name
+email
+phone
+ssn
+password
+Only your main function should run when the module is executed.
+
 **Description:**
 
 The `main` function connects to a secure MySQL database using credentials stored in environment variables. It retrieves all rows from the `users` table and logs each row using a custom logger that redacts sensitive information (such as `name`, `email`, `phone`, `ssn`, and `password`).
@@ -983,4 +1000,128 @@ if __name__ == "__main__":
 - **Environment Variables Usage:** The function securely uses environment variables to retrieve database credentials, enhancing security by avoiding hardcoding sensitive information.
 - **Error Handling:** The code includes checks and error handling to ensure that missing credentials or connection errors are handled gracefully, providing clear messages for easier troubleshooting.
 - **Logging Redacted Information:** The `main` function uses the custom logger to log each user record with sensitive information redacted, ensuring compliance with privacy requirements.
+
 </details>
+
+### Task 5: Encrypting Passwords
+
+<details> 
+<summary>Implement a `hash_password` function that hashes user passwords securely:</summary>
+<br>
+
+User passwords should NEVER be stored in plain text in a database.
+Implement a hash_password function that expects one string argument name password and returns a salted, hashed password, which is a byte string.
+Use the bcrypt package to perform the hashing (with hashpw).
+
+
+**Description:**
+
+The `hash_password` function hashes a plain text password using the `bcrypt` package. This ensures that passwords are not stored in plain text, which is a critical security measure for protecting user data.
+
+**Installation:**
+
+To use the `bcrypt` package for password hashing, you must first install it. Run the following command to install `bcrypt` using `pip3`:
+
+```sh
+pip3 install bcrypt
+```
+
+This will install the necessary package to perform secure password hashing.
+
+**Implementation:**
+
+```python
+#!/usr/bin/env python3
+'''
+This module contains a function for securely hashing passwords
+using the bcrypt package.
+'''
+
+import bcrypt  # Import bcrypt for password hashing
+
+
+def hash_password(password: str) -> bytes:
+    '''
+    Hashes a password using bcrypt with a salt.
+
+    Args:
+        password (str): The plain text password to be hashed.
+
+    Returns:
+        bytes: A salted, hashed password as a byte string.
+    '''
+    # Generate a salt
+    salt = bcrypt.gensalt()
+
+    # Hash the password using the generated salt
+    hashed_password = bcrypt.hashpw(password.encode(), salt)
+
+    return hashed_password
+```
+
+**Usage:**
+
+1. **Function Purpose:**
+   The `hash_password` function securely hashes a plain text password by generating a random salt and using the `bcrypt` package to create a hashed password. The resulting hash is a byte string that can be safely stored in a database.
+
+2. **Examples of Using the `hash_password` Function:**
+
+   You can use the `hash_password` function to hash any password:
+
+   ```python
+   # Example Usage
+   from encrypt_password import hash_password
+
+   password = "MyAmazingPassw0rd"
+   print(hash_password(password))  # Output: A salted, hashed password in bytes
+   print(hash_password(password))  # Output: A different salted, hashed password in bytes
+   ```
+
+3. **Running the script to test the function:**
+
+   To test the functionality of the `hash_password` function, use `5-main.py`:
+
+   ```python
+   #!/usr/bin/env python3
+   """
+   Main file
+   """
+
+   hash_password = __import__('encrypt_password').hash_password
+
+   password = "MyAmazingPassw0rd"
+   print(hash_password(password))
+   print(hash_password(password))
+   ```
+
+   Make the script executable by running:
+
+   ```sh
+   chmod +x encrypt_password.py
+   chmod +x 5-main.py
+   ```
+
+   Then, run the script to test:
+
+   ```sh
+   ./5-main.py
+   ```
+
+**Expected Output:**
+
+```bash
+b'$2b$12$KCxqwXXe5dxD9XFmKYIOme0.oUHFYs3/xu8uVXQ1kQjXq42sa9Bla'
+b'$2b$12$5Hbld/nDiOMhij/GMR17MOYHMLwOkkMcAgNYA9ujC5nVjsi7GLPb2'
+
+```
+
+- The output should display two different salted, hashed passwords. Each time you run the script, the hashes will be different due to the use of a random salt.
+
+**Explanation:**
+
+- **bcrypt Package:** Uses the `bcrypt` package to generate a secure, salted hash of the password, making it resistant to various attacks.
+- **Hashing with Salt:** The function generates a new random salt every time it is called, ensuring that even if the same password is hashed multiple times, the resulting hashes will be different.
+- **Security Measure:** This method of hashing is secure against rainbow table attacks and adds an extra layer of protection for stored user passwords.
+
+</details>
+
