@@ -16,13 +16,65 @@ This project focuses on understanding and handling Personally Identifiable Infor
 
 - **[Logging to Files, Setting Levels, and Formatting](https://www.youtube.com/watch?v=-ARI4Cz-awo):** A YouTube tutorial explaining how to set up logging in Python, including writing logs to files, setting log levels, and formatting log messages for clarity and security.
 
+- **[Python RegEx](https://www.geeksforgeeks.org/regular-expression-python-examples-set-1/):** A GeeksforGeeks article that introduces regular expressions (RegEx) in Python, explaining how to use the `re` module for pattern matching and string manipulation, useful for tasks like obfuscating sensitive information in log messages.
+
+- **[Logging in Python](https://www.geeksforgeeks.org/logging-in-python/):** A GeeksforGeeks article that explains Python’s logging module, covering how to create loggers, set logging levels, use different handlers (like `StreamHandler`), and format log messages, which is essential for implementing secure logging.
+
+- **[Python os.getenv() Method](https://www.geeksforgeeks.org/python-os-getenv-method/):** A GeeksforGeeks article that explains how to use the `os` module, particularly the `os.getenv()` method, to safely retrieve environment variables, crucial for securely handling sensitive data such as database credentials.
+
+- **[Connecting to MySQL Database using Python](https://www.geeksforgeeks.org/mysql-connector-python/):** A GeeksforGeeks article that discusses how to connect to a MySQL database in Python using the `mysql-connector-python` library. It includes examples for connecting to a database, running queries, and handling results.
+
+- **[Password Hashing with bcrypt](https://www.geeksforgeeks.org/hashing-passwords-in-python-with-bcrypt/):** A GeeksforGeeks article detailing how to use the `bcrypt` library to hash passwords securely in Python, including generating salted hashes.
+
+- **[Validating Passwords using bcrypt](https://www.geeksforgeeks.org/password-hashing-with-bcrypt/):** A GeeksforGeeks article covering how to validate a plain text password against a hashed password using the `bcrypt` library, which is useful for implementing functions like `is_valid`.
+
+- **[MySQL Connector for Python](https://dev.mysql.com/doc/connector-python/en/):** Official MySQL documentation on the `mysql-connector-python` library, which explains how to connect to a MySQL database from Python, run queries, and manage connections securely.
+
+- **[Python `re` Module Documentation](https://docs.python.org/3/library/re.html):** Official Python documentation on the `re` module, which provides tools for working with regular expressions, including pattern matching and substitution.
+
+- **[Python `os` Module Documentation](https://docs.python.org/3/library/os.html):** Official Python documentation on the `os` module, which provides a way to use operating system-dependent functionality, such as reading and setting environment variables.
+
+
+
 ## Learning Objectives
 
+<details>
+<summary>- Identify examples of Personally Identifiable Information (PII).</summary>
+<br>
+Covered in: **Task 0, Task 1, and Task 4**
 
-- Identify examples of Personally Identifiable Information (PII).
-- Implement a log filter that obfuscates PII fields.
-- Encrypt a password and check the validity of an input password.
-- Authenticate to a database using environment variables.
+- **Task 0**: `filter_datum` function uses a list of PII fields to obfuscate specific information in log messages.
+- **Task 1**: `RedactingFormatter` class uses PII fields to redact sensitive information.
+- **Task 4**: The `main` function retrieves data from a database and redacts fields identified as PII, such as `name`, `email`, `phone`, `ssn`, and `password`.
+</details>
+
+<details>
+<summary>- Implement a log filter that obfuscates PII fields.</summary>
+<br>
+Covered in: **Task 0 and Task 1**
+
+- **Task 0**: `filter_datum` function creates a regex pattern to obfuscate specified fields in log messages.
+- **Task 1**: `RedactingFormatter` class is implemented to filter values in incoming log records using the `filter_datum` function, which redacts specified PII fields.
+</details>
+
+<details>
+<summary>- Encrypt a password and check the validity of an input password.</summary>
+<br>
+Covered in: **Task 5 and Task 6**
+
+- **Task 5**: `hash_password` function securely hashes a password using the `bcrypt` library.
+- **Task 6**: `is_valid` function checks if a given plain text password matches a hashed password using `bcrypt`.
+</details>
+
+<details>
+<summary>- Authenticate to a database using environment variables.</summary>
+<br>
+Covered in: **Task 3 and Task 4**
+
+- **Task 3**: `get_db` function connects to a secure MySQL database using credentials stored in environment variables.
+- **Task 4**: The `main` function uses the database connection established by `get_db` to authenticate and fetch user data securely.
+</details>
+
 
 ## Requirements
 
@@ -1125,3 +1177,143 @@ b'$2b$12$5Hbld/nDiOMhij/GMR17MOYHMLwOkkMcAgNYA9ujC5nVjsi7GLPb2'
 
 </details>
 
+### Task 6: Check Valid Password
+
+<details> 
+<summary>Implement an `is_valid` function to validate user passwords securely:</summary>
+<br>
+
+Implement an is_valid function that expects 2 arguments and returns a boolean.
+Arguments:
+hashed_password: bytes type
+password: string type
+Use bcrypt to validate that the provided password matches the hashed password.
+
+
+**Description:**
+
+The `is_valid` function checks if a provided plain text password matches a previously hashed password using the `bcrypt` package. This ensures that only valid passwords are accepted for authentication, enhancing security.
+
+**Installation:**
+
+Before using the `is_valid` function, make sure the `bcrypt` package is installed. It should have been done in the previous task but just in case you can install it by running:
+
+```sh
+pip3 install bcrypt
+```
+
+**Implementation:**
+
+```python
+#!/usr/bin/env python3
+'''
+This module contains functions for securely hashing passwords and
+validating passwords using the bcrypt package.
+'''
+
+import bcrypt  # Import bcrypt for password hashing and validation
+
+
+def hash_password(password: str) -> bytes:
+    '''
+    Hashes a password using bcrypt with a salt.
+
+    Args:
+        password (str): The plain text password to be hashed.
+
+    Returns:
+        bytes: A salted, hashed password as a byte string.
+    '''
+    # Generate a salt
+    salt = bcrypt.gensalt()
+
+    # Hash the password using the generated salt
+    hashed_password = bcrypt.hashpw(password.encode(), salt)
+
+    return hashed_password
+
+
+def is_valid(hashed_password: bytes, password: str) -> bool:
+    '''
+    Validates if the provided password matches the hashed password.
+
+    Args:
+        hashed_password (bytes): The hashed password.
+        password (str): The plain text password to validate.
+
+    Returns:
+        bool: True if the password matches the hashed password, False otherwise.
+    '''
+    # Check if the provided password matches the hashed password
+    return bcrypt.checkpw(password.encode(), hashed_password)
+```
+
+**Usage:**
+
+1. **Function Purpose:**
+   The `is_valid` function checks if a given plain text password matches a stored hashed password. This is essential for securely validating user credentials during the authentication process.
+
+2. **Examples of Using the `is_valid` Function:**
+
+   You can use the `is_valid` function to validate passwords:
+
+   ```python
+   # Example Usage
+   from encrypt_password import hash_password, is_valid
+
+   password = "MyAmazingPassw0rd"
+   encrypted_password = hash_password(password)
+
+   print(encrypted_password)  # Output: A salted, hashed password in bytes
+   print(is_valid(encrypted_password, password))  # Output: True
+   ```
+
+3. **Running the script to test the function:**
+
+   To test the functionality of the `is_valid` function, use `6-main.py`:
+
+   ```python
+   #!/usr/bin/env python3
+   """
+   Main file
+   """
+
+   hash_password = __import__('encrypt_password').hash_password
+   is_valid = __import__('encrypt_password').is_valid
+
+   password = "MyAmazingPassw0rd"
+   encrypted_password = hash_password(password)
+   print(encrypted_password)
+   print(is_valid(encrypted_password, password))
+   ```
+
+   Make the script executable by running:
+
+   ```sh
+   chmod +x encrypt_password.py
+   chmod +x 6-main.py
+   ```
+
+   Then, run the script to test:
+
+   ```sh
+   ./6-main.py
+   ```
+
+**Expected Output:**
+
+```bash
+b'$2b$12$px5R4O.Ph6u.HlVQnl5agew06e2SXqhTuHVoQQgezLVtpUVJ6YlUS'
+True
+
+```
+
+- The output should display the hashed password and then `True`, indicating that the provided plain text password matches the hashed password.
+
+**Explanation:**
+
+- **bcrypt Package:** Uses the `bcrypt` package to securely validate that a plain text password matches a previously hashed password.
+- **Validation with Salted Hash:** The function `is_valid` securely compares the password by hashing the input and comparing it with the stored hash. This method is secure against various types of attacks.
+- **Security Measure:** This function ensures that passwords are securely validated without exposing or storing them in plain text.
+
+</details>
