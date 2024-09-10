@@ -217,6 +217,7 @@ This task involves setting up and running a simple API that contains a single mo
        ```
      - This confirms that the API server is running correctly and responding to HTTP GET requests.
 
+![Screenshot 2024-09-10 164300](https://github.com/user-attachments/assets/b9fde9c9-05f8-4d07-9228-72609de2f789)
 
 </details>
 
@@ -362,6 +363,8 @@ This task involves adding a new error handler for unauthorized access (HTTP stat
        {"error":"Unauthorized"}
        ```
      - This confirms that the API server is running correctly and handling unauthorized access as expected.
+   
+![Screenshot 2024-09-10 164313](https://github.com/user-attachments/assets/4d9e2908-8b38-4194-872f-683949861ca3)
 
 
 </details>
