@@ -135,6 +135,8 @@ Throughout the following tasks, you will see references to `0.0.0.0` as the host
 
 For consistency and simplicity, I will use `http://localhost:5000` in place of `http://0.0.0.0:5000` when testing the API in the browser.
 
+**Important:**  
+Between tasks, make sure to terminate the running server before starting a new one to test the next task. If you don't terminate the server, the port (`5000`) will be busy, and the new instance of the server will not start correctly. To stop the server, use `CTRL+C` in the terminal where the server is running.
 
 <details>
 <summary><strong>Task 0: Simple-basic-API</strong></summary>
@@ -366,5 +368,166 @@ This task involves adding a new error handler for unauthorized access (HTTP stat
    
 ![Screenshot 2024-09-10 164313](https://github.com/user-attachments/assets/4d9e2908-8b38-4194-872f-683949861ca3)
 
+
+</details>
+
+<details>
+<summary><strong>Task 2: Error handler: Forbidden</strong></summary>
+
+### Description
+
+This task involves adding a new error handler for the 403 Forbidden status code in `api/v1/app.py` and creating an endpoint `/api/v1/forbidden` in `api/v1/views/index.py` that triggers this error using `abort(403)`.
+
+### Step-by-Step Instructions
+
+1. **Edit `api/v1/app.py`:**
+   - Add a new error handler for the 403 status code. The response should be a JSON object `{"error": "Forbidden"}` with a status code of `403`. Use `jsonify` from Flask to format the response.
+
+  
+   **Updated `api/v1/app.py`:**
+
+   ```python
+   #!/usr/bin/env python3
+   """
+   Route module for the API
+   """
+   from os import getenv
+   from api.v1.views import app_views
+   from flask import Flask, jsonify, abort, request
+   from flask_cors import (CORS, cross_origin)
+   import os
+
+   app = Flask(__name__)
+   app.register_blueprint(app_views)
+   CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
+
+   @app.errorhandler(404)
+   def not_found(error) -> str:
+       """ Not found handler """
+       return jsonify({"error": "Not found"}), 404
+
+   @app.errorhandler(401)
+   def unauthorized(error) -> str:
+       """ Unauthorized handler """
+       return jsonify({"error": "Unauthorized"}), 401
+
+   @app.errorhandler(403)
+   def forbidden(error) -> str:
+       """ Forbidden handler """
+       return jsonify({"error": "Forbidden"}), 403
+
+   if __name__ == "__main__":
+       host = getenv("API_HOST", "0.0.0.0")
+       port = getenv("API_PORT", "5000")
+       app.run(host=host, port=port)
+   ```
+
+2. **Edit `api/v1/views/index.py`:**
+   - Add a new endpoint `/api/v1/forbidden` that raises a 403 error using `abort(403)`.
+
+   **Updated `api/v1/views/index.py`:**
+
+   ```python
+   #!/usr/bin/env python3
+   """ Module of Index views """
+   from flask import jsonify, abort
+   from api.v1.views import app_views
+
+   @app_views.route('/status', methods=['GET'], strict_slashes=False)
+   def status() -> str:
+       """ GET /api/v1/status
+       Return:
+         - the status of the API
+       """
+       return jsonify({"status": "OK"})
+
+   @app_views.route('/stats/', strict_slashes=False)
+   def stats() -> str:
+       """ GET /api/v1/stats
+       Return:
+         - the number of each objects
+       """
+       from models.user import User
+       stats = {}
+       stats['users'] = User.count()
+       return jsonify(stats)
+
+   @app_views.route('/unauthorized', methods=['GET'], strict_slashes=False)
+   def unauthorized_endpoint():
+       """ GET /api/v1/unauthorized
+       Raise:
+         - a 401 error
+       """
+       abort(401)
+
+   @app_views.route('/forbidden', methods=['GET'], strict_slashes=False)
+   def forbidden_endpoint():
+       """ GET /api/v1/forbidden
+       Raise:
+         - a 403 error
+       """
+       abort(403)
+   ```
+
+3. **Start the API Server:**
+   - Run the following command to start the API server:
+     ```bash
+     API_HOST=0.0.0.0 API_PORT=5000 python3 -m api.v1.app
+     ```
+   - You should see output indicating the Flask app is running:
+     ```
+     * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+     ```
+
+4. **Test the Forbidden Endpoint:**
+
+   - **Using `curl` in the Terminal:**
+     - In a new terminal tab, use `curl` to test the new endpoint:
+       ```bash
+       curl "http://localhost:5000/api/v1/forbidden"
+       ```
+     - The expected output should be:
+       ```json
+       {"error":"Forbidden"}
+       ```
+     - You can also use the `-vvv` flag for a verbose output:
+       ```bash
+       curl "http://localhost:5000/api/v1/forbidden" -vvv
+       ```
+     - The verbose output should show:
+       ```
+       *   Trying 0.0.0.0:5000...
+       * Connected to 0.0.0.0 (127.0.0.1) port 5000 (#0)
+       > GET /api/v1/forbidden HTTP/1.1
+       > Host: 0.0.0.0:5000
+       > User-Agent: curl/7.81.0
+       > Accept: */*
+       > 
+       * Mark bundle as not supporting multiuse
+       * HTTP 1.0, assume close after body
+       < HTTP/1.0 403 FORBIDDEN
+       < Content-Type: application/json
+       < Content-Length: 27
+       < Access-Control-Allow-Origin: *
+       < Server: Werkzeug/1.0.1 Python/3.10.12
+       < Date: Tue, 10 Sep 2024 22:00:56 GMT
+       < 
+       {"error":"Forbidden"}
+       * Closing connection 0
+       ```
+
+     - This confirms that the API server is running and the 403 error handler is working correctly.
+
+   - **Using a Web Browser:**
+     - Open your web browser (e.g., Chrome, Firefox, Safari).
+     - In the address bar, type the following URL and press Enter:
+       ```
+       http://localhost:5000/api/v1/forbidden
+       ```
+     - The browser should display the following JSON response:
+       ```json
+       {"error":"Forbidden"}
+       ```
+     - This confirms that the API server is running correctly and handling forbidden access as expected.
 
 </details>
