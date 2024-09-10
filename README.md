@@ -57,6 +57,12 @@ This project focuses on implementing efficient pagination techniques for managin
 
 To view a README.md file for Pagination visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/pagination/README.md)
 
+## Personal Data
+
+This project focuses on securely handling and managing sensitive user data by implementing robust logging, password hashing, and database authentication practices. It covers essential techniques such as obfuscating Personally Identifiable Information (PII) in log messages, securely hashing and validating passwords, and connecting to a MySQL database using environment variables. The project emphasizes best practices for data privacy and security in Python applications.
+
+To view a README.md file for Personal Data visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/personal_data/README.md)
+
 ## Author
 
 Vie Paula - [GitHub Profile](https://github.com/ThatsVie)
