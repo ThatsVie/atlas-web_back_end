@@ -191,3 +191,136 @@ This task involves setting up and running a simple API that contains a single mo
 
 </details>
 
+<details>
+<summary><strong>Task 1: Error handler: Unauthorized</strong></summary>
+
+### Description
+
+This task involves adding a new error handler for unauthorized access (HTTP status code 401) in `api/v1/app.py` and creating an endpoint that triggers this error in `api/v1/views/index.py`.
+
+### Step-by-Step Instructions
+
+1. **Edit `api/v1/app.py`:**
+   - Add a new error handler for the 401 status code. The response should be a JSON object `{"error": "Unauthorized"}` with a status code of `401`. Use `jsonify` from Flask to format the response.
+   - The updated `app.py` should look like this:
+
+   ```python
+   #!/usr/bin/env python3
+   """
+   Route module for the API
+   """
+   from os import getenv
+   from api.v1.views import app_views
+   from flask import Flask, jsonify, abort, request
+   from flask_cors import (CORS, cross_origin)
+   import os
+
+   app = Flask(__name__)
+   app.register_blueprint(app_views)
+   CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
+
+   @app.errorhandler(404)
+   def not_found(error) -> str:
+       """ Not found handler
+       """
+       return jsonify({"error": "Not found"}), 404
+
+   @app.errorhandler(401)
+   def unauthorized(error) -> str:
+       """ Unauthorized handler
+       """
+       return jsonify({"error": "Unauthorized"}), 401
+
+   if __name__ == "__main__":
+       host = getenv("API_HOST", "0.0.0.0")
+       port = getenv("API_PORT", "5000")
+       app.run(host=host, port=port)
+   ```
+
+2. **Edit `api/v1/views/index.py`:**
+   - Add a new endpoint `/api/v1/unauthorized` that raises a 401 error using `abort(401)`.
+   - The updated `index.py` should look like this:
+
+   ```python
+   #!/usr/bin/env python3
+   """ Module of Index views
+   """
+   from flask import jsonify, abort
+   from api.v1.views import app_views
+
+   @app_views.route('/status', methods=['GET'], strict_slashes=False)
+   def status() -> str:
+       """ GET /api/v1/status
+       Return:
+         - the status of the API
+       """
+       return jsonify({"status": "OK"})
+
+   @app_views.route('/stats/', strict_slashes=False)
+   def stats() -> str:
+       """ GET /api/v1/stats
+       Return:
+         - the number of each objects
+       """
+       from models.user import User
+       stats = {}
+       stats['users'] = User.count()
+       return jsonify(stats)
+
+   @app_views.route('/unauthorized', methods=['GET'], strict_slashes=False)
+   def unauthorized_endpoint():
+       """ GET /api/v1/unauthorized
+       Raise:
+         - a 401 error
+       """
+       abort(401)
+   ```
+
+3. **Start the API Server:**
+   - Run the following command to start the API server:
+     ```bash
+     API_HOST=0.0.0.0 API_PORT=5000 python3 -m api.v1.app
+     ```
+   - You should see output indicating the Flask app is running:
+     ```
+     * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+     ```
+
+4. **Test the Unauthorized Endpoint:**
+   - In a new terminal tab, use `curl` to test the new endpoint:
+     ```bash
+     curl "http://0.0.0.0:5000/api/v1/unauthorized"
+     ```
+   - The expected output should be:
+     ```json
+     {"error":"Unauthorized"}
+     ```
+   - You can also use the `-vvv` flag for a verbose output:
+     ```bash
+     curl "http://0.0.0.0:5000/api/v1/unauthorized" -vvv
+     ```
+   - The verbose output should show:
+     ```
+     *   Trying 0.0.0.0:5000...
+     * Connected to 0.0.0.0 (127.0.0.1) port 5000 (#0)
+     > GET /api/v1/unauthorized HTTP/1.1
+     > Host: 0.0.0.0:5000
+     > User-Agent: curl/7.81.0
+     > Accept: */*
+     > 
+     * Mark bundle as not supporting multiuse
+     * HTTP 1.0, assume close after body
+     < HTTP/1.0 401 UNAUTHORIZED
+     < Content-Type: application/json
+     < Content-Length: 25
+     < Access-Control-Allow-Origin: *
+     < Server: Werkzeug/1.0.1 Python/3.10.12
+     < Date: Tue, 10 Sep 2024 20:59:56 GMT
+     < 
+     {"error":"Unauthorized"}
+     * Closing connection 0
+     ```
+
+   - This confirms that the API server is running and the 401 error handler is working correctly.
+
+</details>
