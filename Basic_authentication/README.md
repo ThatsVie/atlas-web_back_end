@@ -1,4 +1,12 @@
-# Basic Authentication
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/68a4c398-6158-43b2-a6f2-ec1a357f5390" alt="basic pawthentication">
+</div>
+
+
+<div align="center">
+  <h1>Basic Pawthentication</h1>
+</div>
 
 ## Background Context
 
