@@ -1,0 +1,9 @@
+__pycache__/
+.DS_Store
+*.json
+venv/
+.env
+*.log
+.vscode/
+.idea/
+Thumbs.db
