@@ -127,6 +127,15 @@ By carefully downgrading or upgrading packages to their compatible versions, the
 
 ## Tasks and Detailed Usage
 
+**Note:**  
+Throughout the following tasks, you will see references to `0.0.0.0` as the host address for the API server. However, I am using **VS Code** for development and testing, and I prefer to use `localhost` (`http://localhost:5000`) instead of `0.0.0.0`. Here's why:
+
+- **`localhost`** refers specifically to the local machine and resolves to the IP address `127.0.0.1`, which is convenient for local testing in a browser.
+- **`0.0.0.0`** is a special address that makes the server listen on all available network interfaces of the local machine. While this allows access from other devices on the same network, using `localhost` is functionally equivalent and more straightforward for local testing within VS Code.
+
+For consistency and simplicity, I will use `http://localhost:5000` in place of `http://0.0.0.0:5000` when testing the API in the browser.
+
+
 <details>
 <summary><strong>Task 0: Simple-basic-API</strong></summary>
 
@@ -196,6 +205,18 @@ This task involves setting up and running a simple API that contains a single mo
      * Closing connection 0
      ```
    - This confirms that the API server is running and responding correctly.
+   - **Using a Web Browser:**
+     - Open your web browser (e.g., Chrome, Firefox, Safari).
+     - In the address bar, type the following URL and press Enter:
+       ```
+       http://localhost:5000/api/v1/status
+       ```
+     - The browser should display the following JSON response:
+       ```json
+       {"status":"OK"}
+       ```
+     - This confirms that the API server is running correctly and responding to HTTP GET requests.
+
 
 </details>
 
@@ -330,5 +351,17 @@ This task involves adding a new error handler for unauthorized access (HTTP stat
      ```
 
    - This confirms that the API server is running and the 401 error handler is working correctly.
+    - **Using a Web Browser:**
+     - Open your web browser (e.g., Chrome, Firefox, Safari).
+     - In the address bar, type the following URL and press Enter:
+       ```
+       http://localhost:5000/api/v1/unauthorized
+       ```
+     - The browser should display the following JSON response:
+       ```json
+       {"error":"Unauthorized"}
+       ```
+     - This confirms that the API server is running correctly and handling unauthorized access as expected.
+
 
 </details>
