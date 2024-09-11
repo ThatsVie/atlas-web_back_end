@@ -712,3 +712,138 @@ This task involves updating the `require_auth` method in the `Auth` class to det
   - If none of these conditions are met, it returns `True` (authentication required).
 
 </details>
+
+<details>
+<summary><strong>Task 5: Request Validation</strong></summary>
+
+
+
+This task secures the API by validating all incoming requests, ensuring that only authorized requests can access specific resources. The authentication logic is dynamically set up based on the `AUTH_TYPE` environment variable.
+
+### Step-by-Step Instructions
+
+1. **Update the `authorization_header` Method in `Auth` Class:**
+   - Open `api/v1/auth/auth.py` and update the `authorization_header` method:
+
+   ```python
+   def authorization_header(self, request=None) -> str:
+       """Returns the authorization header from the request."""
+       if request is None or 'Authorization' not in request.headers:
+           return None
+       return request.headers['Authorization']
+   ```
+
+2. **Update `api/v1/app.py` to Validate Requests:**
+
+   - Open `api/v1/app.py` and make the following changes:
+     - Define a variable `auth` initialized to `None`.
+     - Use the `AUTH_TYPE` environment variable to determine the type of authentication to use.
+     - Implement the `before_request` method to filter each request.
+
+   **Updated `app.py` code:**
+   ```python
+   auth = None
+   AUTH_TYPE = getenv("AUTH_TYPE")
+
+   if AUTH_TYPE == 'auth':
+       from api.v1.auth.auth import Auth
+       auth = Auth()
+
+   @app.before_request
+   def before_request_handler():
+       """Before request handler to filter each request."""
+       if auth is None:
+           return
+       excluded_paths = [
+           '/api/v1/status/',
+           '/api/v1/unauthorized/',
+           '/api/v1/forbidden/'
+       ]
+       if not auth.require_auth(request.path, excluded_paths):
+           return
+       if auth.authorization_header(request) is None:
+           abort(401)
+       if auth.current_user(request) is None:
+           abort(403)
+   ```
+
+3. **Run the Server with the Correct Environment Variable:**
+
+   - Open a terminal and run the server with the `AUTH_TYPE` environment variable set:
+     ```bash
+     API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=auth python3 -m api.v1.app
+     ```
+
+4. **Test the Request Validation Using `curl`:**
+
+   - In another terminal, use `curl` to test the various endpoints:
+
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/status"
+   # Expected output: {"status": "OK"}
+
+   curl "http://0.0.0.0:5000/api/v1/status/"
+   # Expected output: {"status": "OK"}
+
+   curl "http://0.0.0.0:5000/api/v1/users"
+   # Expected output: {"error": "Unauthorized"}
+
+   curl "http://0.0.0.0:5000/api/v1/users" -H "Authorization: Test"
+   # Expected output: {"error": "Forbidden"}
+   ```
+
+5. **Test the Request Validation in the Browser:**
+
+   - Open your web browser and navigate to the following URL:
+     ```
+     http://localhost:5000/api/v1/status/
+     ```
+   - You should see a JSON response similar to:
+     ```json
+     {
+       "status": "OK"
+     }
+     ```
+
+   - Next, test an endpoint that requires authentication by navigating to:
+     ```
+     http://localhost:5000/api/v1/users
+     ```
+   - You should see a JSON response similar to:
+     ```json
+     {
+       "error": "Unauthorized"
+     }
+     ```
+
+   - **To Test the `Forbidden` Response in the Browser:**
+
+     1. Install a browser extension like **ModHeader** (available for Chrome and Firefox) or any other HTTP header modification tool.
+     2. Open the extension (e.g., **ModHeader**).
+     3. Add a new header:
+        - **Name:** `Authorization`
+        - **Value:** `Test`
+     4. Navigate to:
+        ```
+        http://localhost:5000/api/v1/users
+        ```
+     5. You should see the following JSON response:
+     ```json
+     {
+       "error": "Forbidden"
+     }
+     ```
+
+### Explanation
+
+- **Request Validation Logic:**
+  - **Check for `auth`:** If `auth` is `None`, do nothing.
+  - **Check Path:** If the request path does not require authentication, do nothing.
+  - **Check Authorization Header:** If the `Authorization` header is missing, return a 401 error.
+  - **Check Current User:** If the user is not authenticated, return a 403 error.
+
+### Note
+
+Make sure to terminate the server between tasks to avoid any issues with the port being busy or the old configuration being used.
+
+</details>
