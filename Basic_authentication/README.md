@@ -527,6 +527,9 @@ This task involves adding a new error handler for the 403 Forbidden status code 
        ```
      - This confirms that the API server is running correctly and handling forbidden access as expected.
 
+![Screenshot 2024-09-10 173146](https://github.com/user-attachments/assets/09622d33-322b-4788-a801-ea1a3bdc2f51)
+
+
 </details>
 
 <details>
