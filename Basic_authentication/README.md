@@ -847,3 +847,94 @@ This task secures the API by validating all incoming requests, ensuring that onl
 Make sure to terminate the server between tasks to avoid any issues with the port being busy or the old configuration being used.
 
 </details>
+
+<details>
+<summary><strong>Task 6: Basic Authentication</strong></summary>
+
+This task involves creating a new authentication class, `BasicAuth`, which inherits from `Auth`. The class will be used to manage basic authentication for the API.
+
+### Step-by-Step Instructions
+
+1. **Create the `BasicAuth` Class:**
+   - Create a new file `api/v1/auth/basic_auth.py`.
+   - Inside `basic_auth.py`, define a new class `BasicAuth` that inherits from `Auth`:
+
+   ```python
+   #!/usr/bin/env python3
+   """Basic authentication module for the API."""
+
+   from api.v1.auth.auth import Auth
+
+   class BasicAuth(Auth):
+       """BasicAuth class that inherits from Auth."""
+       pass
+   ```
+
+2. **Update `api/v1/app.py` to Use `BasicAuth`:**
+   - Open `api/v1/app.py` and modify the code to select the correct authentication method based on the environment variable `AUTH_TYPE`:
+
+   ```python
+   auth = None
+   AUTH_TYPE = getenv("AUTH_TYPE")
+
+   if AUTH_TYPE == 'auth':
+       from api.v1.auth.auth import Auth
+       auth = Auth()
+   elif AUTH_TYPE == 'basic_auth':
+       from api.v1.auth.basic_auth import BasicAuth
+       auth = BasicAuth()
+   ```
+
+3. **Run the Server with the Correct Environment Variable:**
+   - Run the server with `AUTH_TYPE` set to `basic_auth`:
+   ```bash
+   API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=basic_auth python3 -m api.v1.app
+   ```
+
+4. **Test the Basic Authentication Using `curl`:**
+   - Use `curl` commands to test the different endpoints:
+
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/status"
+   # Expected output: {"status": "OK"}
+
+   curl "http://0.0.0.0:5000/api/v1/status/"
+   # Expected output: {"status": "OK"}
+
+   curl "http://0.0.0.0:5000/api/v1/users"
+   # Expected output: {"error": "Unauthorized"}
+
+   curl "http://0.0.0.0:5000/api/v1/users" -H "Authorization: Test"
+   # Expected output: {"error": "Forbidden"}
+   ```
+
+5. **Test Basic Authentication in the Browser:**
+
+   - Follow the steps mentioned in previous tasks to use the **ModHeader** extension to add the `Authorization` header:
+     - **Name:** `Authorization`
+     - **Value:** `Test`
+   - Navigate to:
+     ```
+     http://localhost:5000/api/v1/users
+     ```
+   - You should see the following JSON response:
+     ```json
+     {
+       "error": "Forbidden"
+     }
+     ```
+
+### Explanation
+
+- **Dynamic Authentication Setup:** Depending on the value of the `AUTH_TYPE` environment variable, the server uses either `Auth` or `BasicAuth` for request validation.
+
+- **Request Handling Logic:**
+  - **`auth` Variable:** Initialized to `None` and dynamically assigned based on the environment variable `AUTH_TYPE`.
+  - **`BasicAuth` Class:** Inherits from `Auth` and will later be expanded to handle basic authentication mechanisms.
+
+### Note
+
+- **Remember to Terminate the Server Between Tasks:**  
+  To avoid any issues with the port being busy or the old configuration being used, make sure to terminate the server before starting the next task.
+
+</details>
