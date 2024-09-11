@@ -628,3 +628,87 @@ class Auth:
   - **`current_user`**: Retrieves the current user (currently returns `None`).
 
 </details>
+
+<details>
+<summary><strong>Task 4: Define which routes don't need authentication</strong></summary>
+
+
+This task involves updating the `require_auth` method in the `Auth` class to determine if a given path requires authentication by comparing it against a list of excluded paths.
+
+### Step-by-Step Instructions
+
+1. **Update the `require_auth` Method:**
+   - Open `api/v1/auth/auth.py` and update the `require_auth` method with the following code:
+
+   ```python
+   def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
+       """This determines if a given path requires authentication."""
+       if path is None or excluded_paths is None or not excluded_paths:
+           return True
+
+       # Normalize path to ensure it ends with a '/'
+       if not path.endswith('/'):
+           path += '/'
+
+       # Check if the path is in excluded_paths
+       if path in excluded_paths:
+           return False
+
+       return True
+   ```
+
+2. **Test the `require_auth` Method:**
+
+   - Create a file named `main_1.py` in the root of your project with the following content:
+
+   ```python
+   #!/usr/bin/env python3
+   """ Main 1
+   """
+   from api.v1.auth.auth import Auth
+
+   a = Auth()
+
+   print(a.require_auth(None, None))
+   print(a.require_auth(None, []))
+   print(a.require_auth("/api/v1/status/", []))
+   print(a.require_auth("/api/v1/status/", ["/api/v1/status/"]))
+   print(a.require_auth("/api/v1/status", ["/api/v1/status/"]))
+   print(a.require_auth("/api/v1/users", ["/api/v1/status/"]))
+   print(a.require_auth("/api/v1/users", ["/api/v1/status/", "/api/v1/stats"]))
+   ```
+
+3. **Make `main_1.py` Executable:**
+
+   - To ensure that you can run the script from the command line, make it executable:
+     ```bash
+     chmod +x main_1.py
+     ```
+
+4. **Run the Script to Test the Updated Method:**
+
+   - Execute the script to test the updated `require_auth` method:
+     ```bash
+     ./main_1.py
+     ```
+
+   - The expected output should be:
+     ```
+     True
+     True
+     True
+     False
+     False
+     True
+     True
+     ```
+
+### Explanation
+
+- The updated `require_auth` method checks if:
+  - `path` is `None` or `excluded_paths` is `None` or empty, and returns `True` (authentication required).
+  - Normalizes `path` to ensure it ends with a `/`.
+  - If the normalized `path` is in `excluded_paths`, it returns `False` (no authentication required).
+  - If none of these conditions are met, it returns `True` (authentication required).
+
+</details>
