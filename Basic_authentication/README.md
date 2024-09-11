@@ -141,7 +141,6 @@ Between tasks, make sure to terminate the running server before starting a new o
 <details>
 <summary><strong>Task 0: Simple-basic-API</strong></summary>
 
-### Description
 
 This task involves setting up and running a simple API that contains a single model, `User`. The users are stored using a serialization/deserialization mechanism in files. The goal is to start the API server and confirm its functionality by making a request to a specific endpoint.
 
@@ -226,7 +225,6 @@ This task involves setting up and running a simple API that contains a single mo
 <details>
 <summary><strong>Task 1: Error handler: Unauthorized</strong></summary>
 
-### Description
 
 This task involves adding a new error handler for unauthorized access (HTTP status code 401) in `api/v1/app.py` and creating an endpoint that triggers this error in `api/v1/views/index.py`.
 
@@ -374,7 +372,6 @@ This task involves adding a new error handler for unauthorized access (HTTP stat
 <details>
 <summary><strong>Task 2: Error handler: Forbidden</strong></summary>
 
-### Description
 
 This task involves adding a new error handler for the 403 Forbidden status code in `api/v1/app.py` and creating an endpoint `/api/v1/forbidden` in `api/v1/views/index.py` that triggers this error using `abort(403)`.
 
@@ -529,5 +526,102 @@ This task involves adding a new error handler for the 403 Forbidden status code 
        {"error":"Forbidden"}
        ```
      - This confirms that the API server is running correctly and handling forbidden access as expected.
+
+</details>
+
+<details>
+<summary><strong>Task 3: Auth Class</strong></summary>
+
+
+This task involves creating a new `Auth` class in `api/v1/auth/auth.py` to manage the API's authentication system. The class serves as a template for all future authentication systems.
+
+### Step-by-Step Instructions
+
+1. **Create the Required Folder and Files:**
+   - Create the `auth` folder inside `api/v1`:
+     ```bash
+     mkdir -p api/v1/auth
+     ```
+   - Create an empty `__init__.py` file inside `api/v1/auth`:
+     ```bash
+     touch api/v1/auth/__init__.py
+     ```
+   - Create the `auth.py` file inside `api/v1/auth`:
+     ```bash
+     touch api/v1/auth/auth.py
+     ```
+
+2. **Implement the `Auth` Class:**
+   - Open `api/v1/auth/auth.py` and add the following code:
+
+   ```python
+  #!/usr/bin/env python3
+"""
+This module contains the Auth class for managing API authentication.
+"""
+from flask import request
+from typing import List, TypeVar
+
+
+class Auth:
+    """Auth class to manage the API authentication."""
+
+    def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
+        """This determines if a given path requires authentication."""
+        return False
+
+    def authorization_header(self, request=None) -> str:
+        """Returns the authorization header from the request."""
+        return None
+
+    def current_user(self, request=None) -> TypeVar('User'):
+        """Returns the current user."""
+        return None
+   ```
+
+3. **Test the `Auth` Class:**
+
+   - Create a file named `main_0.py` in the root of your project with the following content:
+
+   ```python
+   #!/usr/bin/env python3
+   """ Main 0
+   """
+   from api.v1.auth.auth import Auth
+
+   a = Auth()
+
+   print(a.require_auth("/api/v1/status/", ["/api/v1/status/"]))
+   print(a.authorization_header())
+   print(a.current_user())
+   ```
+
+4. **Make `main_0.py` Executable:**
+
+   - To ensure that you can run the script from the command line, you need to make it executable:
+     ```bash
+     chmod +x main_0.py
+     ```
+
+5. **Run the Script to Test the `Auth` Class:**
+
+   - Execute the script to test the `Auth` class:
+     ```bash
+     ./main_0.py
+     ```
+
+   - The expected output should be:
+     ```
+     False
+     None
+     None
+     ```
+
+### Explanation
+
+- The `Auth` class contains three public methods that will form the basis for future authentication tasks:
+  - **`require_auth`**: Checks if a given path requires authentication (currently always returns `False`).
+  - **`authorization_header`**: Retrieves the `Authorization` header from the Flask request object (currently returns `None`).
+  - **`current_user`**: Retrieves the current user (currently returns `None`).
 
 </details>
