@@ -1534,3 +1534,182 @@ This task involves adding a method to the `BasicAuth` class that returns a `User
 **Note:** This task involves backend logic that does not directly affect any endpoint, so there is no need for specific `curl` commands, Postman tests, or web browser interactions. The testing should be performed using the Python script `main_5.py`.
 
 </details>
+
+<details>
+<summary><strong>Task 11: Basic - Overload current_user - and BOOM!</strong></summary>
+
+This task involves overloading the `current_user` method in the `BasicAuth` class to retrieve the `User` instance for a given request. This will fully implement Basic Authentication for the API.
+
+### Step-by-Step Instructions
+
+1. **Update the `BasicAuth` Class:**
+
+   - Open `api/v1/auth/basic_auth.py` and add the `current_user` method:
+
+   ```python
+   def current_user(self, request=None) -> TypeVar('User'):
+       """
+       Retrieves the User instance for a given request.
+       """
+       auth_header = self.authorization_header(request)
+       if auth_header is None:
+           return None
+
+       base64_header = self.extract_base64_authorization_header(auth_header)
+       if base64_header is None:
+           return None
+
+       decoded_header = self.decode_base64_authorization_header(base64_header)
+       if decoded_header is None:
+           return None
+
+       user_email, user_pwd = self.extract_user_credentials(decoded_header)
+       if user_email is None or user_pwd is None:
+           return None
+
+       return self.user_object_from_credentials(user_email, user_pwd)
+   ```
+
+2. ** Test File:**
+
+   - Use `main_6.py`:
+
+   ```python
+   #!/usr/bin/env python3
+   """ Main 6
+   """
+   import base64
+   from api.v1.auth.basic_auth import BasicAuth
+   from models.user import User
+
+   """ Create a user test """
+   user_email = "bob@hbtn.io"
+   user_clear_pwd = "H0lbertonSchool98!"
+   user = User()
+   user.email = user_email
+   user.password = user_clear_pwd
+   print("New user: {} / {}".format(user.id, user.display_name()))
+   user.save()
+
+   basic_clear = "{}:{}".format(user_email, user_clear_pwd)
+   print("Basic Base64: {}".format(base64.b64encode(basic_clear.encode('utf-8')).decode("utf-8")))
+   ```
+
+3. **Make `main_6.py` Executable:**
+
+   - To ensure that you can run the script from the command line, make it executable:
+
+   ```bash
+   chmod +x main_6.py
+   ```
+
+4. **Run the Script to Create a User and Generate Base64 Credentials:**
+
+   - Execute the script:
+
+   ```bash
+   ./main_6.py
+   ```
+
+   - The expected output should be:
+
+   ```plaintext
+   New user: <user_id> / bob@hbtn.io
+   Basic Base64: Ym9iQGhidG4uaW86SDBsYmVydG9uU2Nob29sOTgh
+   ```
+
+5. **Run the Server with the Correct Environment Variable:**
+
+   - Start the API server with `AUTH_TYPE` set to `basic_auth`:
+
+   ```bash
+   API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=basic_auth python3 -m api.v1.app
+   ```
+
+6. **Test the Basic Authentication Using `curl`:**
+
+   - Use `curl` commands to test the endpoints:
+
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/status"
+   # Expected output: {"status": "OK"}
+
+   curl "http://0.0.0.0:5000/api/v1/users"
+   # Expected output: {"error": "Unauthorized"}
+
+   curl "http://0.0.0.0:5000/api/v1/users" -H "Authorization: Test"
+   # Expected output: {"error": "Forbidden"}
+
+   curl "http://0.0.0.0:5000/api/v1/users" -H "Authorization: Basic test"
+   # Expected output: {"error": "Forbidden"}
+
+   curl "http://0.0.0.0:5000/api/v1/users" -H "Authorization: Basic Ym9iQGhidG4uaW86SDBsYmVydG9uU2Nob29sOTgh"
+   # Expected output: User details in JSON format.
+   ```
+
+   - **Result:** The output from the `curl` command should look similar to this:
+   
+   ```json
+   [
+     {
+       "created_at": "2024-09-15T20:19:46",
+       "email": "bob@hbtn.io",
+       "first_name": null,
+       "id": "9b162846-34a8-425e-914b-f6e35ca26162",
+       "last_name": null,
+       "updated_at": "2024-09-15T20:19:46"
+     }
+   ]
+   ```
+
+7. **Test Basic Authentication in Postman:**
+
+   - Open Postman and create a new request.
+   - Set the request type to **GET**.
+   - Enter the request URL:
+     ```
+     http://localhost:5000/api/v1/users
+     ```
+   - Under the **Authorization** tab:
+     - Choose **Basic Auth** as the type.
+     - Enter the **Username** as `bob@hbtn.io` and **Password** as `H0lbertonSchool98!`.
+   - Click **Send**.
+   - The expected output should be the user details in JSON format:
+
+   ```json
+   [
+     {
+       "created_at": "2024-09-15T20:19:46",
+       "email": "bob@hbtn.io",
+       "first_name": null,
+       "id": "9b162846-34a8-425e-914b-f6e35ca26162",
+       "last_name": null,
+       "updated_at": "2024-09-15T20:19:46"
+     }
+   ]
+   ```
+
+8. **Test Basic Authentication in the Browser:**
+
+   - Follow the steps mentioned in previous tasks to use the **ModHeader** extension to add the `Authorization` header:
+     - **Name:** `Authorization`
+     - **Value:** `Basic Ym9iQGhidG4uaW86SDBsYmVydG9uU2Nob29sOTgh`
+   - Navigate to:
+     ```
+     http://localhost:5000/api/v1/users
+     ```
+   - You should see the JSON response with user details.
+
+### Explanation
+
+- The `current_user` method performs the following tasks:
+  - **Uses Helper Methods:** Leverages existing methods like `authorization_header`, `extract_base64_authorization_header`, `decode_base64_authorization_header`, `extract_user_credentials`, and `user_object_from_credentials` to validate the request and retrieve the authenticated user.
+  - **Returns User Instance:** Returns the `User` instance associated with the request if authentication is successful.
+
+### Note
+
+- **Remember to Terminate the Server Between Tasks:**  
+  To avoid any issues with the port being busy or the old configuration being used, make sure to terminate the server before starting the next task.
+
+</details>
+
