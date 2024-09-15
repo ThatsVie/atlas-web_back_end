@@ -1415,86 +1415,122 @@ This task involves adding a method to the `BasicAuth` class that decodes a Base6
 
 </details>
 
-
 <details>
-<summary><strong>Task 9: Basic - User Credentials</strong></summary>
+<summary><strong>Task 10: Basic - User Object</strong></summary>
 
-This task involves adding a method to the `BasicAuth` class to extract the user email and password from a Base64-decoded authorization header.
+This task involves adding a method to the `BasicAuth` class that returns a `User` instance based on the provided email and password credentials.
 
 ### Step-by-Step Instructions
 
 1. **Update the `BasicAuth` Class:**
-   - File `api/v1/auth/basic_auth.py`:
+
+   - Open the file `api/v1/auth/basic_auth.py` and add the `user_object_from_credentials` method:
 
    ```python
-   def extract_user_credentials(
-       self, decoded_base64_authorization_header: str
-   ) -> (str, str):
+   def user_object_from_credentials(
+           self, user_email: str, user_pwd: str) -> TypeVar('User'):
        """
-       Extracts user email and password from a Base64 decoded value.
+       Returns the User instance based on the user's email and password.
        """
-       if (
-           decoded_base64_authorization_header is None or
-           not isinstance(decoded_base64_authorization_header, str)
-       ):
-           return None, None
-       if ':' not in decoded_base64_authorization_header:
-           return None, None
-       return tuple(decoded_base64_authorization_header.split(':', 1))
+       if user_email is None or not isinstance(user_email, str):
+           return None
+       if user_pwd is None or not isinstance(user_pwd, str):
+           return None
+
+       try:
+           from models.user import User
+           users = User.search({'email': user_email})
+       except Exception:
+           return None
+
+       if not users:
+           return None
+
+       for user in users:
+           if user.is_valid_password(user_pwd):
+               return user
+       return None
    ```
 
-2. **Test the `extract_user_credentials` Method:**
+2. **Test File:**
 
-   - Use `main_4.py`:
+   -  Use `main_5.py`:
 
    ```python
    #!/usr/bin/env python3
-   """ Main 4
+   """ Main 5
    """
+   import uuid
    from api.v1.auth.basic_auth import BasicAuth
+   from models.user import User
 
+   """ Create a user test """
+   user_email = str(uuid.uuid4())
+   user_clear_pwd = str(uuid.uuid4())
+   user = User()
+   user.email = user_email
+   user.first_name = "Bob"
+   user.last_name = "Dylan"
+   user.password = user_clear_pwd
+   print("New user: {}".format(user.display_name()))
+   user.save()
+
+   """ Retrieve this user via the class BasicAuth """
    a = BasicAuth()
 
-   print(a.extract_user_credentials(None))
-   print(a.extract_user_credentials(89))
-   print(a.extract_user_credentials("Holberton School"))
-   print(a.extract_user_credentials("Holberton:School"))
-   print(a.extract_user_credentials("bob@gmail.com:toto1234"))
+   u = a.user_object_from_credentials(None, None)
+   print(u.display_name() if u is not None else "None")
+
+   u = a.user_object_from_credentials(89, 98)
+   print(u.display_name() if u is not None else "None")
+
+   u = a.user_object_from_credentials("email@notfound.com", "pwd")
+   print(u.display_name() if u is not None else "None")
+
+   u = a.user_object_from_credentials(user_email, "pwd")
+   print(u.display_name() if u is not None else "None")
+
+   u = a.user_object_from_credentials(user_email, user_clear_pwd)
+   print(u.display_name() if u is not None else "None")
    ```
 
-3. **Make sure `main_4.py` is Executable:**
+3. **Make `main_5.py` Executable:**
 
    - To ensure that you can run the script from the command line, make it executable:
-     ```bash
-     chmod +x main_4.py
-     ```
+
+   ```bash
+   chmod +x main_5.py
+   ```
 
 4. **Run the Script to Test the Method:**
 
-   - Execute the script to test the `extract_user_credentials` method:
-     ```bash
-     ./main_4.py
-     ```
+   - Execute the script to test the `user_object_from_credentials` method:
+
+   ```bash
+   ./main_5.py
+   ```
 
    - The expected output should be:
-     ```plaintext
-     (None, None)
-     (None, None)
-     (None, None)
-     ('Holberton', 'School')
-     ('bob@gmail.com', 'toto1234')
-     ```
+
+   ```plaintext
+   New user: Bob Dylan
+   None
+   None
+   None
+   None
+   Bob Dylan
+   ```
 
 ### Explanation
 
-- The `extract_user_credentials` method performs the following tasks:
-  - **Validates Input:** Returns `(None, None)` if the input is `None` or not a string.
-  - **Checks for Separator:** Returns `(None, None)` if the decoded Base64 string does not contain a colon (`:`).
-  - **Extracts Credentials:** Splits the decoded string at the first colon (`:`) and returns a tuple containing the user email and password.
+- The `user_object_from_credentials` method:
+  - **Validates Input:** Returns `None` if `user_email` or `user_pwd` is `None` or not a string.
+  - **Searches for the User:** Searches for a `User` instance by email using the `User.search` method.
+  - **Checks the Password:** Returns `None` if no user is found or if the password is incorrect.
+  - **Returns User Instance:** Otherwise, it returns the `User` instance.
 
 ### Testing with `curl`, Postman, and Web Browser:
 
-**Note:** This task involves a method that does not directly affect any endpoint, so there is no need for specific `curl` commands, Postman tests, or web browser interactions.
-
+**Note:** This task involves backend logic that does not directly affect any endpoint, so there is no need for specific `curl` commands, Postman tests, or web browser interactions. The testing should be performed using the Python script `main_5.py`.
 
 </details>
