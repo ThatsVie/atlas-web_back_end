@@ -135,12 +135,15 @@ Throughout the following tasks, you will see references to `0.0.0.0` as the host
 
 For consistency and simplicity, I will use `http://localhost:5000` in place of `http://0.0.0.0:5000` when testing the API in the browser.
 
+**Testing with Postman, curl commands, and a web browser:**  
+To comprehensively test the API endpoints, we'll use multiple methods: **Postman** for a user-friendly interface, **curl commands** in the terminal for command-line proficiency, and direct testing in the **web browser** for quick checks. The following instructions will guide you on how to use these three methods to test each task effectively.
+
+
 **Important:**  
 Between tasks, make sure to terminate the running server before starting a new one to test the next task. If you don't terminate the server, the port (`5000`) will be busy, and the new instance of the server will not start correctly. To stop the server, use `CTRL+C` in the terminal where the server is running.
 
 <details>
 <summary><strong>Task 0: Simple-basic-API</strong></summary>
-
 
 This task involves setting up and running a simple API that contains a single model, `User`. The users are stored using a serialization/deserialization mechanism in files. The goal is to start the API server and confirm its functionality by making a request to a specific endpoint.
 
@@ -179,7 +182,7 @@ This task involves setting up and running a simple API that contains a single mo
      ...
      ```
 
-5. **Test the API:**
+5. **Test the API Using `curl`:**
    - In another terminal tab, make a GET request to the `/status` endpoint to confirm the API is running correctly:
      ```bash
      curl "http://0.0.0.0:5000/api/v1/status" -vvv
@@ -194,7 +197,7 @@ This task involves setting up and running a simple API that contains a single mo
      > Accept: */*
      > 
      * Mark bundle as not supporting multiuse
-     * HTTP 1.0, assume close after body
+     * HTTP/1.0, assume close after body
      < HTTP/1.0 200 OK
      < Content-Type: application/json
      < Content-Length: 16
@@ -206,25 +209,37 @@ This task involves setting up and running a simple API that contains a single mo
      * Closing connection 0
      ```
    - This confirms that the API server is running and responding correctly.
-   - **Using a Web Browser:**
-     - Open your web browser (e.g., Chrome, Firefox, Safari).
-     - In the address bar, type the following URL and press Enter:
+
+6. **Test the API Using Postman:**
+   - **Open Postman** and create a new request:
+     - Set the request type to `GET`.
+     - Enter the URL:
        ```
        http://localhost:5000/api/v1/status
        ```
-     - The browser should display the following JSON response:
+     - Click on "Send" to make the request.
+     - You should see a JSON response similar to:
        ```json
        {"status":"OK"}
        ```
-     - This confirms that the API server is running correctly and responding to HTTP GET requests.
 
-![Screenshot 2024-09-10 164300](https://github.com/user-attachments/assets/b9fde9c9-05f8-4d07-9228-72609de2f789)
+7. **Test Using a Web Browser:**
+   - Open your web browser (e.g., Chrome, Firefox, Safari).
+   - In the address bar, type the following URL and press Enter:
+     ```
+     http://localhost:5000/api/v1/status
+     ```
+   - The browser should display the following JSON response:
+     ```json
+     {"status":"OK"}
+     ```
+   - This confirms that the API server is running correctly and responding to HTTP GET requests.
 
 </details>
 
+
 <details>
 <summary><strong>Task 1: Error handler: Unauthorized</strong></summary>
-
 
 This task involves adding a new error handler for unauthorized access (HTTP status code 401) in `api/v1/app.py` and creating an endpoint that triggers this error in `api/v1/views/index.py`.
 
@@ -251,14 +266,12 @@ This task involves adding a new error handler for unauthorized access (HTTP stat
 
    @app.errorhandler(404)
    def not_found(error) -> str:
-       """ Not found handler
-       """
+       """ Not found handler """
        return jsonify({"error": "Not found"}), 404
 
    @app.errorhandler(401)
    def unauthorized(error) -> str:
-       """ Unauthorized handler
-       """
+       """ Unauthorized handler """
        return jsonify({"error": "Unauthorized"}), 401
 
    if __name__ == "__main__":
@@ -273,8 +286,7 @@ This task involves adding a new error handler for unauthorized access (HTTP stat
 
    ```python
    #!/usr/bin/env python3
-   """ Module of Index views
-   """
+   """ Module of Index views """
    from flask import jsonify, abort
    from api.v1.views import app_views
 
@@ -317,6 +329,8 @@ This task involves adding a new error handler for unauthorized access (HTTP stat
      ```
 
 4. **Test the Unauthorized Endpoint:**
+
+   **Using `curl` in the Terminal:**
    - In a new terminal tab, use `curl` to test the new endpoint:
      ```bash
      curl "http://0.0.0.0:5000/api/v1/unauthorized"
@@ -339,8 +353,7 @@ This task involves adding a new error handler for unauthorized access (HTTP stat
      > Accept: */*
      > 
      * Mark bundle as not supporting multiuse
-     * HTTP 1.0, assume close after body
-     < HTTP/1.0 401 UNAUTHORIZED
+     * HTTP/1.0 401 UNAUTHORIZED
      < Content-Type: application/json
      < Content-Length: 25
      < Access-Control-Allow-Origin: *
@@ -351,27 +364,40 @@ This task involves adding a new error handler for unauthorized access (HTTP stat
      * Closing connection 0
      ```
 
-   - This confirms that the API server is running and the 401 error handler is working correctly.
-    - **Using a Web Browser:**
-     - Open your web browser (e.g., Chrome, Firefox, Safari).
-     - In the address bar, type the following URL and press Enter:
-       ```
-       http://localhost:5000/api/v1/unauthorized
-       ```
-     - The browser should display the following JSON response:
-       ```json
-       {"error":"Unauthorized"}
-       ```
-     - This confirms that the API server is running correctly and handling unauthorized access as expected.
-   
-![Screenshot 2024-09-10 164313](https://github.com/user-attachments/assets/4d9e2908-8b38-4194-872f-683949861ca3)
+   **Using a Web Browser:**
+   - Open your web browser (e.g., Chrome, Firefox, Safari).
+   - In the address bar, type the following URL and press Enter:
+     ```
+     http://localhost:5000/api/v1/unauthorized
+     ```
+   - The browser should display the following JSON response:
+     ```json
+     {"error":"Unauthorized"}
+     ```
+   - This confirms that the API server is running correctly and handling unauthorized access as expected.
 
+   **Using Postman:**
+   - Open **Postman** and create a new request.
+   - Set the request type to **GET**.
+   - Enter the following URL:
+     ```
+     http://localhost:5000/api/v1/unauthorized
+     ```
+   - Click **Send**.
+   - You should see a response with status code **401** and the JSON body:
+     ```json
+     {"error":"Unauthorized"}
+     ```
+   - This confirms that the error handler for unauthorized access is working correctly in Postman.
+
+### Note
+**Make sure to terminate the server (using `CTRL+C` in the terminal) between tasks.** This prevents the port (`5000`) from being busy and ensures the new instance of the server starts correctly.
 
 </details>
 
+
 <details>
 <summary><strong>Task 2: Error handler: Forbidden</strong></summary>
-
 
 This task involves adding a new error handler for the 403 Forbidden status code in `api/v1/app.py` and creating an endpoint `/api/v1/forbidden` in `api/v1/views/index.py` that triggers this error using `abort(403)`.
 
@@ -380,7 +406,6 @@ This task involves adding a new error handler for the 403 Forbidden status code 
 1. **Edit `api/v1/app.py`:**
    - Add a new error handler for the 403 status code. The response should be a JSON object `{"error": "Forbidden"}` with a status code of `403`. Use `jsonify` from Flask to format the response.
 
-  
    **Updated `api/v1/app.py`:**
 
    ```python
@@ -501,8 +526,7 @@ This task involves adding a new error handler for the 403 Forbidden status code 
        > Accept: */*
        > 
        * Mark bundle as not supporting multiuse
-       * HTTP 1.0, assume close after body
-       < HTTP/1.0 403 FORBIDDEN
+       * HTTP 1.0 403 FORBIDDEN
        < Content-Type: application/json
        < Content-Length: 27
        < Access-Control-Allow-Origin: *
@@ -527,14 +551,28 @@ This task involves adding a new error handler for the 403 Forbidden status code 
        ```
      - This confirms that the API server is running correctly and handling forbidden access as expected.
 
-![Screenshot 2024-09-10 173146](https://github.com/user-attachments/assets/09622d33-322b-4788-a801-ea1a3bdc2f51)
+   - **Using Postman:**
+     - Open **Postman** and create a new request.
+     - Set the request type to **GET**.
+     - Enter the following URL:
+       ```
+       http://localhost:5000/api/v1/forbidden
+       ```
+     - Click **Send**.
+     - You should see a response with status code **403** and the JSON body:
+       ```json
+       {"error":"Forbidden"}
+       ```
+     - This confirms that the error handler for forbidden access is working correctly in Postman.
 
+### Note
+**Make sure to terminate the server (using `CTRL+C` in the terminal) between tasks.** This prevents the port (`5000`) from being busy and ensures the new instance of the server starts correctly.
 
 </details>
 
+
 <details>
 <summary><strong>Task 3: Auth Class</strong></summary>
-
 
 This task involves creating a new `Auth` class in `api/v1/auth/auth.py` to manage the API's authentication system. The class serves as a template for all future authentication systems.
 
@@ -558,28 +596,27 @@ This task involves creating a new `Auth` class in `api/v1/auth/auth.py` to manag
    - Open `api/v1/auth/auth.py` and add the following code:
 
    ```python
-  #!/usr/bin/env python3
-"""
-This module contains the Auth class for managing API authentication.
-"""
-from flask import request
-from typing import List, TypeVar
+   #!/usr/bin/env python3
+   """
+   This module contains the Auth class for managing API authentication.
+   """
+   from flask import request
+   from typing import List, TypeVar
 
+   class Auth:
+       """Auth class to manage the API authentication."""
 
-class Auth:
-    """Auth class to manage the API authentication."""
+       def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
+           """This determines if a given path requires authentication."""
+           return False
 
-    def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
-        """This determines if a given path requires authentication."""
-        return False
+       def authorization_header(self, request=None) -> str:
+           """Returns the authorization header from the request."""
+           return None
 
-    def authorization_header(self, request=None) -> str:
-        """Returns the authorization header from the request."""
-        return None
-
-    def current_user(self, request=None) -> TypeVar('User'):
-        """Returns the current user."""
-        return None
+       def current_user(self, request=None) -> TypeVar('User'):
+           """Returns the current user."""
+           return None
    ```
 
 3. **Test the `Auth` Class:**
@@ -620,6 +657,67 @@ class Auth:
      None
      ```
 
+### Testing
+
+- **Using `curl` in the Terminal:**
+  - Open a new terminal and use the following `curl` commands to test the endpoints:
+
+   ```bash
+   curl "http://localhost:5000/api/v1/status"
+   ```
+   - Expected output:
+   ```json
+   {"status":"OK"}
+   ```
+
+   - To test the unauthorized endpoint:
+   ```bash
+   curl "http://localhost:5000/api/v1/unauthorized"
+   ```
+   - Expected output:
+   ```json
+   {"error":"Unauthorized"}
+   ```
+
+- **Using a Web Browser:**
+   - Open your web browser (e.g., Chrome, Firefox, Safari).
+   - In the address bar, type the following URL and press Enter:
+     ```
+     http://localhost:5000/api/v1/status
+     ```
+   - The browser should display the following JSON response:
+     ```json
+     {"status":"OK"}
+     ```
+   - To test the unauthorized endpoint, type:
+     ```
+     http://localhost:5000/api/v1/unauthorized
+     ```
+   - The browser should display:
+     ```json
+     {"error":"Unauthorized"}
+     ```
+
+- **Using Postman:**
+  1. Open Postman and create a new request.
+  2. Set the request method to `GET`.
+  3. Enter the URL for the status endpoint:
+     ```
+     http://localhost:5000/api/v1/status
+     ```
+  4. Click **Send**. You should see a response similar to:
+     ```json
+     {"status":"OK"}
+     ```
+  5. To test the unauthorized endpoint, change the URL to:
+     ```
+     http://localhost:5000/api/v1/unauthorized
+     ```
+  6. Click **Send** again. The expected response should be:
+     ```json
+     {"error":"Unauthorized"}
+     ```
+
 ### Explanation
 
 - The `Auth` class contains three public methods that will form the basis for future authentication tasks:
@@ -627,11 +725,15 @@ class Auth:
   - **`authorization_header`**: Retrieves the `Authorization` header from the Flask request object (currently returns `None`).
   - **`current_user`**: Retrieves the current user (currently returns `None`).
 
+### Note
+
+Make sure to terminate the server between tasks to avoid any issues with the port being busy or the old configuration being used. To stop the server, use `CTRL+C` in the terminal where the server is running.
+
 </details>
+
 
 <details>
 <summary><strong>Task 4: Define which routes don't need authentication</strong></summary>
-
 
 This task involves updating the `require_auth` method in the `Auth` class to determine if a given path requires authentication by comparing it against a list of excluded paths.
 
@@ -703,6 +805,67 @@ This task involves updating the `require_auth` method in the `Auth` class to det
      True
      ```
 
+### Testing
+
+- **Using `curl` in the Terminal:**
+  - Open a new terminal and use the following `curl` commands to test the endpoints:
+
+   ```bash
+   curl "http://localhost:5000/api/v1/status"
+   ```
+   - Expected output:
+   ```json
+   {"status":"OK"}
+   ```
+
+   - To test the unauthorized endpoint:
+   ```bash
+   curl "http://localhost:5000/api/v1/unauthorized"
+   ```
+   - Expected output:
+   ```json
+   {"error":"Unauthorized"}
+   ```
+
+- **Using a Web Browser:**
+   - Open your web browser (e.g., Chrome, Firefox, Safari).
+   - In the address bar, type the following URL and press Enter:
+     ```
+     http://localhost:5000/api/v1/status
+     ```
+   - The browser should display the following JSON response:
+     ```json
+     {"status":"OK"}
+     ```
+   - To test the unauthorized endpoint, type:
+     ```
+     http://localhost:5000/api/v1/unauthorized
+     ```
+   - The browser should display:
+     ```json
+     {"error":"Unauthorized"}
+     ```
+
+- **Using Postman:**
+  1. Open Postman and create a new request.
+  2. Set the request method to `GET`.
+  3. Enter the URL for the status endpoint:
+     ```
+     http://localhost:5000/api/v1/status
+     ```
+  4. Click **Send**. You should see a response similar to:
+     ```json
+     {"status":"OK"}
+     ```
+  5. To test the unauthorized endpoint, change the URL to:
+     ```
+     http://localhost:5000/api/v1/unauthorized
+     ```
+  6. Click **Send** again. The expected response should be:
+     ```json
+     {"error":"Unauthorized"}
+     ```
+
 ### Explanation
 
 - The updated `require_auth` method checks if:
@@ -711,12 +874,15 @@ This task involves updating the `require_auth` method in the `Auth` class to det
   - If the normalized `path` is in `excluded_paths`, it returns `False` (no authentication required).
   - If none of these conditions are met, it returns `True` (authentication required).
 
+### Note
+
+Make sure to terminate the server between tasks to avoid any issues with the port being busy or the old configuration being used. To stop the server, use `CTRL+C` in the terminal where the server is running.
+
 </details>
+
 
 <details>
 <summary><strong>Task 5: Request Validation</strong></summary>
-
-
 
 This task secures the API by validating all incoming requests, ensuring that only authorized requests can access specific resources. The authentication logic is dynamically set up based on the `AUTH_TYPE` environment variable.
 
@@ -779,20 +945,54 @@ This task secures the API by validating all incoming requests, ensuring that onl
    - In another terminal, use `curl` to test the various endpoints:
 
    ```bash
-   curl "http://0.0.0.0:5000/api/v1/status"
+   curl "http://localhost:5000/api/v1/status"
    # Expected output: {"status": "OK"}
 
-   curl "http://0.0.0.0:5000/api/v1/status/"
+   curl "http://localhost:5000/api/v1/status/"
    # Expected output: {"status": "OK"}
 
-   curl "http://0.0.0.0:5000/api/v1/users"
+   curl "http://localhost:5000/api/v1/users"
    # Expected output: {"error": "Unauthorized"}
 
-   curl "http://0.0.0.0:5000/api/v1/users" -H "Authorization: Test"
+   curl "http://localhost:5000/api/v1/users" -H "Authorization: Test"
    # Expected output: {"error": "Forbidden"}
    ```
 
-5. **Test the Request Validation in the Browser:**
+5. **Test the Request Validation Using Postman:**
+
+   - Open Postman and create a new **GET** request:
+     - **URL**: `http://localhost:5000/api/v1/status`
+   - Click **Send**.
+   - You should see a JSON response:
+     ```json
+     {
+       "status": "OK"
+     }
+     ```
+
+   - Test the endpoint that requires authentication:
+     - **URL**: `http://localhost:5000/api/v1/users`
+     - Click **Send** without any headers.
+   - You should see a JSON response:
+     ```json
+     {
+       "error": "Unauthorized"
+     }
+     ```
+
+   - **To Test the `Forbidden` Response:**
+     1. In Postman, add a new header:
+        - **Key**: `Authorization`
+        - **Value**: `Test`
+     2. Click **Send**.
+     3. You should see the following JSON response:
+     ```json
+     {
+       "error": "Forbidden"
+     }
+     ```
+
+6. **Test the Request Validation in the Browser:**
 
    - Open your web browser and navigate to the following URL:
      ```
@@ -817,12 +1017,11 @@ This task secures the API by validating all incoming requests, ensuring that onl
      ```
 
    - **To Test the `Forbidden` Response in the Browser:**
-
      1. Install a browser extension like **ModHeader** (available for Chrome and Firefox) or any other HTTP header modification tool.
      2. Open the extension (e.g., **ModHeader**).
      3. Add a new header:
-        - **Name:** `Authorization`
-        - **Value:** `Test`
+        - **Name**: `Authorization`
+        - **Value**: `Test`
      4. Navigate to:
         ```
         http://localhost:5000/api/v1/users
@@ -847,6 +1046,8 @@ This task secures the API by validating all incoming requests, ensuring that onl
 Make sure to terminate the server between tasks to avoid any issues with the port being busy or the old configuration being used.
 
 </details>
+
+
 
 <details>
 <summary><strong>Task 6: Basic Authentication</strong></summary>
@@ -918,6 +1119,33 @@ This task involves creating a new authentication class, `BasicAuth`, which inher
      http://localhost:5000/api/v1/users
      ```
    - You should see the following JSON response:
+     ```json
+     {
+       "error": "Forbidden"
+     }
+     ```
+
+6. **Test Basic Authentication Using Postman:**
+
+   - **Open Postman:**
+     - Launch the Postman application on your computer.
+   - **Create a New Request:**
+     - Click on the "New" button or select "Request" to create a new HTTP request.
+   - **Set the Request Method and URL:**
+     - Set the request method to **GET**.
+     - Enter the URL:
+       ```
+       http://localhost:5000/api/v1/users
+       ```
+   - **Add the Authorization Header:**
+     - Go to the **Headers** tab in Postman.
+     - Add a new header with:
+       - **Key:** `Authorization`
+       - **Value:** `Test`
+   - **Send the Request:**
+     - Click the "Send" button to send the request to the server.
+   - **Check the Response:**
+     - You should see a JSON response indicating a "Forbidden" error:
      ```json
      {
        "error": "Forbidden"
