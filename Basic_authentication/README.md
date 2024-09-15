@@ -593,7 +593,7 @@ This task involves creating a new `Auth` class in `api/v1/auth/auth.py` to manag
      ```
 
 2. **Implement the `Auth` Class:**
-   - Open `api/v1/auth/auth.py` and add the following code:
+   - File `api/v1/auth/auth.py:
 
    ```python
    #!/usr/bin/env python3
@@ -740,7 +740,7 @@ This task involves updating the `require_auth` method in the `Auth` class to det
 ### Step-by-Step Instructions
 
 1. **Update the `require_auth` Method:**
-   - Open `api/v1/auth/auth.py` and update the `require_auth` method with the following code:
+   - File `api/v1/auth/auth.py`:
 
    ```python
    def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
@@ -889,7 +889,6 @@ This task secures the API by validating all incoming requests, ensuring that onl
 ### Step-by-Step Instructions
 
 1. **Update the `authorization_header` Method in `Auth` Class:**
-   - Open `api/v1/auth/auth.py` and update the `authorization_header` method:
 
    ```python
    def authorization_header(self, request=None) -> str:
@@ -1057,8 +1056,8 @@ This task involves creating a new authentication class, `BasicAuth`, which inher
 ### Step-by-Step Instructions
 
 1. **Create the `BasicAuth` Class:**
-   - Create a new file `api/v1/auth/basic_auth.py`.
-   - Inside `basic_auth.py`, define a new class `BasicAuth` that inherits from `Auth`:
+   - File `api/v1/auth/basic_auth.py`.
+   - Inside `basic_auth.py`, a new class `BasicAuth` is defined that inherits from `Auth`:
 
    ```python
    #!/usr/bin/env python3
@@ -1072,8 +1071,7 @@ This task involves creating a new authentication class, `BasicAuth`, which inher
    ```
 
 2. **Update `api/v1/app.py` to Use `BasicAuth`:**
-   - Open `api/v1/app.py` and modify the code to select the correct authentication method based on the environment variable `AUTH_TYPE`:
-
+  
    ```python
    auth = None
    AUTH_TYPE = getenv("AUTH_TYPE")
@@ -1177,7 +1175,7 @@ This task involves adding the method `extract_base64_authorization_header` in th
 ### Step-by-Step Instructions
 
 1. **Implement the `extract_base64_authorization_header` Method:**
-   - Open `api/v1/auth/basic_auth.py` and add the following code:
+
 
    ```python
    #!/usr/bin/env python3
@@ -1336,7 +1334,7 @@ This task involves adding a method to the `BasicAuth` class that decodes a Base6
 ### Step-by-Step Instructions
 
 1. **Update the `BasicAuth` Class:**
-   - Open `api/v1/auth/basic_auth.py` and add the following method to the `BasicAuth` class:
+
 
    ```python
    def decode_base64_authorization_header(
@@ -1414,9 +1412,89 @@ This task involves adding a method to the `BasicAuth` class that decodes a Base6
     - Returns `None` if the input is not a valid Base64 string.
     - Otherwise, it decodes the Base64 string and returns its UTF-8 representation.
 
-### Note
 
-- **Remember to Terminate the Server Between Tasks:**  
-  Ensure the server is terminated between tasks to avoid any issues with the port being busy or retaining the old configuration.
+</details>
+
+
+<details>
+<summary><strong>Task 9: Basic - User Credentials</strong></summary>
+
+This task involves adding a method to the `BasicAuth` class to extract the user email and password from a Base64-decoded authorization header.
+
+### Step-by-Step Instructions
+
+1. **Update the `BasicAuth` Class:**
+   - File `api/v1/auth/basic_auth.py`:
+
+   ```python
+   def extract_user_credentials(
+       self, decoded_base64_authorization_header: str
+   ) -> (str, str):
+       """
+       Extracts user email and password from a Base64 decoded value.
+       """
+       if (
+           decoded_base64_authorization_header is None or
+           not isinstance(decoded_base64_authorization_header, str)
+       ):
+           return None, None
+       if ':' not in decoded_base64_authorization_header:
+           return None, None
+       return tuple(decoded_base64_authorization_header.split(':', 1))
+   ```
+
+2. **Test the `extract_user_credentials` Method:**
+
+   - Use `main_4.py`:
+
+   ```python
+   #!/usr/bin/env python3
+   """ Main 4
+   """
+   from api.v1.auth.basic_auth import BasicAuth
+
+   a = BasicAuth()
+
+   print(a.extract_user_credentials(None))
+   print(a.extract_user_credentials(89))
+   print(a.extract_user_credentials("Holberton School"))
+   print(a.extract_user_credentials("Holberton:School"))
+   print(a.extract_user_credentials("bob@gmail.com:toto1234"))
+   ```
+
+3. **Make sure `main_4.py` is Executable:**
+
+   - To ensure that you can run the script from the command line, make it executable:
+     ```bash
+     chmod +x main_4.py
+     ```
+
+4. **Run the Script to Test the Method:**
+
+   - Execute the script to test the `extract_user_credentials` method:
+     ```bash
+     ./main_4.py
+     ```
+
+   - The expected output should be:
+     ```plaintext
+     (None, None)
+     (None, None)
+     (None, None)
+     ('Holberton', 'School')
+     ('bob@gmail.com', 'toto1234')
+     ```
+
+### Explanation
+
+- The `extract_user_credentials` method performs the following tasks:
+  - **Validates Input:** Returns `(None, None)` if the input is `None` or not a string.
+  - **Checks for Separator:** Returns `(None, None)` if the decoded Base64 string does not contain a colon (`:`).
+  - **Extracts Credentials:** Splits the decoded string at the first colon (`:`) and returns a tuple containing the user email and password.
+
+### Testing with `curl`, Postman, and Web Browser:
+
+**Note:** This task involves a method that does not directly affect any endpoint, so there is no need for specific `curl` commands, Postman tests, or web browser interactions.
+
 
 </details>
