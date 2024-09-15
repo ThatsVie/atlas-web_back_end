@@ -1326,3 +1326,97 @@ This task involves adding the method `extract_base64_authorization_header` in th
   Remember to terminate the server between tasks to avoid any issues with the port being busy or the old configuration being used.
 
 </details>
+
+
+<details>
+<summary><strong>Task 8: Basic - Base64 Decode</strong></summary>
+
+This task involves adding a method to the `BasicAuth` class that decodes a Base64-encoded string to its UTF-8 representation. The method will handle different cases, such as invalid inputs or non-Base64 strings.
+
+### Step-by-Step Instructions
+
+1. **Update the `BasicAuth` Class:**
+   - Open `api/v1/auth/basic_auth.py` and add the following method to the `BasicAuth` class:
+
+   ```python
+   def decode_base64_authorization_header(
+       self, base64_authorization_header: str
+   ) -> str:
+       """
+       Decodes a Base64 string to its UTF-8 representation.
+       """
+       if base64_authorization_header is None or not isinstance(
+           base64_authorization_header, str
+       ):
+           return None
+       try:
+           base64_bytes = base64_authorization_header.encode('utf-8')
+           decoded_bytes = base64.b64decode(base64_bytes)
+           return decoded_bytes.decode('utf-8')
+       except Exception:
+           return None
+   ```
+
+2. **Test the `decode_base64_authorization_header` Method:**
+
+   - Use `main_3.py`t:
+
+   ```python
+   #!/usr/bin/env python3
+   """ Main 3
+   """
+   from api.v1.auth.basic_auth import BasicAuth
+
+   a = BasicAuth()
+
+   print(a.decode_base64_authorization_header(None))
+   print(a.decode_base64_authorization_header(89))
+   print(a.decode_base64_authorization_header("Holberton School"))
+   print(a.decode_base64_authorization_header("SG9sYmVydG9u"))
+   print(a.decode_base64_authorization_header("SG9sYmVydG9uIFNjaG9vbA=="))
+   print(a.decode_base64_authorization_header(a.extract_base64_authorization_header("Basic SG9sYmVydG9uIFNjaG9vbA==")))
+   ```
+
+3. **Ensure `main_3.py` is Executable:**
+
+   - Make the script executable to run it from the command line:
+     ```bash
+     chmod +x main_3.py
+     ```
+
+4. **Run the Script to Test the Method:**
+
+   - Execute the script to test the `decode_base64_authorization_header` method:
+     ```bash
+     ./main_3.py
+     ```
+
+   - The expected output should be:
+     ```
+     None
+     None
+     None
+     Holberton
+     Holberton School
+     Holberton School
+     ```
+
+5. **Test Using `curl`, Postman, or Web Browser:**
+
+   - These tools do not apply for this task, as it involves a backend method that doesn't directly interact with HTTP requests.
+
+
+### Explanation
+
+- **`decode_base64_authorization_header` Method:**
+  - This method decodes a Base64 string to a UTF-8 string. It handles several edge cases:
+    - Returns `None` if the input is `None` or not a string.
+    - Returns `None` if the input is not a valid Base64 string.
+    - Otherwise, it decodes the Base64 string and returns its UTF-8 representation.
+
+### Note
+
+- **Remember to Terminate the Server Between Tasks:**  
+  Ensure the server is terminated between tasks to avoid any issues with the port being busy or retaining the old configuration.
+
+</details>
