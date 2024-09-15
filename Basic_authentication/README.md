@@ -78,16 +78,6 @@ To send the `Authorization` header in HTTP requests, the client must encode the 
   - Documentation is mandatory for modules, classes, and functions.
   - Length of files will be checked using `wc`.
 
-## Project Structure
-
-- **`models/`**
-  - `base.py`: Base of all models of the API - handles serialization to a file.
-  - `user.py`: User model.
-
-- **`api/v1`**
-  - `app.py`: Entry point of the API.
-  - `views/index.py`: Basic endpoints of the API: `/status` and `/stats`.
-  - `views/users.py`: All user endpoints.
 
 ## Setup and Installation
 
@@ -107,15 +97,37 @@ To send the `Authorization` header in HTTP requests, the client must encode the 
    ...
    ```
 
+## Project Structure
+
+- **`models/`**
+  - `base.py`: Base model for all data models of the API, handling serialization and deserialization to a file.
+  - `user.py`: User model, extending the base model to handle user-specific data such as email, password, etc.
+
+- **`api/v1/`**
+  - `app.py`: Entry point of the API; initializes and runs the Flask app and registers the necessary blueprints.
+  - **`views/`**
+    - `index.py`: Contains the basic endpoints of the API like `/status` and `/stats`.
+    - `users.py`: Defines all the user-related endpoints, such as creating, updating, and deleting users.
+  - **`auth/`**
+    - `auth.py`: Contains the `Auth` class for managing API authentication.
+    - `basic_auth.py`: Implements `BasicAuth` class inheriting from `Auth` to handle Basic Authentication logic.
+
 ## Routes
 
-- **`GET /api/v1/status`**: Returns the status of the API.
-- **`GET /api/v1/stats`**: Returns some stats of the API.
-- **`GET /api/v1/users`**: Returns the list of users.
-- **`GET /api/v1/users/:id`**: Returns a user based on the ID.
-- **`DELETE /api/v1/users/:id`**: Deletes a user based on the ID.
-- **`POST /api/v1/users`**: Creates a new user (JSON parameters: `email`, `password`, `last_name` (optional), and `first_name` (optional)).
-- **`PUT /api/v1/users/:id`**: Updates a user based on the ID (JSON parameters: `last_name` and `first_name`).
+- **`GET /api/v1/status`**: Returns the status of the API, indicating if it's running correctly.
+- **`GET /api/v1/stats`**: Returns some statistics about the API, such as the number of users.
+- **`GET /api/v1/users`**: Returns the list of all users. Requires authentication.
+- **`GET /api/v1/users/:id`**: Returns a specific user based on the user ID. Requires authentication.
+- **`DELETE /api/v1/users/:id`**: Deletes a user based on the user ID. Requires authentication.
+- **`POST /api/v1/users`**: Creates a new user. Requires authentication. Accepts JSON parameters: 
+  - `email` (required)
+  - `password` (required)
+  - `last_name` (optional)
+  - `first_name` (optional)
+- **`PUT /api/v1/users/:id`**: Updates a user based on the user ID. Requires authentication. Accepts JSON parameters: 
+  - `last_name` (optional)
+  - `first_name` (optional).
+
 
 ## Troubleshooting
 <details> <summary>
