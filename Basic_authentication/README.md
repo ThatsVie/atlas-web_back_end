@@ -621,7 +621,7 @@ This task involves creating a new `Auth` class in `api/v1/auth/auth.py` to manag
 
 3. **Test the `Auth` Class:**
 
-   - Create a file named `main_0.py` in the root of your project with the following content:
+   - Use `main_0.py`:
 
    ```python
    #!/usr/bin/env python3
@@ -636,7 +636,7 @@ This task involves creating a new `Auth` class in `api/v1/auth/auth.py` to manag
    print(a.current_user())
    ```
 
-4. **Make `main_0.py` Executable:**
+4. **Ensure `main_0.py` is Executable:**
 
    - To ensure that you can run the script from the command line, you need to make it executable:
      ```bash
@@ -761,7 +761,7 @@ This task involves updating the `require_auth` method in the `Auth` class to det
 
 2. **Test the `require_auth` Method:**
 
-   - Create a file named `main_1.py` in the root of your project with the following content:
+   - Use `main_1.py`:
 
    ```python
    #!/usr/bin/env python3
@@ -780,7 +780,7 @@ This task involves updating the `require_auth` method in the `Auth` class to det
    print(a.require_auth("/api/v1/users", ["/api/v1/status/", "/api/v1/stats"]))
    ```
 
-3. **Make `main_1.py` Executable:**
+3. **Ensure `main_1.py` is Executable:**
 
    - To ensure that you can run the script from the command line, make it executable:
      ```bash
@@ -1164,5 +1164,165 @@ This task involves creating a new authentication class, `BasicAuth`, which inher
 
 - **Remember to Terminate the Server Between Tasks:**  
   To avoid any issues with the port being busy or the old configuration being used, make sure to terminate the server before starting the next task.
+
+</details>
+
+
+
+<details>
+<summary><strong>Task 7: Basic - Base64 part</strong></summary>
+
+This task involves adding the method `extract_base64_authorization_header` in the `BasicAuth` class to extract the Base64 part of the Authorization header for Basic Authentication.
+
+### Step-by-Step Instructions
+
+1. **Implement the `extract_base64_authorization_header` Method:**
+   - Open `api/v1/auth/basic_auth.py` and add the following code:
+
+   ```python
+   #!/usr/bin/env python3
+   """This module contains Basic authentication for the API."""
+
+   from api.v1.auth.auth import Auth
+
+
+   class BasicAuth(Auth):
+       """BasicAuth class that inherits from Auth."""
+
+       def extract_base64_authorization_header(
+           self, authorization_header: str
+       ) -> str:
+           """
+           Extracts the Base64 part of the Authorization header for Basic Auth.
+           """
+           if authorization_header is None or not isinstance(
+               authorization_header, str
+           ):
+               return None
+           if not authorization_header.startswith("Basic "):
+               return None
+           return authorization_header[len("Basic "):]
+   ```
+
+2. **Test the `extract_base64_authorization_header` Method:**
+
+   - Use `main_2.py`:
+
+   ```python
+   #!/usr/bin/env python3
+   """ Main 2
+   """
+   from api.v1.auth.basic_auth import BasicAuth
+
+   a = BasicAuth()
+
+   print(a.extract_base64_authorization_header(None))
+   print(a.extract_base64_authorization_header(89))
+   print(a.extract_base64_authorization_header("Holberton School"))
+   print(a.extract_base64_authorization_header("Basic Holberton"))
+   print(a.extract_base64_authorization_header("Basic SG9sYmVydG9u"))
+   print(a.extract_base64_authorization_header("Basic SG9sYmVydG9uIFNjaG9vbA=="))
+   print(a.extract_base64_authorization_header("Basic1234"))
+   ```
+
+3. **Ensure  `main_2.py` is Executable:**
+
+   - Make the script executable to run it from the command line:
+     ```bash
+     chmod +x main_2.py
+     ```
+
+4. **Run the Script to Test the `BasicAuth` Class:**
+
+   - Execute the script to test the `extract_base64_authorization_header` method:
+     ```bash
+     ./main_2.py
+     ```
+
+   - The expected output should be:
+     ```
+     None
+     None
+     None
+     Holberton
+     SG9sYmVydG9u
+     SG9sYmVydG9uIFNjaG9vbA==
+     None
+     ```
+
+### Testing with Postman, `curl`, and Web Browser
+
+#### **Testing with `curl` Commands:**
+
+   - To test the method in the context of an API, use the following `curl` commands:
+
+   ```bash
+   curl -H "Authorization: Basic SG9sYmVydG9u" "http://0.0.0.0:5000/api/v1/users"
+   # Expected output: {"error": "Unauthorized"}
+
+   curl -H "Authorization: Basic SG9sYmVydG9uIFNjaG9vbA==" "http://0.0.0.0:5000/api/v1/users"
+   # Expected output: {"error": "Forbidden"}
+   ```
+
+#### **Testing with a Web Browser:**
+
+   - Use the **ModHeader** extension (or any HTTP header modification tool) to add an Authorization header:
+     - **Name:** `Authorization`
+     - **Value:** `Basic SG9sYmVydG9u`
+   - Navigate to:
+     ```
+     http://localhost:5000/api/v1/users
+     ```
+   - You should see the JSON response:
+   ```json
+   {
+     "error": "Unauthorized"
+   }
+   ```
+
+   - Update the header value to `Basic SG9sYmVydG9uIFNjaG9vbA==` and refresh the page.
+   - You should see the JSON response:
+   ```json
+   {
+     "error": "Forbidden"
+   }
+   ```
+
+#### **Testing with Postman:**
+
+   - Open Postman and create a new request:
+     - **Method:** GET
+     - **URL:** `http://localhost:5000/api/v1/users`
+   - Go to the **Headers** tab and add a new header:
+     - **Key:** `Authorization`
+     - **Value:** `Basic SG9sYmVydG9u`
+   - Click **Send** to make the request.
+   - You should see a JSON response:
+   ```json
+   {
+     "error": "Unauthorized"
+   }
+   ```
+
+   - Update the **Authorization** header value to `Basic SG9sYmVydG9uIFNjaG9vbA==`.
+   - Click **Send** again to make the request.
+   - You should see a JSON response:
+   ```json
+   {
+     "error": "Forbidden"
+   }
+   ```
+
+### Explanation
+
+- **Method Behavior:**  
+  The `extract_base64_authorization_header` method extracts the Base64 part of the Authorization header if it starts with "Basic ".
+  - Returns `None` if the input is `None`, not a string, or does not start with "Basic ".
+  - Returns the Base64 part of the header if it is correctly formatted.
+
+### Note
+
+- **Terminate the Server Between Tasks:**  
+  Remember to terminate the server between tasks to avoid any issues with the port being busy or the old configuration being used.
 
 </details>
