@@ -8,11 +8,13 @@
   <h1>Basic Pawthentication</h1>
 </div>
 
+This project implements a Basic Authentication system for an API, providing secure access to protected resources. It involves creating and enhancing authentication methods, handling user credentials, and ensuring proper authorization using techniques like Base64 encoding/decoding and wildcard path exclusions. The final implementation allows only authenticated users to access specific endpoints, effectively securing the API.
+
 ## Background Context
 
 In this project, you'll learn about the authentication process and implement Basic Authentication on a simple API. Although, in the industry, it's common to use a module or framework like [Flask-HTTPAuth](https://flask-httpauth.readthedocs.io/en/latest/) for this purpose, this project focuses on building your own Basic Authentication mechanism to understand how it works.
 
-## Resources and Brief Summaries
+## Resources
 
 - **[REST API Authentication Mechanisms](https://www.youtube.com/watch?v=501dpx2IjGY):** This video explains various ways to authenticate a user when accessing a REST API, covering Basic, Digest, Token-based, and OAuth authentication methods.
   
@@ -24,11 +26,47 @@ In this project, you'll learn about the authentication process and implement Bas
   
 - **[Base64 - Concept](https://en.wikipedia.org/wiki/Base64):** This Wikipedia page provides an overview of the Base64 encoding scheme, its history, usage, and implementation details, such as the mapping of binary data to a set of 64 different ASCII characters.
 
+- **[Authentication vs. Authorization](https://www.geeksforgeeks.org/difference-between-authentication-and-authorization/):** This article explains the difference between authentication (verifying who you are) and authorization (verifying what you have access to), which is essential for understanding your project's scope.
+
+- **[Understanding HTTP Headers](https://www.geeksforgeeks.org/http-headers/):** A comprehensive overview of HTTP headers, including the `Authorization` header, which is essential for implementing Basic Authentication.
+
+
+- **[Python Base64 Module](https://www.geeksforgeeks.org/encoding-and-decoding-base64-strings-in-python/):** A guide on how to encode and decode strings in Base64 using Python, including practical examples.
+
+- **[Flask – Introduction to Web Development with Python](https://www.geeksforgeeks.org/flask-creating-first-simple-application/):** An introduction to Flask, the web framework used throughout your project.
+
+- **[Python Exception Handling](https://www.geeksforgeeks.org/python-exception-handling/):** A guide on how to handle exceptions in Python, relevant to the error handling done in your tasks.
+
+
 ## Learning Objectives
-- Understand what authentication is.
-- Explain what Base64 encoding is and how to encode a string in Base64.
-- Describe what Basic Authentication is and how it works.
-- Send the `Authorization` header correctly in HTTP requests.
+<details>
+<summary><strong>Understand what authentication is.</strong></summary>
+
+Authentication is the process of verifying the identity of a user or entity to allow or restrict access to a resource. In this project, we implemented authentication using Basic Authentication, where the server checks if the user credentials provided in the request are correct to grant access to the requested resource.  
+- **Covered in Tasks:** 3, 6, 11, 13
+</details>
+
+<details>
+<summary><strong>Explain what Base64 encoding is and how to encode a string in Base64.</strong></summary>
+
+Base64 encoding is a method for converting binary data (such as user credentials) into ASCII text using a set of 64 characters, making it suitable for transmission in text-based formats like HTTP. Base64 encoding is used in Basic Authentication to encode the user's email and password into a single string to be included in the `Authorization` header.
+- **Covered in Tasks:** 7, 8
+</details>
+
+<details>
+<summary><strong>Describe what Basic Authentication is and how it works.</strong></summary>
+
+Basic Authentication is a simple authentication scheme built into the HTTP protocol. It involves sending the user's credentials (email and password) encoded in Base64 within the `Authorization` header of an HTTP request. The server decodes the credentials, verifies them, and grants or denies access to resources based on their validity.
+- **Covered in Tasks:** 6, 10, 11, 12
+</details>
+
+<details>
+<summary><strong>Send the `Authorization` header correctly in HTTP requests.</strong></summary>
+
+To send the `Authorization` header in HTTP requests, the client must encode the user's credentials using Base64 and prepend the string with "Basic". The header is then included in each request requiring authentication. Correct handling of the `Authorization` header ensures that the server can authenticate and authorize users properly.
+- **Covered in Tasks:** 5, 6, 11, 12
+</details>
+
 
 ## Requirements
 
@@ -1872,6 +1910,115 @@ This task involves updating the `extract_user_credentials` method in the `BasicA
 
 - **Remember to Terminate the Server Between Tasks:**  
   To avoid any issues with the port being busy or the old configuration being used, make sure to terminate the server before starting the next task.
+
+</details>
+
+<details>
+<summary><strong>Task 13: Require Auth with Stars</strong></summary>
+
+This task involves improving the `require_auth` method in the `Auth` class to handle `*` (wildcard) characters at the end of `excluded_paths`. This will allow the method to correctly determine if a given path should be excluded from authentication based on patterns.
+
+### Step-by-Step Instructions
+
+1. **Update the `Auth` Class:**
+   - Modify the `require_auth` method in `api/v1/auth/auth.py` to handle wildcard (`*`) characters in the `excluded_paths`:
+
+   ```python
+   #!/usr/bin/env python3
+   """
+   This module contains the Auth class for managing API authentication.
+   """
+   from flask import request
+   from typing import List, TypeVar
+
+
+   class Auth:
+       """Auth class to manage the API authentication."""
+
+       def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
+           """Determines if a given path requires authentication."""
+           if path is None or excluded_paths is None or not excluded_paths:
+               return True
+
+           # Normalize path to compare with excluded paths
+           normalized_path = path if path.endswith('/') else path + '/'
+
+           for excluded_path in excluded_paths:
+               if excluded_path.endswith('*'):
+                   # Match the path prefix with excluded path
+                   if normalized_path.startswith(excluded_path[:-1]):
+                       return False
+               elif normalized_path == excluded_path:
+                   # Exact match with no wildcard
+                   return False
+
+           return True
+
+       def authorization_header(self, request=None) -> str:
+           """Returns the authorization header from the request."""
+           if request is None or 'Authorization' not in request.headers:
+               return None
+           return request.headers['Authorization']
+
+       def current_user(self, request=None) -> TypeVar('User'):
+           """Returns the current user."""
+           return None
+   ```
+
+2. **Test the `require_auth` Method:**
+
+   - Use `main_101.py` :
+
+   ```python
+   #!/usr/bin/env python3
+   """ Main 101
+   """
+   from api.v1.auth.auth import Auth
+
+   a = Auth()
+
+   # Test cases to match the checker's expectations
+   print(a.require_auth("/api/v1/users", ["/api/v1/us*"]))  # Expected: False
+   print(a.require_auth("/api/v1/us", ["/api/v1/us*"]))     # Expected: False
+   print(a.require_auth("/api/v1/us/", ["/api/v1/us*"]))    # Expected: False
+   print(a.require_auth("/api/v1/uas", ["/api/v1/us*"]))    # Expected: True
+   print(a.require_auth("/api/v1/usual", ["/api/v1/us*"]))  # Expected: False
+   ```
+
+3. **Make Sure `main_101.py` is Executable:**
+
+   - To ensure that you can run the script from the command line, make it executable:
+     ```bash
+     chmod +x main_101.py
+     ```
+
+4. **Run the Script to Test the Method:**
+
+   - Execute the script to test the `require_auth` method:
+     ```bash
+     ./main_101.py
+     ```
+
+   - The expected output should be:
+   ```plaintext
+   False
+   False
+   False
+   True
+   False
+   ```
+
+### Explanation
+
+- The `require_auth` method now supports:
+  - **Exact Matching:** Returns `False` if the path exactly matches an entry in `excluded_paths`.
+  - **Wildcard Matching:** If an entry in `excluded_paths` ends with `*`, it matches any path that starts with the prefix before `*`.
+  - **Path Normalization:** Ensures both the path and excluded paths end with `/` for consistent comparison.
+
+### Testing with `curl`, Postman, and Web Browser:
+
+**Note:** This task involves enhancing the authentication logic with wildcards in the backend. Therefore, there is no direct testing with `curl` commands, Postman, or a web browser for this specific method enhancement. Testing is mainly performed using the Python script `main_101.py`.
+
 
 </details>
 
