@@ -63,6 +63,11 @@ This project focuses on securely handling and managing sensitive user data by im
 
 To view a README.md file for Personal Data visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/personal_data/README.md)
 
+## Basic Authentication
+
+This project implements a Basic Authentication system for an API, providing secure access to protected resources. It involves creating and enhancing authentication methods, handling user credentials, and ensuring proper authorization using techniques like Base64 encoding/decoding and wildcard path exclusions. The final implementation allows only authenticated users to access specific endpoints, effectively securing the API.
+
+To view a README.md file for Basic Authentication visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/Basic_authentication/README.md)
 ## Author
 
 Vie Paula - [GitHub Profile](https://github.com/ThatsVie)
