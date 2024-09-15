@@ -44,7 +44,8 @@ class BasicAuth(Auth):
         self, decoded_base64_authorization_header: str
     ) -> (str, str):
         """
-        Extracts user email and password from a Base64 decoded value.
+        Extracts user email and password from a Base64 decoded value,
+        allowing for passwords with ':'.
         """
         if (
             decoded_base64_authorization_header is None or
@@ -53,7 +54,11 @@ class BasicAuth(Auth):
             return None, None
         if ':' not in decoded_base64_authorization_header:
             return None, None
-        return tuple(decoded_base64_authorization_header.split(':', 1))
+        # Split only at the first occurrence of ':'
+        user_email, user_pwd = decoded_base64_authorization_header.split(
+            ':', 1
+        )
+        return user_email, user_pwd
 
     def user_object_from_credentials(
             self, user_email: str, user_pwd: str) -> TypeVar('User'):

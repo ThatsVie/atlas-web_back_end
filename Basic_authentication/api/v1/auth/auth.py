@@ -10,15 +10,21 @@ class Auth:
     """Auth class to manage the API authentication."""
 
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
-        """This determines if a given path requires authentication."""
+        """Determines if a given path requires authentication."""
         if path is None or excluded_paths is None or not excluded_paths:
             return True
 
-        if not path.endswith('/'):
-            path += '/'
+        # Normalize path to compare with excluded paths
+        normalized_path = path if path.endswith('/') else path + '/'
 
-        if path in excluded_paths:
-            return False
+        for excluded_path in excluded_paths:
+            if excluded_path.endswith('*'):
+                # Match the path prefix with excluded path
+                if normalized_path.startswith(excluded_path[:-1]):
+                    return False
+            elif normalized_path == excluded_path:
+                # Exact match with no wildcard
+                return False
 
         return True
 

@@ -1713,3 +1713,165 @@ This task involves overloading the `current_user` method in the `BasicAuth` clas
 
 </details>
 
+<details>
+<summary><strong>Task 12: Basic - Allow Password with `:`</strong></summary>
+
+This task involves updating the `extract_user_credentials` method in the `BasicAuth` class to handle cases where the user's password contains a colon (`:`).
+
+### Step-by-Step Instructions
+
+1. **Update the `extract_user_credentials` Method:**
+   - File `api/v1/auth/basic_auth.py`:
+   
+   ```python
+   def extract_user_credentials(
+       self, decoded_base64_authorization_header: str
+   ) -> (str, str):
+       """
+       Extracts user email and password from a Base64 decoded value,
+       allowing for passwords with ':'.
+       """
+       if (
+           decoded_base64_authorization_header is None or
+           not isinstance(decoded_base64_authorization_header, str)
+       ):
+           return None, None
+       if ':' not in decoded_base64_authorization_header:
+           return None, None
+       # Split only at the first occurrence of ':'
+       user_email, user_pwd = decoded_base64_authorization_header.split(
+           ':', 1
+       )
+       return user_email, user_pwd
+   ```
+
+2. **Test the `extract_user_credentials` Method with Passwords Containing `:`:**
+
+   - File `main_100.py`:
+
+   ```python
+   #!/usr/bin/env python3
+   """ Main 100
+   """
+   import base64
+   from api.v1.auth.basic_auth import BasicAuth
+   from models.user import User
+
+   """ Create a user test """
+   user_email = "bob100@hbtn.io"
+   user_clear_pwd = "H0lberton:School:98!"
+
+   user = User()
+   user.email = user_email
+   user.password = user_clear_pwd
+   print("New user: {}".format(user.id))
+   user.save()
+
+   basic_clear = "{}:{}".format(user_email, user_clear_pwd)
+   print("Basic Base64: {}".format(base64.b64encode(basic_clear.encode('utf-8')).decode("utf-8")))
+   ```
+
+3. **Make `main_100.py` Executable:**
+
+   - To ensure that you can run the script from the command line, make it executable:
+     ```bash
+     chmod +x main_100.py
+     ```
+
+4. **Run the Script to Test the Method:**
+
+   - Execute the script to test the `extract_user_credentials` method:
+     ```bash
+     ./main_100.py
+     ```
+   
+   - The expected output should be similar to:
+     ```plaintext
+     New user: 5891469b-d2d5-4d33-b05d-02617d665368
+     Basic Base64: Ym9iMTAwQGhidG4uaW86SDBsYmVydG9uOlNjaG9vbDo5OCE=
+     ```
+
+5. **Run the Server with the Correct Environment Variable:**
+
+   - Start the server with `AUTH_TYPE` set to `basic_auth`:
+   ```bash
+   API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=basic_auth python3 -m api.v1.app
+   ```
+
+6. **Test Using `curl`:**
+
+   - In another terminal, use `curl` to test the endpoint with the updated authentication:
+
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/status"
+   # Expected output: {"status": "OK"}
+
+   curl "http://0.0.0.0:5000/api/v1/users"
+   # Expected output: {"error": "Unauthorized"}
+
+   curl "http://0.0.0.0:5000/api/v1/users" -H "Authorization: Test"
+   # Expected output: {"error": "Forbidden"}
+
+   curl "http://0.0.0.0:5000/api/v1/users" -H "Authorization: Basic test"
+   # Expected output: {"error": "Forbidden"}
+
+   curl "http://0.0.0.0:5000/api/v1/users" -H "Authorization: Basic Ym9iMTAwQGhidG4uaW86SDBsYmVydG9uOlNjaG9vbDo5OCE="
+   # Expected output: [{"created_at":"2024-09-15T20:40:33","email":"bob100@hbtn.io","first_name":null,"id":"64bb222f-fb71-4c16-8d7f-59e46ab601e0","last_name":null,"updated_at":"2024-09-15T20:40:33"}]
+   ```
+
+   **Curl Output:**
+
+   ```json
+   [
+     {
+       "created_at": "2024-09-15T20:40:33",
+       "email": "bob100@hbtn.io",
+       "first_name": null,
+       "id": "64bb222f-fb71-4c16-8d7f-59e46ab601e0",
+       "last_name": null,
+       "updated_at": "2024-09-15T20:40:33"
+     }
+   ]
+   ```
+
+7. **Test Using Postman:**
+
+   - Open Postman and select the environment where your API is running.
+   - Use the `GET` method and set the request URL to:
+     ```
+     http://localhost:5000/api/v1/users
+     ```
+   - Go to the **Authorization** tab.
+   - Select **Basic Auth** as the type.
+   - Enter the following credentials:
+     - **Username:** `bob100@hbtn.io`
+     - **Password:** `H0lberton:School:98!`
+   - Send the request.
+   - **Expected Response in Postman:**
+
+   ```json
+   [
+     {
+       "created_at": "2024-09-15T20:40:33",
+       "email": "bob100@hbtn.io",
+       "first_name": null,
+       "id": "64bb222f-fb71-4c16-8d7f-59e46ab601e0",
+       "last_name": null,
+       "updated_at": "2024-09-15T20:40:33"
+     }
+   ]
+   ```
+
+### Explanation
+
+- **Updated `extract_user_credentials` Method:**
+  - **Handles Passwords with `:`**: The method now correctly handles passwords containing colons (`:`) by splitting at the first occurrence of `:`.
+  - **Improved Validation**: Ensures that only valid user credentials are extracted.
+
+### Note
+
+- **Remember to Terminate the Server Between Tasks:**  
+  To avoid any issues with the port being busy or the old configuration being used, make sure to terminate the server before starting the next task.
+
+</details>
+
