@@ -1,4 +1,7 @@
-# Session Authentication
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/0c54eefb-e8c4-4979-962b-2c140feac23f" alt="chubbyolderpuggy">
+  <h1>Session Pugthentication</h1>
+</div>
 
 This project focuses on implementing a Session Authentication system in a Python web application using the Flask framework. You will create your own session authentication mechanism without relying on external modules, allowing you to understand each step of the process. Although it's common to use pre-built libraries for authentication in real-world applications, this project will enhance your understanding by building the mechanism from scratch.
 
