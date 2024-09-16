@@ -63,7 +63,7 @@ Between tasks, make sure to terminate the running server before starting a new o
 In this task, we will extend the existing Basic Authentication system by adding a new endpoint, `GET /api/v1/users/me`, which retrieves the authenticated User object. We will modify the application to handle session authentication and ensure the new functionality is correctly implemented.
 
 <details>
-<summary>Instructions Provided</summary>
+<summary>Instructions Provided in Curriculum</summary>
 Copy all your work of the 0x06. Basic authentication project in this new folder.  
 In this version, you implemented a Basic authentication for giving you access to all User endpoints:  
 - `GET /api/v1/users`  
@@ -299,5 +299,261 @@ To test the endpoints using a web browser:
      `http://0.0.0.0:5000/api/v1/users/me`
    - **Expected Output:**  
    The browser should display the authenticated user's details in JSON format.
+
+</details>
+
+<details>
+<summary><strong>Task 1: Empty session</strong></summary>
+
+In this task, you will start creating a new session-based authentication mechanism by defining an empty class, SessionAuth, that inherits from Auth. You will update the application to use this new authentication class when the AUTH_TYPE environment variable is set to session_auth, ensuring that the application can switch between different authentication mechanisms using environment variables.
+
+<details>
+<summary>Instructions Provided in Curriculum</summary>
+Create a class SessionAuth that inherits from Auth. For the moment this class will be empty. It’s the first step for creating a new authentication mechanism:
+validate if everything inherits correctly without any overloading
+validate the “switch” by using environment variables
+Update api/v1/app.py for using SessionAuth instance for the variable auth depending of the value of the environment variable AUTH_TYPE, If AUTH_TYPE is equal to session_auth:
+import SessionAuth from api.v1.auth.session_auth
+create an instance of SessionAuth and assign it to the variable auth
+Otherwise, keep the previous mechanism.
+</details>
+
+### Step-by-Step Instructions
+
+1. **Create a New Class `SessionAuth`:**
+   - Create a new file named `session_auth.py` in the `api/v1/auth` directory.
+   - Inside `session_auth.py`, define a new class `SessionAuth` that inherits from `Auth`. This class will be empty for now.
+
+   **File: `api/v1/auth/session_auth.py`**
+   ```python
+   #!/usr/bin/env python3
+   """ SessionAuth module
+   """
+   from api.v1.auth.auth import Auth
+
+
+   class SessionAuth(Auth):
+       """ Empty class for Session Authentication """
+       pass
+   ```
+
+2. **Update `api/v1/app.py` to Use `SessionAuth`:**
+   - Modify the `api/v1/app.py` file to create an instance of `SessionAuth` if the `AUTH_TYPE` environment variable is set to `session_auth`.
+
+   **File: `api/v1/app.py`**
+   ```python
+   #!/usr/bin/env python3
+   """
+   Route module for the API
+   """
+   from os import getenv
+   from api.v1.views import app_views
+   from flask import Flask, jsonify, abort, request
+   from flask_cors import (CORS, cross_origin)
+   import os
+
+   app = Flask(__name__)
+   app.register_blueprint(app_views)
+   CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
+
+   auth = None
+   AUTH_TYPE = getenv("AUTH_TYPE")
+
+   # Load the correct Auth class based on the environment variable
+   if AUTH_TYPE == 'auth':
+       from api.v1.auth.auth import Auth
+       auth = Auth()
+   elif AUTH_TYPE == 'basic_auth':
+       from api.v1.auth.basic_auth import BasicAuth
+       auth = BasicAuth()
+   elif AUTH_TYPE == 'session_auth':
+       from api.v1.auth.session_auth import SessionAuth
+       auth = SessionAuth()  # Use SessionAuth if AUTH_TYPE is 'session_auth'
+
+   @app.errorhandler(404)
+   def not_found(error) -> str:
+       """
+       Not found handler
+       """
+       return jsonify({"error": "Not found"}), 404
+
+   @app.errorhandler(401)
+   def unauthorized(error) -> str:
+       """
+       Unauthorized handler
+       """
+       return jsonify({"error": "Unauthorized"}), 401
+
+   @app.errorhandler(403)
+   def forbidden(error) -> str:
+       """
+       Forbidden handler
+       """
+       return jsonify({"error": "Forbidden"}), 403
+
+   @app.before_request
+   def before_request_handler():
+       """
+       Before request handler to filter each request.
+       """
+       if auth is None:
+           return
+       excluded_paths = [
+           '/api/v1/status/',
+           '/api/v1/unauthorized/',
+           '/api/v1/forbidden/'
+       ]
+       if not auth.require_auth(request.path, excluded_paths):
+           return
+       if auth.authorization_header(request) is None:
+           abort(401)
+       request.current_user = auth.current_user(request)  # Assign current user
+       if request.current_user is None:
+           abort(403)
+
+   if __name__ == "__main__":
+       host = getenv("API_HOST", "0.0.0.0")
+       port = getenv("API_PORT", "5000")
+       app.run(host=host, port=port)
+   ```
+
+3. **Test the Implementation:**
+
+   - Open two terminals to test the new authentication mechanism.
+
+   **First Terminal:**
+   - Start the Flask API server with `AUTH_TYPE` set to `session_auth`:
+   ```bash
+   API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=session_auth python3 -m api.v1.app
+   ```
+
+   **Second Terminal:**
+   - Run the following `curl` commands to test the functionality:
+
+   - **Check the API Status:**
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/status"
+   ```
+   - **Expected Output:**
+   ```json
+   {
+     "status": "OK"
+   }
+   ```
+
+   - **Test with Slash at the End:**
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/status/"
+   ```
+   - **Expected Output:**
+   ```json
+   {
+     "status": "OK"
+   }
+   ```
+
+   - **Test `GET /api/v1/users` Without Authorization:**
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/users"
+   ```
+   - **Expected Output:**
+   ```json
+   {
+     "error": "Unauthorized"
+   }
+   ```
+
+   - **Test with Incorrect Authorization Header:**
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/users" -H "Authorization: Test"
+   ```
+   - **Expected Output:**
+   ```json
+   {
+     "error": "Forbidden"
+   }
+   ```
+
+### Testing with Postman
+
+To test the new endpoint and authentication functionality using Postman:
+
+1. **Open Postman** and create a new request.
+
+2. **Test API Status Endpoint:**
+   - Set the request type to `GET`.
+   - Enter the URL: `http://0.0.0.0:5000/api/v1/status`
+   - Click "Send".
+   - **Expected Output:**
+   ```json
+   {
+     "status": "OK"
+   }
+   ```
+
+3. **Test `GET /api/v1/users` Endpoint Without Authorization:**
+   - Set the request type to `GET`.
+   - Enter the URL: `http://0.0.0.0:5000/api/v1/users`
+   - Click "Send".
+   - **Expected Output:**
+   ```json
+   {
+     "error": "Unauthorized"
+   }
+   ```
+
+4. **Test `GET /api/v1/users` Endpoint with Incorrect Authorization:**
+   - Set the request type to `GET`.
+   - Enter the URL: `http://0.0.0.0:5000/api/v1/users`
+   - Go to the "Headers" tab.
+   - Add a new header with:
+     - **Key:** `Authorization`
+     - **Value:** `Test`
+   - Click "Send".
+   - **Expected Output:**
+   ```json
+   {
+     "error": "Forbidden"
+   }
+   ```
+
+### Testing with Web Browser
+
+To test the endpoints using a web browser:
+
+1. **Test API Status Endpoint:**
+   - Open your web browser (e.g., Chrome, Firefox).
+   - Enter the following URL in the address bar:  
+     `http://0.0.0.0:5000/api/v1/status`
+   - **Expected Output:**
+   ```json
+   {
+     "status": "OK"
+   }
+   ```
+
+2. **Test `GET /api/v1/users` Endpoint Without Authorization:**
+   - Enter the following URL in the address bar:  
+     `http://0.0.0.0:5000/api/v1/users`
+   - **Expected Output:**  
+   The browser will display a JSON response indicating `"error": "Unauthorized"`.
+
+3. **Test `GET /api/v1/users` Endpoint with Incorrect Authorization:**
+   - For this test, use a browser extension or tool that allows you to set custom headers (such as [ModHeader](https://modheader.com/)).
+   - Set the `Authorization` header to:  
+     `Test`
+   - Enter the following URL in the address bar:  
+     `http://0.0.0.0:5000/api/v1/users`
+   - **Expected Output:**  
+   The browser should display a JSON response indicating `"error": "Forbidden"`.
+
+### Explanation of Changes
+
+- **Creation of `SessionAuth` Class:**
+  - A new class `SessionAuth` is created in `session_auth.py` inheriting from `Auth`. For now, this class is empty but sets up the structure for future development of session-based authentication.
+  
+- **Updating `api/v1/app.py` to Use `SessionAuth`:**
+  - The `api/v1/app.py` file is updated to import and create an instance of `SessionAuth` when the `AUTH_TYPE` environment variable is set to `session_auth`. This change allows switching between different authentication mechanisms based on the environment variable.
+
 
 </details>
