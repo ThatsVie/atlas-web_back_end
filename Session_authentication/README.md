@@ -279,8 +279,10 @@ To test the endpoints using a web browser:
 
 1. **Test API Status Endpoint:**
    - Open your web browser (e.g., Chrome, Firefox).
-   - Enter the following URL in the address bar:  
-     `http://0.0.0.0:5000/api/v1/status`
+   - Enter the following URL in the address bar:
+   ``` 
+     http://localhost:5000/api/v1/status
+     ```
    - **Expected Output:**
    ```json
    {
@@ -289,8 +291,11 @@ To test the endpoints using a web browser:
    ```
 
 2. **Test `GET /api/v1/users` Endpoint Without Authorization:**
-   - Open the following URL in the address bar:  
-     `http://0.0.0.0:5000/api/v1/users`
+   - Open the following URL in the address bar:
+   ```
+   http://localhost:5000/api/v1/users
+   ```
+     
    - **Expected Output:**  
    The browser will display a JSON response indicating `"error": "Unauthorized"`.
 
@@ -299,7 +304,7 @@ To test the endpoints using a web browser:
    - Set the `Authorization` header to:  
      `Basic Ym9iQGhidG4uaW86SDBsYmVydG9uU2Nob29sOTgh`
    - Enter the following URL in the address bar:  
-     `http://0.0.0.0:5000/api/v1/users/me`
+     http://0.0.0.0:5000/api/v1/users/me
    - **Expected Output:**  
    The browser should display the authenticated user's details in JSON format.
 
