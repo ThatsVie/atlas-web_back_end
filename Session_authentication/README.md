@@ -1156,3 +1156,255 @@ To test the session cookie functionality with Postman:
 
 </details>
 
+<details>
+<summary><strong>Task 5: Before request</strong></summary>
+
+
+In this task, you will update the `@app.before_request` method in `api/v1/app.py` to handle session-based authentication. The new changes will allow for checking the presence of both an authorization header and a session cookie, ensuring proper access control to your API endpoints.
+
+<details>
+<summary>Instructions Provided in Curriculum</summary>
+
+Update the `@app.before_request` method in `api/v1/app.py`:
+
+1. Add the URL path `/api/v1/auth_session/login/` to the list of excluded paths in the method `require_auth`. This route doesn’t exist yet, but it should be accessible outside authentication.
+2. If both `auth.authorization_header(request)` and `auth.session_cookie(request)` return `None`, abort with a `401 Unauthorized` error.
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update `app.py`:**
+   - Open the file `app.py` located in `api/v1/`.
+   - Make the following changes to handle session-based authentication properly.
+
+   **Updated `app.py` Code:**
+   ```python
+   #!/usr/bin/env python3
+   """
+   Route module for the API
+   """
+   from os import getenv
+   from api.v1.views import app_views
+   from flask import Flask, jsonify, abort, request
+   from flask_cors import (CORS, cross_origin)
+   import os
+
+   app = Flask(__name__)
+   app.register_blueprint(app_views)
+   CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
+
+   auth = None
+   AUTH_TYPE = getenv("AUTH_TYPE")
+
+   # Load the correct Auth class based on the environment variable
+   if AUTH_TYPE == 'auth':
+       from api.v1.auth.auth import Auth
+       auth = Auth()
+   elif AUTH_TYPE == 'basic_auth':
+       from api.v1.auth.basic_auth import BasicAuth
+       auth = BasicAuth()
+   elif AUTH_TYPE == 'session_auth':
+       from api.v1.auth.session_auth import SessionAuth
+       auth = SessionAuth()  # Use SessionAuth if AUTH_TYPE is 'session_auth'
+
+
+   @app.errorhandler(404)
+   def not_found(error) -> str:
+       """
+       Not found handler
+       """
+       return jsonify({"error": "Not found"}), 404
+
+
+   @app.errorhandler(401)
+   def unauthorized(error) -> str:
+       """
+       Unauthorized handler
+       """
+       return jsonify({"error": "Unauthorized"}), 401
+
+
+   @app.errorhandler(403)
+   def forbidden(error) -> str:
+       """
+       Forbidden handler
+       """
+       return jsonify({"error": "Forbidden"}), 403
+
+
+   @app.before_request
+   def before_request_handler():
+       """
+       Before request handler to filter each request.
+       """
+       if auth is None:
+           return
+       excluded_paths = [
+           '/api/v1/status/',
+           '/api/v1/unauthorized/',
+           '/api/v1/forbidden/',
+           '/api/v1/auth_session/login/'  # Add this route to excluded paths
+       ]
+       if not auth.require_auth(request.path, excluded_paths):
+           return
+
+       # Check for both authorization header and session cookie
+       if (auth.authorization_header(request) is None and
+               auth.session_cookie(request) is None):
+           abort(401)
+
+       request.current_user = auth.current_user(request)
+       if request.current_user is None:
+           abort(403)
+
+
+   if __name__ == "__main__":
+       host = getenv("API_HOST", "0.0.0.0")
+       port = getenv("API_PORT", "5000")
+       app.run(host=host, port=port)
+   ```
+
+2. **Explanation of the Code Changes:**
+
+   - **Excluded Paths Update:**
+     - The URL path `/api/v1/auth_session/login/` is added to the `excluded_paths` list, allowing it to be accessed without authentication.
+   - **Combined Authentication Check:**
+     - The check ensures that if both `auth.authorization_header(request)` and `auth.session_cookie(request)` are `None`, a `401 Unauthorized` response is returned, blocking unauthorized access.
+
+### Testing with `curl`
+
+1. **Start the Server:**
+   - Run the server with the following command:
+   ```bash
+   API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=session_auth SESSION_NAME=_my_session_id python3 -m api.v1.app
+   ```
+
+2. **Test `curl` Commands:**
+
+   - **Check API Status:**
+     ```bash
+     curl "http://0.0.0.0:5000/api/v1/status"
+     ```
+     **Expected Output:**
+     ```json
+     {
+       "status": "OK"
+     }
+     ```
+
+   - **Check the New Login Route:**
+     ```bash
+     curl "http://0.0.0.0:5000/api/v1/auth_session/login"
+     ```
+     **Expected Output:**
+     ```json
+     {
+       "error": "Not found"
+     }
+     ```
+     - The output should show "Not found" but should not be blocked by the authentication system.
+
+   - **Check Unauthorized Access:**
+     ```bash
+     curl "http://0.0.0.0:5000/api/v1/users/me"
+     ```
+     **Expected Output:**
+     ```json
+     {
+       "error": "Unauthorized"
+     }
+     ```
+
+   - **Check with Basic Auth (will fail because `AUTH_TYPE` is `session_auth`):**
+     ```bash
+     curl "http://0.0.0.0:5000/api/v1/users/me" -H "Authorization: Basic Ym9iQGhidG4uaW86SDBsYmVydG9uU2Nob29sOTgh"
+     ```
+     **Expected Output:**
+     ```json
+     {
+       "error": "Forbidden"
+     }
+     ```
+
+   - **Check with Invalid Session Cookie:**
+     ```bash
+     curl "http://0.0.0.0:5000/api/v1/users/me" --cookie "_my_session_id=5535d4d7-3d77-4d06-8281-495dc3acfe76"
+     ```
+     **Expected Output:**
+     ```json
+     {
+       "error": "Forbidden"
+     }
+     ```
+
+### Testing with Postman
+
+To test the updated authentication mechanism with Postman:
+
+1. **Open Postman** and create a new `GET` request to:
+   ```
+   http://localhost:5000/api/v1/users/me
+   ```
+2. **Test Unauthorized Access:**
+   - Click **Send** without adding any authorization or cookies.
+   - **Expected Response:**
+   ```json
+   {
+     "error": "Unauthorized"
+   }
+   ```
+
+3. **Test with Basic Auth:**
+   - Go to the **Authorization** tab and select `Basic Auth`.
+   - Enter the following credentials:
+     - **Username:** `bob@hbtn.io`
+     - **Password:** `H0lbertonSchool98!`
+   - **Send the Request:**
+   - **Expected Response:**
+   ```json
+   {
+     "error": "Forbidden"
+   }
+   ```
+   - This response confirms that Basic Authentication won't work when `AUTH_TYPE` is set to `session_auth`.
+
+4. **Test with Session Cookie:**
+   - Go to the **Cookies** tab.
+   - Add a cookie named `_my_session_id` with a value like `5535d4d7-3d77-4d06-8281-495dc3acfe76`.
+   - **Send the Request:**
+   - **Expected Response:**
+   ```json
+   {
+     "error": "Forbidden"
+   }
+   ```
+   - This response confirms that a session cookie without an associated user will be rejected.
+
+### Testing with Web Browser
+
+1. **Open a Web Browser (e.g., Chrome, Firefox):**
+   - Enter the URL in the address bar: 
+   ```
+   http://localhost:5000/api/v1/users/me
+   ```
+
+2. **Check Unauthorized Access:**
+   - You should see:
+   ```json
+   {"error": "Unauthorized"}
+   ```
+
+3. **Add a Cookie for Session Auth:**
+   - Open Developer Tools (`Ctrl+Shift+I` or `Cmd+Option+I`).
+   - Go to the **Application** tab (in Chrome) or **Storage** tab (in Firefox).
+   - Select **Cookies** > `http://localhost:5000`.
+   - Add a cookie named `_my_session_id` with a value `5535d4d7-3d77-4d06-8281-495dc3acfe76`.
+   - Refresh the page.
+   - **Expected Output:**
+   ```json
+   {"error": "Forbidden"}
+   ```
+   - This indicates that the session cookie is not linked to a valid user.
+
+</details>
