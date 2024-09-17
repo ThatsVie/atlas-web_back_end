@@ -569,5 +569,150 @@ To test the endpoints using a web browser:
 - **Updating `api/v1/app.py` to Use `SessionAuth`:**
   - The `api/v1/app.py` file is updated to import and create an instance of `SessionAuth` when the `AUTH_TYPE` environment variable is set to `session_auth`. This change allows switching between different authentication mechanisms based on the environment variable.
 
+</details>
+
+<details>
+<summary><strong>Task 2: Create a session</strong></summary>
+
+In this task, you will enhance the `SessionAuth` class by implementing a method to create and store session IDs associated with user IDs. This mechanism will allow multiple sessions per user and facilitate session-based authentication in future tasks.
+
+<details>
+<summary>Instructions Provided in Curriculum</summary>
+Update the `SessionAuth` class:
+
+1. Create a class attribute `user_id_by_session_id` initialized as an empty dictionary.
+2. Create an instance method `create_session(self, user_id: str = None) -> str` that creates a Session ID for a `user_id`:
+   - Return `None` if `user_id` is `None`.
+   - Return `None` if `user_id` is not a string.
+   - Otherwise:
+     - Generate a Session ID using the `uuid` module and `uuid4()` like the ID in Base.
+     - Use this Session ID as the key of the dictionary `user_id_by_session_id` — the value for this key must be `user_id`.
+     - Return the Session ID.
+3. The same `user_id` can have multiple Session IDs; indeed, the `user_id` is the value in the dictionary `user_id_by_session_id`.
+
+Now you have an "in-memory" Session ID storing. You will be able to retrieve a User ID based on a Session ID.
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update the `SessionAuth` Class:**
+   - Open the file `session_auth.py` located in `api/v1/auth/`.
+   - Update the `SessionAuth` class to include a new class attribute and instance method as described below.
+
+   **File: `api/v1/auth/session_auth.py`**
+   ```python
+   #!/usr/bin/env python3
+   """ 
+   This module contains the SessionAuth class for handling 
+   session-based authentication in the API.
+   """
+   from api.v1.auth.auth import Auth
+   import uuid
+
+
+   class SessionAuth(Auth):
+       """ SessionAuth class for handling session authentication """
+
+       # Class attribute to store user IDs by session ID
+       user_id_by_session_id = {}
+
+       def create_session(self, user_id: str = None) -> str:
+           """
+           Creates a Session ID for a given user_id
+           Args:
+               user_id (str): The user ID to create a session for
+           Returns:
+               str: The generated Session ID or None if user_id is invalid
+           """
+           if user_id is None or not isinstance(user_id, str):
+               return None
+
+           # Generate a new Session ID using uuid4
+           session_id = str(uuid.uuid4())
+
+           # Store the user_id with the generated session_id
+           self.user_id_by_session_id[session_id] = user_id
+
+           return session_id
+   ```
+
+2. **Use `main_1.py` Script for Testing:**
+
+   **File: `main_1.py`**
+   ```python
+   #!/usr/bin/env python3
+   """ Main 1
+   """
+   from api.v1.auth.session_auth import SessionAuth
+
+   sa = SessionAuth()
+
+   print("{}: {}".format(type(sa.user_id_by_session_id), sa.user_id_by_session_id))
+
+   user_id = None
+   session = sa.create_session(user_id)
+   print("{} => {}: {}".format(user_id, session, sa.user_id_by_session_id))
+
+   user_id = 89
+   session = sa.create_session(user_id)
+   print("{} => {}: {}".format(user_id, session, sa.user_id_by_session_id))
+
+   user_id = "abcde"
+   session = sa.create_session(user_id)
+   print("{} => {}: {}".format(user_id, session, sa.user_id_by_session_id))
+
+   user_id = "fghij"
+   session = sa.create_session(user_id)
+   print("{} => {}: {}".format(user_id, session, sa.user_id_by_session_id))
+
+   user_id = "abcde"
+   session = sa.create_session(user_id)
+   print("{} => {}: {}".format(user_id, session, sa.user_id_by_session_id))
+   ```
+
+3. **Make `main_1.py` Executable:**
+   - Ensure `main_1.py` is executable:
+   ```bash
+   chmod +x main_1.py
+   ```
+
+4. **Run the Test Script:**
+   - Execute `main_1.py` to test the creation of sessions:
+   ```bash
+   API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=session_auth ./main_1.py
+   ```
+
+   **Expected Output:**
+   ```bash
+   <class 'dict'>: {}
+   None => None: {}
+   89 => None: {}
+   abcde => 00103b49-87fe-4e6b-9b5e-37bc6b76c5a5: {'00103b49-87fe-4e6b-9b5e-37bc6b76c5a5': 'abcde'}
+   fghij => e8140bdc-c824-49ec-b666-7067fdae1d70: {'00103b49-87fe-4e6b-9b5e-37bc6b76c5a5': 'abcde', 'e8140bdc-c824-49ec-b666-7067fdae1d70': 'fghij'}
+   abcde => 8d76f983-86ad-431a-92c8-d1b99049b73d: {'00103b49-87fe-4e6b-9b5e-37bc6b76c5a5': 'abcde', 'e8140bdc-c824-49ec-b666-7067fdae1d70': 'fghij', '8d76f983-86ad-431a-92c8-d1b99049b73d': 'abcde'}
+   ```
+
+### Explanation of Output
+
+- **Empty Dictionary Initialization:**
+   - `<class 'dict'>: {}` confirms that `user_id_by_session_id` is initialized as an empty dictionary.
+
+- **Handling `None` and Non-String User ID:**
+   - `None => None: {}` and `89 => None: {}` confirm that when `user_id` is `None` or not a string, the method returns `None` and the dictionary remains unchanged.
+
+- **Generating Session IDs for Valid User IDs:**
+   - Each call to `create_session` with a valid `user_id` (e.g., `"abcde"` and `"fghij"`) generates a unique Session ID and adds it to the dictionary, showing that the same `user_id` can have multiple session IDs.
+
+### Testing with `curl`
+
+This task does not involve direct testing with `curl` commands since it focuses on internal class behavior. However, you can continue to test other endpoints using `curl` if needed.
+
+### Testing with Postman
+
+Similarly, this task does not involve direct testing with Postman. The functionality is internal to the `SessionAuth` class. Future tasks may use Postman for more comprehensive testing.
+
+### Testing with Web Browser
+
+There is no direct testing required using a web browser for this task. The browser will not display internal changes to the `SessionAuth` class.
 
 </details>
