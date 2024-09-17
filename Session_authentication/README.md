@@ -705,7 +705,7 @@ Now you have an "in-memory" Session ID storing. You will be able to retrieve a U
 
 ### Testing with `curl`
 
-This task does not involve direct testing with `curl` commands since it focuses on internal class behavior. However, you can continue to test other endpoints using `curl` if needed.
+This task does not involve direct testing with `curl` commands since it focuses on internal class behavior. 
 
 ### Testing with Postman
 
@@ -714,5 +714,192 @@ Similarly, this task does not involve direct testing with Postman. The functiona
 ### Testing with Web Browser
 
 There is no direct testing required using a web browser for this task. The browser will not display internal changes to the `SessionAuth` class.
+
+</details>
+
+<details>
+<summary><strong>Task 3: User ID for Session ID</strong></summary>
+
+In this task, you will enhance the `SessionAuth` class by implementing a method to retrieve a User ID based on a given Session ID. This method, together with the existing `create_session` method, will allow you to manage sessions and authenticate users based on session data.
+
+<details>
+<summary>Instructions Provided in Curriculum</summary>
+Update the `SessionAuth` class:
+
+1. Create an instance method `def user_id_for_session_id(self, session_id: str = None) -> str:` that returns a User ID based on a Session ID:
+   - Return `None` if `session_id` is `None`.
+   - Return `None` if `session_id` is not a string.
+   - Otherwise, return the value (the User ID) for the key `session_id` in the dictionary `user_id_by_session_id`.
+   - Use the `.get()` method to access the value based on the key in the dictionary.
+
+Now you have two methods (`create_session` and `user_id_for_session_id`) for storing and retrieving a link between a User ID and a Session ID.
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update the `SessionAuth` Class:**
+   - Open the file `session_auth.py` located in `api/v1/auth/`.
+   - Update the `SessionAuth` class to include a new instance method `user_id_for_session_id` as described below.
+
+   **File: `api/v1/auth/session_auth.py`**
+   ```python
+   #!/usr/bin/env python3
+   """ 
+   This module contains the SessionAuth class for handling 
+   session-based authentication in the API.
+   """
+   from api.v1.auth.auth import Auth
+   import uuid
+
+
+   class SessionAuth(Auth):
+       """ SessionAuth class for handling session authentication """
+
+       # Class attribute to store user IDs by session ID
+       user_id_by_session_id = {}
+
+       def create_session(self, user_id: str = None) -> str:
+           """
+           Creates a Session ID for a given user_id
+           Args:
+               user_id (str): The user ID to create a session for
+           Returns:
+               str: The generated Session ID or None if user_id is invalid
+           """
+           if user_id is None or not isinstance(user_id, str):
+               return None
+
+           # Generate a new Session ID using uuid4
+           session_id = str(uuid.uuid4())
+
+           # Store the user_id with the generated session_id
+           self.user_id_by_session_id[session_id] = user_id
+
+           return session_id
+
+       def user_id_for_session_id(self, session_id: str = None) -> str:
+           """
+           Retrieves the User ID associated with a given Session ID
+           Args:
+               session_id (str): The Session ID to retrieve the User ID for
+           Returns:
+               str: The User ID associated with the Session ID or None if not found
+           """
+           if session_id is None or not isinstance(session_id, str):
+               return None
+
+           # Retrieve the User ID using the session_id
+           return self.user_id_by_session_id.get(session_id)
+   ```
+
+2. **Use `main_2.py` Script for Testing:**
+
+   **File: `main_2.py`**
+   ```python
+   #!/usr/bin/env python3
+   """ Main 2
+   """
+   from api.v1.auth.session_auth import SessionAuth
+
+   sa = SessionAuth()
+
+   user_id_1 = "abcde"
+   session_1 = sa.create_session(user_id_1)
+   print("{} => {}: {}".format(user_id_1, session_1, sa.user_id_by_session_id))
+
+   user_id_2 = "fghij"
+   session_2 = sa.create_session(user_id_2)
+   print("{} => {}: {}".format(user_id_2, session_2, sa.user_id_by_session_id))
+
+   print("---")
+
+   tmp_session_id = None
+   tmp_user_id = sa.user_id_for_session_id(tmp_session_id)
+   print("{} => {}".format(tmp_session_id, tmp_user_id))
+
+   tmp_session_id = 89
+   tmp_user_id = sa.user_id_for_session_id(tmp_session_id)
+   print("{} => {}".format(tmp_session_id, tmp_user_id))
+
+   tmp_session_id = "doesntexist"
+   tmp_user_id = sa.user_id_for_session_id(tmp_session_id)
+   print("{} => {}".format(tmp_session_id, tmp_user_id))
+
+   print("---")
+
+   tmp_session_id = session_1
+   tmp_user_id = sa.user_id_for_session_id(tmp_session_id)
+   print("{} => {}".format(tmp_session_id, tmp_user_id))
+
+   tmp_session_id = session_2
+   tmp_user_id = sa.user_id_for_session_id(tmp_session_id)
+   print("{} => {}".format(tmp_session_id, tmp_user_id))
+
+   print("---")
+
+   session_1_bis = sa.create_session(user_id_1)
+   print("{} => {}: {}".format(user_id_1, session_1_bis, sa.user_id_by_session_id))
+
+   tmp_user_id = sa.user_id_for_session_id(session_1_bis)
+   print("{} => {}".format(session_1_bis, tmp_user_id))
+
+   tmp_user_id = sa.user_id_for_session_id(session_1)
+   print("{} => {}".format(session_1, tmp_user_id))
+   ```
+
+3. **Make `main_2.py` Executable:**
+   - Ensure `main_2.py` is executable:
+   ```bash
+   chmod +x main_2.py
+   ```
+
+4. **Run the Test Script:**
+   - Execute `main_2.py` to test the retrieval of User IDs based on Session IDs:
+   ```bash
+   API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=session_auth ./main_2.py
+   ```
+
+   **Expected Output:**
+   ```bash
+   abcde => 8647f981-f503-4638-af23-7bb4a9e4b53f: {'8647f981-f503-4638-af23-7bb4a9e4b53f': 'abcde'}
+   fghij => a159ee3f-214e-4e91-9546-ca3ce873e975: {'a159ee3f-214e-4e91-9546-ca3ce873e975': 'fghij', '8647f981-f503-4638-af23-7bb4a9e4b53f': 'abcde'}
+   ---
+   None => None
+   89 => None
+   doesntexist => None
+   ---
+   8647f981-f503-4638-af23-7bb4a9e4b53f => abcde
+   a159ee3f-214e-4e91-9546-ca3ce873e975 => fghij
+   ---
+   abcde => 5d2930ba-f6d6-4a23-83d2-4f0abc8b8eee: {'a159ee3f-214e-4e91-9546-ca3ce873e975': 'fghij', '8647f981-f503-4638-af23-7bb4a9e4b53f': 'abcde', '5d2930ba-f6d6-4a23-83d2-4f0abc8b8eee': 'abcde'}
+   5d2930ba-f6d6-4a23-83d2-4f0abc8b8eee => abcde
+   8647f981-f503-4638-af23-7bb4a9e4b53f => abcde
+   ```
+
+### Explanation of Output
+
+- **Empty Dictionary Initialization:**
+   - The initial output confirms that `user_id_by_session_id` starts empty and then gets populated with session data after calling `create_session`.
+
+- **Handling Invalid Session IDs:**
+   - `None => None`, `89 => None`, and `doesntexist => None` confirm that if the session ID is `None`, not a string, or does not exist in the dictionary, the method returns `None`.
+
+- **Retrieving Valid User IDs:**
+   - The method correctly returns the associated user IDs for valid session IDs (`session_1` and `session_2`).
+
+- **Multiple Sessions for Same User:**
+   - The output shows that a user can have multiple sessions (`session_1` and `session_1_bis` for `user_id_1`), and each session ID can still correctly retrieve the user ID.
+
+### Testing with `curl`
+
+This task does not involve direct testing with `curl` commands since it focuses on internal class behavior. 
+### Testing with Postman
+
+Similarly, this task does not involve direct testing with Postman. The functionality is internal to the `SessionAuth` class. Future tasks may use Postman for more comprehensive testing.
+
+### Testing with Web Browser
+
+There is no direct testing required using a web browser for this task. The browser will not display internal changes to the `SessionAuth` class.
+
 
 </details>
