@@ -1642,3 +1642,291 @@ User with ID: 7b249379-5973-4a59-a862-0378e419bc3a has a Session ID: 4a556716-27
 
 </details>
 
+<details>
+<summary><strong>Task 7: New view for Session Authentication</strong></summary>
+
+In this task, you will create a new Flask view to handle all routes related to Session Authentication. The main goal is to implement a route that will authenticate a user using email and password, create a session for the authenticated user, and store the session ID in a cookie.
+
+<details>
+<summary>Instructions Provided in Curriculum</summary>
+
+1. Create a new Flask view in `api/v1/views/session_auth.py` with a route `POST /auth_session/login` (= `POST /api/v1/auth_session/login`):
+
+   - Make it slash-tolerant (`/auth_session/login == /auth_session/login/`).
+   - Use `request.form.get()` to retrieve `email` and `password` parameters.
+   - Return a JSON error message and status code 400 if `email` is missing or empty.
+   - Return a JSON error message and status code 400 if `password` is missing or empty.
+   - Retrieve the `User` instance based on the `email`. Use the class method `search` of `User`.
+   - Return a JSON error message and status code 404 if no user is found.
+   - Return a JSON error message and status code 401 if the password is incorrect (use `is_valid_password` from the `User` instance).
+   - Create a session ID for the user ID by using `auth.create_session(..)`.
+   - Return the dictionary representation of the `User` using the `to_json()` method.
+   - Set the cookie in the response using the value of the environment variable `SESSION_NAME` as the cookie name.
+
+2. In `api/v1/views/__init__.py`, add this new view at the end of the file.
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Create the `session_auth.py` File:**
+
+   **File: `api/v1/views/session_auth.py`**
+```python
+  #!/usr/bin/env python3
+"""
+This module contains the view for handling Session Authentication
+routes in the API. It provides a login route that creates and manages
+session IDs for authenticated users.
+"""
+
+from flask import jsonify, request, abort
+from api.v1.views import app_views
+from models.user import User
+from os import getenv
+
+
+@app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
+def session_auth_login():
+    """POST /api/v1/auth_session/login
+    Creates a new session for a user
+    """
+    from api.v1.app import auth
+
+    email = request.form.get('email')
+    password = request.form.get('password')
+
+    if not email:
+        return jsonify({"error": "email missing"}), 400
+    if not password:
+        return jsonify({"error": "password missing"}), 400
+
+    users = User.search({'email': email})
+    if not users:
+        return jsonify({"error": "no user found for this email"}), 404
+
+    user = users[0]
+
+    if not user.is_valid_password(password):
+        return jsonify({"error": "wrong password"}), 401
+
+    session_id = auth.create_session(user.id)
+    user_json = user.to_json()
+
+    # Set the cookie in the response
+    response = jsonify(user_json)
+    cookie_name = getenv('SESSION_NAME')
+    response.set_cookie(cookie_name, session_id)
+
+    return response
+   ```
+
+2. **Update `__init__.py` to Include the New View:**
+
+   **File: `api/v1/views/__init__.py`**
+```python
+  #!/usr/bin/env python3
+"""Initialize views for the API
+"""
+
+from flask import Blueprint
+
+app_views = Blueprint("app_views", __name__, url_prefix="/api/v1")
+
+from api.v1.views.index import *
+from api.v1.views.users import *
+from api.v1.views.session_auth import * #Added this 
+
+User.load_from_file()
+
+```
+
+3. **Run the Flask Application:**
+
+   In your terminal, run the Flask application with the following command:
+   ```bash
+   API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=session_auth SESSION_NAME=_my_session_id python3 -m api.v1.app
+   ```
+
+### Testing with `curl`
+
+1. **Check for Missing Methods:**
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/auth_session/login" -XGET
+   ```
+   - **Expected Output:**
+   ```html
+   <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+   <title>405 Method Not Allowed</title>
+   <h1>Method Not Allowed</h1>
+   <p>The method is not allowed for the requested URL.</p>
+   ```
+
+2. **Test with Missing Email:**
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/auth_session/login" -XPOST
+   ```
+   - **Expected Output:**
+   ```json
+   {"error":"email missing"}
+   ```
+
+3. **Test with Missing Password:**
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/auth_session/login" -XPOST -d "email=guillaume@hbtn.io"
+   ```
+   - **Expected Output:**
+   ```json
+   {"error":"password missing"}
+   ```
+
+4. **Test with Non-Existent User:**
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/auth_session/login" -XPOST -d "email=guillaume@hbtn.io" -d "password=test"
+   ```
+   - **Expected Output:**
+   ```json
+   {"error":"no user found for this email"}
+   ```
+
+5. **Test with Wrong Password:**
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/auth_session/login" -XPOST -d "email=bobsession@hbtn.io" -d "password=test"
+   ```
+   - **Expected Output:**
+   ```json
+   {"error":"wrong password"}
+   ```
+
+6. **Test with Correct Email and Password:**
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/auth_session/login" -XPOST -d "email=bobsession@hbtn.io" -d "password=fake pwd"
+   ```
+   - **Expected Output:**
+   ```json
+   {"created_at":"2024-09-17T19:52:13","email":"bobsession@hbtn.io","first_name":null,"id":"7b249379-5973-4a59-a862-0378e419bc3a","last_name":null,"updated_at":"2024-09-17T19:52:13"}
+   ```
+
+### Testing with Postman
+
+1. **Open Postman** and create a new `POST` request to:
+   ```
+   http://localhost:5000/api/v1/auth_session/login
+   ```
+
+2. **Test with Missing Email:**
+   - Click on "Send" without adding any parameters.
+   - **Expected Response:**
+   ```json
+   {"error":"email missing"}
+   ```
+
+3. **Test with Missing Password:**
+   - Add `email=guillaume@hbtn.io` as form-data.
+   - Click "Send".
+   - **Expected Response:**
+   ```json
+   {"error":"password missing"}
+   ```
+
+4. **Test with Non-Existent User:**
+   - Add `email=guillaume@hbtn.io` and `password=test` as form-data.
+   - Click "Send".
+   - **Expected Response:**
+   ```json
+   {"error":"no user found for this email"}
+   ```
+
+5. **Test with Correct Email and Password:**
+   - Add `email=bobsession@hbtn.io` and `password=fake pwd` as form-data.
+   - Click "Send".
+   - **Expected Response:**
+   ```json
+   {
+     "created_at": "2024-09-17T19:52:13", 
+     "email": "bobsession@hbtn.io", 
+     "first_name": null, 
+     "id": "7b249379-5973-4a59-a862-0378e419bc3a", 
+     "last_name": null, 
+     "updated_at": "2024-09-17T19:52:13"
+   }
+   ```
+
+### Testing with Web Browser
+
+To test the session authentication route using a web browser, follow these steps:
+
+1. **Open Your Web Browser:**
+   - Use a modern web browser like Chrome, Firefox, or Edge.
+
+2. **Open Developer Tools:**
+   - Press `F12` or right-click anywhere on the page and select "Inspect" or "Inspect Element" to open the developer tools.
+
+3. **Go to the Network Tab:**
+   - In the developer tools, click on the "Network" tab. This will allow you to see the network requests and responses made by the browser.
+
+4. **Send a POST Request via Browser Console:**
+   - Click on the "Console" tab in the developer tools.
+   - To test the session login route, paste the following JavaScript code into the console and press `Enter`:
+   ```javascript
+   fetch("http://localhost:5000/api/v1/auth_session/login", {
+       method: "POST",
+       headers: {
+           "Content-Type": "application/x-www-form-urlencoded"
+       },
+       body: new URLSearchParams({
+           "email": "bobsession@hbtn.io", // Replace with the email to test
+           "password": "fake pwd" // Replace with the correct or incorrect password to test various scenarios
+       })
+   })
+   .then(response => response.json())
+   .then(data => console.log(data))
+   .catch(error => console.error('Error:', error));
+   ```
+   - **Expected Output:**
+     Depending on the email and password provided in the `body` of the request:
+   - **Correct Credentials:**
+     ```json
+     {
+       "created_at": "2024-09-17T19:52:13", 
+       "email": "bobsession@hbtn.io", 
+       "first_name": null, 
+       "id": "7b249379-5973-4a59-a862-0378e419bc3a", 
+       "last_name": null, 
+       "updated_at": "2024-09-17T19:52:13"
+     }
+     ```
+   - **Incorrect Credentials or Errors:**
+     You will see the corresponding error message, such as:
+     ```json
+     {"error":"wrong password"}
+     ```
+     or
+     ```json
+     {"error":"no user found for this email"}
+     ```
+
+5. **Observe the Network Tab:**
+   - While the console displays the output, the "Network" tab will show the request details (e.g., headers, method, and status code) and the response from the server.
+   - This can help verify that the correct request was sent and received as expected.
+
+6. **Inspect Cookies:**
+   - After a successful login, check the "Application" or "Storage" tab in the developer tools.
+   - Go to "Cookies" and select the domain `localhost`.
+   - Verify that the cookie `_my_session_id` has been set with the correct session ID.
+
+7. **Refresh the Page:**
+   - To verify the session, you can manually refresh the page or make another request to `http://localhost:5000/api/v1/users/me` using the console:
+   ```javascript
+   fetch("http://localhost:5000/api/v1/users/me", {
+       method: "GET",
+       credentials: "include" // Include the session cookie in the request
+   })
+   .then(response => response.json())
+   .then(data => console.log(data))
+   .catch(error => console.error('Error:', error));
+   ```
+   - **Expected Output:** If the session is valid, you should see the user's details.
+
+
+</details>
