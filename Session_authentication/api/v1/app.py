@@ -5,8 +5,7 @@ Route module for the API
 from os import getenv
 from api.v1.views import app_views
 from flask import Flask, jsonify, abort, request
-from flask_cors import (CORS, cross_origin)
-import os
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
@@ -24,8 +23,13 @@ elif AUTH_TYPE == 'basic_auth':
     auth = BasicAuth()
 elif AUTH_TYPE == 'session_auth':
     from api.v1.auth.session_auth import SessionAuth
-    auth = SessionAuth()  # Use SessionAuth if AUTH_TYPE is 'session_auth'
-
+    auth = SessionAuth()  # Use if AUTH_TYPE is session_auth
+elif AUTH_TYPE == 'session_exp_auth':
+    from api.v1.auth.session_exp_auth import SessionExpAuth
+    auth = SessionExpAuth()  # Use if AUTH_TYPE is session_exp_auth
+elif AUTH_TYPE == 'session_db_auth':
+    from api.v1.auth.session_db_auth import SessionDBAuth
+    auth = SessionDBAuth()  # Use if AUTH_TYPE is session_db_auth
 
 @app.errorhandler(404)
 def not_found(error) -> str:

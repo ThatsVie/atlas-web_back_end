@@ -2086,3 +2086,453 @@ This task involves adding functionality to log out a user by deleting their sess
 - **Check the Terminal Outputs:** Review the output in both terminals to confirm that the session creation and deletion processes are handled as expected.
 
 </details>
+
+<details>
+<summary><strong>Task 9: Expiration</strong></summary>
+
+This advanced task involves adding an expiration mechanism to the session ID in the session-based authentication system. We extend the `SessionAuth` class and create a new class `SessionExpAuth` to manage session expiration.
+
+<details>
+<summary>Instructions Provided in the Curriculum</summary>
+
+1. **Create the `SessionExpAuth` Class:**
+   - Create a new class `SessionExpAuth` that inherits from `SessionAuth` in `api/v1/auth/session_exp_auth.py`.
+   - Overload the `__init__()` method:
+     - Assign an instance attribute `session_duration` to the environment variable `SESSION_DURATION`, cast to an integer.
+     - If this environment variable doesn’t exist or cannot be parsed as an integer, assign `session_duration` to `0`.
+
+2. **Overload the `create_session()` Method:**
+   - Use `super()` to call the `create_session()` method from `SessionAuth`.
+   - Return `None` if `super()` can’t create a Session ID.
+   - Use this Session ID as the key of the dictionary `user_id_by_session_id`, and the value for this key must be a dictionary (called “session dictionary”):
+     - The key `user_id` must be set to the variable `user_id`.
+     - The key `created_at` must be set to the current datetime using `datetime.now()`.
+   - Return the created Session ID.
+
+3. **Overload the `user_id_for_session_id()` Method:**
+   - Return `None` if `session_id` is `None`.
+   - Return `None` if `user_id_by_session_id` doesn’t contain any key equal to `session_id`.
+   - Return the `user_id` key from the session dictionary if `self.session_duration` is equal to or under `0`.
+   - Return `None` if the session dictionary doesn’t contain a `created_at` key.
+   - Return `None` if the `created_at` time plus `session_duration` seconds is before the current datetime (`datetime.now()`).
+   - Otherwise, return `user_id` from the session dictionary.
+
+4. **Update `app.py` to Use the New Authentication Class:**
+   - Update `api/v1/app.py` to instantiate `auth` with `SessionExpAuth` if the environment variable `AUTH_TYPE` is equal to `session_exp_auth`.
+
+</details>
+
+---
+
+### Step-by-Step Instructions
+
+1. **Create the `SessionExpAuth` Class:**
+
+   In `api/v1/auth/session_exp_auth.py`, create the `SessionExpAuth` class that inherits from `SessionAuth`:
+
+   **Code:**
+   ```python
+   #!/usr/bin/env python3
+   """
+   This module contains the SessionExpAuth class that adds expiration
+   functionality to session-based authentication.
+   """
+   from api.v1.auth.session_auth import SessionAuth
+   from os import getenv
+   from datetime import datetime, timedelta
+
+
+   class SessionExpAuth(SessionAuth):
+       """
+       SessionExpAuth class for handling session authentication with expiration.
+       """
+
+       def __init__(self):
+           """Initialize SessionExpAuth with session duration."""
+           super().__init__()
+           try:
+               self.session_duration = int(getenv('SESSION_DURATION', 0))
+           except Exception:
+               self.session_duration = 0
+
+       def create_session(self, user_id=None):
+           """Create a session with expiration."""
+           session_id = super().create_session(user_id)
+           if session_id is None:
+               return None
+
+           # Store session information with expiration
+           session_info = {
+               'user_id': user_id,
+               'created_at': datetime.now()
+           }
+           self.user_id_by_session_id[session_id] = session_info
+           return session_id
+
+       def user_id_for_session_id(self, session_id=None):
+           """Return a User ID based on a Session ID with expiration check."""
+           if session_id is None:
+               return None
+
+           session_info = self.user_id_by_session_id.get(session_id)
+           if session_info is None:
+               return None
+
+           if self.session_duration <= 0:
+               return session_info.get('user_id')
+
+           if 'created_at' not in session_info:
+               return None
+
+           # Check if session has expired
+           created_at = session_info.get('created_at')
+           if (created_at + timedelta(seconds=self.session_duration) <
+                   datetime.now()):
+               return None
+
+           return session_info.get('user_id')
+   ```
+
+2. **Update `app.py` to Use `SessionExpAuth`:**
+
+   Modify `api/v1/app.py` to use `SessionExpAuth` when `AUTH_TYPE` is set to `session_exp_auth`:
+
+   **Code:**
+   ```python
+   elif AUTH_TYPE == 'session_exp_auth':
+       from api.v1.auth.session_exp_auth import SessionExpAuth
+       auth = SessionExpAuth()
+   ```
+
+### Testing with `curl`
+
+1. **Start the Server:**
+
+   In the first terminal, run:
+   ```bash
+   API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=session_exp_auth SESSION_NAME=_my_session_id SESSION_DURATION=60 python3 -m api.v1.app
+   ```
+   You should see:
+   ```
+   * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+   ```
+
+2. **Test Session Creation and Expiration:**
+
+   - **Create a Session:**
+     ```bash
+     curl "http://0.0.0.0:5000/api/v1/auth_session/login" -XPOST -d "email=bobsession@hbtn.io" -d "password=fake pwd" -vvv
+     ```
+     Expected output:
+     ```json
+     {
+       "created_at": "2024-09-17T19:52:13",
+       "email": "bobsession@hbtn.io",
+       "first_name": null,
+       "id": "7b249379-5973-4a59-a862-0378e419bc3a",
+       "last_name": null,
+       "updated_at": "2024-09-17T19:52:13"
+     }
+     ```
+     Check the `Set-Cookie` header to get the session ID (`_my_session_id`).
+
+   - **Access User Info Immediately:**
+     ```bash
+     curl "http://0.0.0.0:5000/api/v1/users/me" --cookie "_my_session_id=<your_session_id>"
+     ```
+     Replace `<your_session_id>` with the actual session ID obtained from the login response.
+
+     This should return the user information.
+
+   - **Wait 10 Seconds and Check Again:**
+     ```bash
+     sleep 10
+     curl "http://0.0.0.0:5000/api/v1/users/me" --cookie "_my_session_id=<your_session_id>"
+     ```
+     This should still return the user information.
+
+   - **Wait for the Session to Expire:**
+     ```bash
+     sleep 50  # Total wait time of 60 seconds
+     curl "http://0.0.0.0:5000/api/v1/users/me" --cookie "_my_session_id=<your_session_id>"
+     ```
+     This should return:
+     ```json
+     {"error": "Forbidden"}
+     ```
+### Testing with Postman
+
+1. **Login to Create a Session:**
+   - **Open Postman** and create a new `POST` request to:
+     ```
+     http://0.0.0.0:5000/api/v1/auth_session/login
+     ```
+   - In the **Body** tab, select **x-www-form-urlencoded** and add:
+     - **Key**: `email` | **Value**: `bobsession@hbtn.io`
+     - **Key**: `password` | **Value**: `fake pwd`
+   - Send the request.
+   - The response should contain the user information:
+     ```json
+     {
+       "created_at": "2024-09-17T19:52:13",
+       "email": "bobsession@hbtn.io",
+       "first_name": null,
+       "id": "7b249379-5973-4a59-a862-0378e419bc3a",
+       "last_name": null,
+       "updated_at": "2024-09-17T19:52:13"
+     }
+     ```
+   - **Note:** Look at the `Set-Cookie` header in the response to get the session ID (`_my_session_id`).
+
+2. **Access User Info:**
+   - Create a new `GET` request to:
+     ```
+     http://0.0.0.0:5000/api/v1/users/me
+     ```
+   - Go to the **Headers** tab and add:
+     - **Key**: `Cookie` | **Value**: `_my_session_id=<your_session_id>`
+   - Replace `<your_session_id>` with the session ID obtained in step 1.
+   - Send the request.
+   - The response should display the user's details.
+
+3. **Test Session Expiration:**
+   - Wait for the duration specified in `SESSION_DURATION` (e.g., 60 seconds).
+   - Send the same `GET` request again.
+   - The response should now show:
+     ```json
+     {"error": "Forbidden"}
+     ```
+
+### Troubleshooting Notes
+
+- **Check Environment Variables:**
+  Make sure the environment variable `SESSION_DURATION` is correctly set:
+  ```bash
+  export SESSION_DURATION=60
+  ```
+  If the environment variable is not set or incorrectly set, the session might not expire as expected.
+
+- **Verify the Correct Use of Session IDs:**
+  Always use the correct session ID returned from the login request. If you encounter unexpected "Forbidden" errors, ensure the session ID matches the one created during the login process.
+
+- **Debug Expiration Logic:**
+  Use print statements or logging to ensure that the `created_at` time and the session duration comparison are correctly implemented in the `user_id_for_session_id` method. Confirm that sessions are expiring as expected after the specified duration.
+
+</details>
+
+<details>
+<summary><strong>Task 10: Sessions in Database</strong></summary>
+
+This task involves storing session data in a database rather than in memory, ensuring that session data persists even if the application restarts. We implement this by creating a `UserSession` model for storing session information and a new authentication class `SessionDBAuth` that interacts with this model.
+
+<details>
+<summary>Instructions Provided in the Curriculum</summary>
+
+1. **Create a `UserSession` Model:**
+    - Create a new file `models/user_session.py`.
+    - Implement the `UserSession` class that inherits from `Base`:
+        - Attributes:
+            - `user_id`: String
+            - `session_id`: String
+
+2. **Create `SessionDBAuth` Class:**
+    - Create a new file `api/v1/auth/session_db_auth.py`.
+    - Implement the `SessionDBAuth` class that inherits from `SessionExpAuth`.
+    - Overload methods:
+        - **`create_session(self, user_id=None)`**: 
+          - Create and store a new instance of `UserSession` in the database.
+          - Return the Session ID.
+        - **`user_id_for_session_id(self, session_id=None)`**:
+          - Return the User ID by querying `UserSession` in the database based on `session_id`.
+        - **`destroy_session(self, request=None)`**:
+          - Destroy the `UserSession` based on the Session ID from the request cookie.
+
+3. **Update `app.py`:**
+    - Update the file `api/v1/app.py` to instantiate `auth` with `SessionDBAuth` if the environment variable `AUTH_TYPE` is equal to `session_db_auth`.
+
+</details>
+
+
+### Step-by-Step Instructions
+
+1. **Create the `UserSession` Model:**
+
+   In `models/user_session.py`, create a new class `UserSession`:
+
+   **Code:**
+   ```python
+   #!/usr/bin/env python3
+   """
+   This module contains UserSession for storing session information in a database
+   """
+   from models.base import Base
+
+   class UserSession(Base):
+       """UserSession class for storing session data."""
+       
+       def __init__(self, *args: list, **kwargs: dict):
+           """Initialize a UserSession instance."""
+           super().__init__(*args, **kwargs)
+           self.user_id = kwargs.get('user_id')
+           self.session_id = kwargs.get('session_id')
+   ```
+
+2. **Create `SessionDBAuth` Class:**
+
+   In `api/v1/auth/session_db_auth.py`, implement the class `SessionDBAuth`:
+
+   **Code:**
+   ```python
+   #!/usr/bin/env python3
+   """
+   This module contains SessionDBAuth class for handling session authentication
+   with database storage.
+   """
+   from api.v1.auth.session_exp_auth import SessionExpAuth
+   from models.user_session import UserSession
+
+   class SessionDBAuth(SessionExpAuth):
+       """SessionDBAuth class for session management stored in database."""
+       
+       def create_session(self, user_id=None):
+           """Create and store a new session instance in the database."""
+           session_id = super().create_session(user_id)
+           if session_id is None:
+               return None
+
+           # Create a new UserSession instance and store it in the database
+           user_session = UserSession(user_id=user_id, session_id=session_id)
+           user_session.save()
+
+           return session_id
+
+       def user_id_for_session_id(self, session_id=None):
+           """Retrieve the User ID associated with a session ID."""
+           if session_id is None:
+               return None
+           
+           # Search for UserSession in the database
+           try:
+               user_sessions = UserSession.search({'session_id': session_id})
+               if not user_sessions:
+                   return None
+               user_session = user_sessions[0]
+               return user_session.user_id
+           except Exception:
+               return None
+
+       def destroy_session(self, request=None):
+           """Destroy a UserSession based on the session ID."""
+           if request is None:
+               return False
+
+           session_id = self.session_cookie(request)
+           if session_id is None:
+               return False
+
+           # Search for UserSession in the database
+           try:
+               user_sessions = UserSession.search({'session_id': session_id})
+               if not user_sessions:
+                   return False
+               user_session = user_sessions[0]
+               user_session.remove()  # Remove session from the database
+               return True
+           except Exception:
+               return False
+   ```
+
+3. **Update `app.py`:**
+
+   Update the `app.py` file to include the `SessionDBAuth` class:
+
+   **Code:**
+   ```python
+   elif AUTH_TYPE == 'session_db_auth':
+       from api.v1.auth.session_db_auth import SessionDBAuth
+       auth = SessionDBAuth()  # Use if AUTH_TYPE is session_db_auth
+   ```
+
+### Testing with `curl`
+
+1. **Login and Create a Session:**
+
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/auth_session/login" -XPOST -d "email=bobsession@hbtn.io" -d "password=fake pwd" -vvv
+   ```
+   Expected output:
+   ```json
+   {
+     "created_at": "2024-09-17T19:52:13",
+     "email": "bobsession@hbtn.io",
+     "first_name": null,
+     "id": "7b249379-5973-4a59-a862-0378e419bc3a",
+     "last_name": null,
+     "updated_at": "2024-09-17T19:52:13"
+   }
+   ```
+   Check the `Set-Cookie` header to get the session ID (`_my_session_id`).
+
+2. **Access User Info with Session ID:**
+
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/users/me" --cookie "_my_session_id=YOUR_SESSION_ID"
+   ```
+   Replace `YOUR_SESSION_ID` with the actual session ID obtained from the login response.
+
+3. **Wait for the Session to Expire:**
+
+   Since the session duration is set to 60 seconds, wait for a little over 60 seconds to ensure that the session has expired:
+
+   ```bash
+   sleep 61
+   ```
+
+4. **Attempt to Access User Info After Expiration:**
+
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/users/me" --cookie "_my_session_id=YOUR_SESSION_ID"
+   ```
+   Expected output:
+   ```json
+   {"error": "Forbidden"}
+   ```
+
+5. **Logout by Deleting the Session:**
+
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/auth_session/logout" --cookie "_my_session_id=YOUR_SESSION_ID" -XDELETE
+   ```
+   Expected output:
+   ```json
+   {}
+   ```
+
+### Troubleshooting Notes
+
+- **Correct Session ID:** Ensure you are using the correct and active session ID in your requests.
+- **Check the Database:** Verify that the session data is stored and removed correctly in your database (or file).
+- **Use the Right Cookie:** Confirm that the cookie name (`_my_session_id`) matches the environment variable `SESSION_NAME`.
+
+### Testing with Postman
+
+1. **Login to Create a Session:**
+   - Send a `POST` request to `http://0.0.0.0:5000/api/v1/auth_session/login`.
+   - Add form data:
+     - `email`: `bobsession@hbtn.io`
+     - `password`: `fake pwd`
+   - Note the `Set-Cookie` header from the response.
+
+2. **Access User Info:**
+   - Send a `GET` request to `http://0.0.0.0:5000/api/v1/users/me`.
+   - Add a cookie with key `_my_session_id` and the value of the session ID obtained in step 1.
+
+3. **Logout:**
+   - Send a `DELETE` request to `http://0.0.0.0:5000/api/v1/auth_session/logout`.
+   - Include the same session ID cookie as in step 2.
+
+4. **Check Access After Logout:**
+   - Send a `GET` request again to `http://0.0.0.0:5000/api/v1/users/me` using the same cookie.
+   - The response should show an error: `{"error": "Forbidden"}`.
+
+</details>
