@@ -5,9 +5,10 @@ This module contains UserSession for storing session information in a database
 from models.base import Base
 from datetime import datetime
 
+
 class UserSession(Base):
     """UserSession class for storing session data."""
-    
+
     def __init__(self, *args: list, **kwargs: dict):
         """Initialize a UserSession instance."""
         super().__init__(*args, **kwargs)
