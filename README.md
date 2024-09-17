@@ -68,6 +68,13 @@ To view a README.md file for Personal Data visit [this link.](https://github.com
 This project implements a Basic Authentication system for an API, providing secure access to protected resources. It involves creating and enhancing authentication methods, handling user credentials, and ensuring proper authorization using techniques like Base64 encoding/decoding and wildcard path exclusions. The final implementation allows only authenticated users to access specific endpoints, effectively securing the API.
 
 To view a README.md file for Basic Authentication visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/Basic_authentication/README.md)
+
+## Session Authentication
+
+This project focuses on implementing various authentication mechanisms for a RESTful API, including basic and session-based authentication. It covers essential concepts like session management, cookie handling, and session expiration, while ensuring user data remains secure and accessible across different sessions. By leveraging both in-memory and database-stored sessions, the project demonstrates scalable and efficient ways to manage user authentication in web applications.
+
+To view a README.md file for Session Authentication visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/Session_authentication/README.md)
+
 ## Author
 
 Vie Paula - [GitHub Profile](https://github.com/ThatsVie)
