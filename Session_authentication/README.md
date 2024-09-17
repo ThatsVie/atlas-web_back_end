@@ -1408,3 +1408,237 @@ To test the updated authentication mechanism with Postman:
    - This indicates that the session cookie is not linked to a valid user.
 
 </details>
+
+<details>
+<summary><strong>Task 6: Use Session ID for identifying a User</strong></summary>
+
+In this task, you will enhance the `SessionAuth` class by implementing the `current_user` method to identify a user based on the session ID stored in a cookie. This method will allow the application to retrieve a `User` instance corresponding to a session ID.
+
+<details>
+<summary>Instructions Provided in Curriculum</summary>
+
+Update `SessionAuth` class:
+
+1. Create an instance method `def current_user(self, request=None):` (overload) that returns a `User` instance based on a cookie value:
+   - You must use `self.session_cookie(...)` and `self.user_id_for_session_id(...)` to return the User ID based on the cookie `_my_session_id`.
+   - By using this User ID, you will be able to retrieve a `User` instance from the database — you can use `User.get(...)` for retrieving a `User` from the database.
+   
+Now, you will be able to get a `User` based on their session ID.
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update the `SessionAuth` Class:**
+
+Open the `session_auth.py` file located in `api/v1/auth/` and add the `current_user` method as shown below:
+
+**File: `api/v1/auth/session_auth.py`**
+
+```python
+#!/usr/bin/env python3
+"""
+This module contains the SessionAuth class for handling
+session-based authentication in the API.
+"""
+from api.v1.auth.auth import Auth
+from models.user import User
+import uuid
+
+
+class SessionAuth(Auth):
+    """SessionAuth class for handling session authentication"""
+
+    # Class attribute to store user IDs by session ID
+    user_id_by_session_id = {}
+
+    def create_session(self, user_id: str = None) -> str:
+        """
+        Creates a Session ID for a given user_id
+        """
+        if user_id is None or not isinstance(user_id, str):
+            return None
+
+        # Generate a new Session ID using uuid4
+        session_id = str(uuid.uuid4())
+
+        # Store the user_id with the generated session_id
+        self.user_id_by_session_id[session_id] = user_id
+
+        return session_id
+
+    def user_id_for_session_id(self, session_id: str = None) -> str:
+        """
+        Returns a User ID based on a Session ID
+        """
+        if session_id is None or not isinstance(session_id, str):
+            return None
+        return self.user_id_by_session_id.get(session_id)
+
+    def current_user(self, request=None):
+        """
+        Returns a User instance based on a cookie value
+        """
+        if request is None:
+            return None
+
+        # Retrieve the session cookie value
+        session_id = self.session_cookie(request)
+        if session_id is None:
+            return None
+
+        # Get the user ID associated with the session ID
+        user_id = self.user_id_for_session_id(session_id)
+        if user_id is None:
+            return None
+
+        return User.get(user_id)
+
+```
+
+2. **Use the `main_4.py` Script for Testing:**
+
+
+**File: `main_4.py`**
+
+```python
+#!/usr/bin/env python3
+""" Main 4
+"""
+from flask import Flask, request
+from api.v1.auth.session_auth import SessionAuth
+from models.user import User
+
+""" Create a user test """
+user_email = "bobsession@hbtn.io"
+user_clear_pwd = "fake pwd"
+
+user = User()
+user.email = user_email
+user.password = user_clear_pwd
+user.save()
+
+""" Create a session ID """
+sa = SessionAuth()
+session_id = sa.create_session(user.id)
+print("User with ID: {} has a Session ID: {}".format(user.id, session_id))
+
+""" Create a Flask app """
+app = Flask(__name__)
+
+@app.route('/', methods=['GET'], strict_slashes=False)
+def root_path():
+    """ Root path
+    """
+    request_user = sa.current_user(request)
+    if request_user is None:
+        return "No user found\n"
+    return "User found: {}\n".format(request_user.id)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port="5000")
+```
+
+3. **Make `main_4.py` Executable:**
+
+```bash
+chmod +x main_4.py
+```
+
+4. **Run the Server in the First Terminal:**
+
+```bash
+API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=session_auth SESSION_NAME=_my_session_id ./main_4.py
+```
+
+You should see output like:
+
+```
+User with ID: 7b249379-5973-4a59-a862-0378e419bc3a has a Session ID: 4a556716-27e7-4d15-9355-15377b527718
+ * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+```
+
+5. **Run the `curl` Commands in the Second Terminal:**
+
+- **Without Cookie:**
+   ```bash
+   curl "http://0.0.0.0:5000/"
+   ```
+   **Expected Output:**
+   ```
+   No user found
+   ```
+
+- **With Incorrect Cookie:**
+   ```bash
+   curl "http://0.0.0.0:5000/" --cookie "_my_session_id=Holberton"
+   ```
+   **Expected Output:**
+   ```
+   No user found
+   ```
+
+- **With Correct Cookie:**
+   ```bash
+   curl "http://0.0.0.0:5000/" --cookie "_my_session_id=4a556716-27e7-4d15-9355-15377b527718"
+   ```
+   **Expected Output:**
+   ```
+   User found: 7b249379-5973-4a59-a862-0378e419bc3a
+   ```
+
+### Explanation of the Output
+
+- **No User Found (No Cookie or Incorrect Cookie):**
+   - If no session ID is provided or if an incorrect session ID is given, the server cannot find a matching user and correctly returns "No user found."
+  
+- **User Found (Correct Cookie):**
+   - When the correct session ID is provided via the cookie `_my_session_id`, the server successfully retrieves the user and displays "User found: [User ID]."
+
+
+
+### Testing with Postman
+
+1. **Open Postman and Create a New `GET` Request:**
+   - URL: 
+   ```
+   http://localhost:5000/
+   ```
+
+2. **Add a Cookie:**
+   - Go to the **Cookies** tab.
+   - Add a new cookie with the following details:
+     - Key: `_my_session_id`
+     - Value: `4a556716-27e7-4d15-9355-15377b527718`
+
+3. **Send the Request:**
+   - Click on **Send**.
+   - The expected response should be:
+     ```
+     User found: 7b249379-5973-4a59-a862-0378e419bc3a
+     ```
+
+#### Testing with Web Browser
+
+1. **Open a Web Browser:**
+   - Enter the following URL in the address bar:
+     ```
+     http://localhost:5000/
+     ```
+
+2. **Add a Cookie:**
+   - Open the developer tools (usually with `F12`).
+   - Go to the **Application** tab (in Chrome) or **Storage** tab (in Firefox).
+   - Under **Cookies**, select `http://localhost`.
+   - Add a new cookie:
+     - **Name**: `_my_session_id`
+     - **Value**: `4a556716-27e7-4d15-9355-15377b527718`
+
+3. **Refresh the Page:**
+   - The page should display:
+     ```
+     User found: 7b249379-5973-4a59-a862-0378e419bc3a
+     ```
+
+</details>
+
