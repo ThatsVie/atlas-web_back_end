@@ -3,7 +3,7 @@
   <h1>Session Pugthentication</h1>
 </div>
 
-This project focuses on implementing a Session Authentication system in a Python web application using the Flask framework. You will create your own session authentication mechanism without relying on external modules, allowing you to understand each step of the process. Although it's common to use pre-built libraries for authentication in real-world applications, this project will enhance your understanding by building the mechanism from scratch.
+This project focuses on implementing various authentication mechanisms for a RESTful API, including basic and session-based authentication. It covers essential concepts like session management, cookie handling, and session expiration, while ensuring user data remains secure and accessible across different sessions. By leveraging both in-memory and database-stored sessions, the project demonstrates scalable and efficient ways to manage user authentication in web applications.
 
 ## Background Context
 
@@ -19,18 +19,48 @@ In the industry, developing your own session authentication system is generally 
   
 - **[Flask Cookie](https://flask.palletsprojects.com/en/1.1.x/quickstart/#cookies):** Detailed documentation on managing cookies in Flask, including setting, retrieving, and deleting cookies.
 
-## Learning Objectives
+### Learning Objectives
 
-
-- **Explain what authentication means**: Understand the process of verifying the identity of a user or entity to control access to resources.
+<details>
+<summary><strong>1. Explain what authentication means</strong></summary>
   
-- **Describe session authentication**: Understand how session-based authentication works, including the creation, management, and validation of sessions.
+*Authentication* is the process of verifying the identity of a user or entity to control access to resources. In web development, this typically involves asking a user to prove their identity through a username and password or other credentials.
+  
+- **Covered in**: Task 1 (Basic Authentication), Task 6 (Session ID for Identifying a User), Task 7 (New View for Session Authentication), Task 8 (Logout), Task 9 (Expiration), and Task 10 (Sessions in Database).
+</details>
 
-- **Define cookies**: Learn what cookies are, their purpose, and how they are used in web development.
+<details>
+<summary><strong>2. Describe session authentication</strong></summary>
+  
+*Session-based authentication* involves creating a session on the server once a user successfully logs in. This session is represented by a unique session ID, which is stored as a cookie on the client side and used for subsequent requests to authenticate the user. The server maintains session data to track user identity and permissions.
+  
+- **Covered in Tasks**: Task 6 (Session ID for Identifying a User), Task 7 (New View for Session Authentication), Task 8 (Logout), Task 9 (Expiration), and Task 10 (Sessions in Database).
+</details>
 
-- **Send cookies correctly**: Understand how to transmit cookies between clients and servers.
+<details>
+<summary><strong>3. Define cookies</strong></summary>
+  
+*Cookies* are small pieces of data sent from a server and stored on a client's browser. They are used to store information such as user sessions, preferences, or tracking data. Cookies play a crucial role in session management, where they store the session ID used for session authentication.
+  
+- **Covered in**: Task 6 (Session ID for Identifying a User), Task 7 (New View for Session Authentication), Task 9 (Expiration), and Task 10 (Sessions in Database).
+</details>
 
-- **Parse cookies**: Learn how to extract and interpret cookie data for authentication purposes.
+<details>
+<summary><strong>4. Send cookies correctly</strong></summary>
+  
+To *send cookies correctly*, the server sets a `Set-Cookie` header in the HTTP response, which instructs the client's browser to store the cookie. The browser sends the cookie back to the server with each subsequent request to maintain the session. Proper handling of cookies is essential for secure and reliable session authentication.
+  
+- **Covered in**: Task 6 (Session ID for Identifying a User), Task 7 (New View for Session Authentication), Task 8 (Logout), Task 9 (Expiration), and Task 10 (Sessions in Database).
+</details>
+
+<details>
+<summary><strong>5. Parse cookies</strong></summary>
+  
+*Parsing cookies* involves reading and extracting cookie data sent by the client's browser in the `Cookie` header of an HTTP request. This data is used to identify the user session or retrieve any other information stored in cookies. Parsing is essential for validating user sessions and maintaining authentication states.
+  
+- **Covered in**: Task 6 (Session ID for Identifying a User), Task 7 (New View for Session Authentication), Task 8 (Logout), Task 9 (Expiration), and Task 10 (Sessions in Database).
+</details>
+
 
 ## Requirements
 
