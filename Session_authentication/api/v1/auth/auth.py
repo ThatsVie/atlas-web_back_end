@@ -4,6 +4,7 @@ This module contains the Auth class for managing API authentication.
 """
 from flask import request
 from typing import List, TypeVar
+from os import getenv
 
 
 class Auth:
@@ -14,16 +15,13 @@ class Auth:
         if path is None or excluded_paths is None or not excluded_paths:
             return True
 
-        # Normalize path to compare with excluded paths
         normalized_path = path if path.endswith('/') else path + '/'
 
         for excluded_path in excluded_paths:
             if excluded_path.endswith('*'):
-                # Match the path prefix with excluded path
                 if normalized_path.startswith(excluded_path[:-1]):
                     return False
             elif normalized_path == excluded_path:
-                # Exact match with no wildcard
                 return False
 
         return True
@@ -37,3 +35,14 @@ class Auth:
     def current_user(self, request=None) -> TypeVar('User'):
         """Returns the current user."""
         return None
+
+    def session_cookie(self, request=None):
+        """
+        Retrieves the value of the session cookie from a request.
+        """
+        if request is None:
+            return None
+
+        cookie_name = getenv("SESSION_NAME", "_my_session_id")
+
+        return request.cookies.get(cookie_name)

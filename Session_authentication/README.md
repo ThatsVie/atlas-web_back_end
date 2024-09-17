@@ -903,3 +903,256 @@ There is no direct testing required using a web browser for this task. The brows
 
 
 </details>
+
+
+
+<details>
+<summary><strong>Task 4: Session Cookie</strong></summary>
+
+In this task, you will update the `Auth` class to implement a method that retrieves the session cookie value from an incoming HTTP request. This method will enable your application to extract session IDs from cookies, facilitating session management for authenticated users.
+
+<details>
+<summary>Instructions Provided in Curriculum</summary>
+Update `api/v1/auth/auth.py` by adding the method `def session_cookie(self, request=None):` that returns a cookie value from a request:
+
+1. Return `None` if `request` is `None`.
+2. Return the value of the cookie named `_my_session_id` from the request:
+   - The name of the cookie must be defined by the environment variable `SESSION_NAME`.
+   - Use the `.get()` method to access the cookie in the request cookies dictionary.
+   - Use the environment variable `SESSION_NAME` to define the name of the cookie used for the Session ID.
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update the `Auth` Class:**
+   - Open the file `auth.py` located in `api/v1/auth/`.
+   - Add the `session_cookie` method as described below.
+
+   **File: `api/v1/auth/auth.py`**
+   ```python
+   #!/usr/bin/env python3
+"""
+This module contains the Auth class for managing API authentication.
+"""
+from flask import request
+from typing import List, TypeVar
+from os import getenv
+
+
+class Auth:
+    """Auth class to manage the API authentication."""
+
+    def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
+        """Determines if a given path requires authentication."""
+        if path is None or excluded_paths is None or not excluded_paths:
+            return True
+
+        normalized_path = path if path.endswith('/') else path + '/'
+
+        for excluded_path in excluded_paths:
+            if excluded_path.endswith('*'):
+                if normalized_path.startswith(excluded_path[:-1]):
+                    return False
+            elif normalized_path == excluded_path:
+                return False
+
+        return True
+
+    def authorization_header(self, request=None) -> str:
+        """Returns the authorization header from the request."""
+        if request is None or 'Authorization' not in request.headers:
+            return None
+        return request.headers['Authorization']
+
+    def current_user(self, request=None) -> TypeVar('User'):
+        """Returns the current user."""
+        return None
+
+    def session_cookie(self, request=None):
+        """
+        Retrieves the value of the session cookie from a request.
+        Args:
+            request (flask.Request): The HTTP request object
+        Returns:
+            str: The value of the session cookie or None if not found
+        """
+        if request is None:
+            return None
+
+        cookie_name = getenv("SESSION_NAME", "_my_session_id")
+
+        return request.cookies.get(cookie_name)
+
+   ```
+
+2. **Use the `main_3.py` Script for Testing:**
+
+   **File: `main_3.py`**
+   ```python
+   #!/usr/bin/env python3
+   """ Cookie server
+   """
+   from flask import Flask, request
+   from api.v1.auth.auth import Auth
+
+   auth = Auth()
+
+   app = Flask(__name__)
+
+   @app.route('/', methods=['GET'], strict_slashes=False)
+   def root_path():
+       """ Root path
+       """
+       return "Cookie value: {}\n".format(auth.session_cookie(request))
+
+   if __name__ == "__main__":
+       app.run(host="0.0.0.0", port="5000")
+   ```
+
+3. **Make `main_3.py` Executable:**
+   - Ensure `main_3.py` is executable:
+   ```bash
+   chmod +x main_3.py
+   ```
+
+4. **Run the Test Script:**
+   - Execute `main_3.py` to test retrieving session cookie values:
+   ```bash
+   API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=session_auth SESSION_NAME=_my_session_id ./main_3.py
+   ```
+
+5. **Testing with `curl` Commands:**
+   - Open another terminal and run the following `curl` commands to test the behavior:
+
+   ```bash
+   curl "http://0.0.0.0:5000"
+   ```
+   **Expected Output:**
+   ```
+   Cookie value: None
+   ```
+
+   ```bash
+   curl "http://0.0.0.0:5000" --cookie "_my_session_id=Hello"
+   ```
+   **Expected Output:**
+   ```
+   Cookie value: Hello
+   ```
+
+   ```bash
+   curl "http://0.0.0.0:5000" --cookie "_my_session_id=C is fun"
+   ```
+   **Expected Output:**
+   ```
+   Cookie value: C is fun
+   ```
+
+   ```bash
+   curl "http://0.0.0.0:5000" --cookie "_my_session_id_fake"
+   ```
+   **Expected Output:**
+   ```
+   Cookie value: None
+   ```
+
+### Explanation of Output
+
+1. **No Cookie Provided:**
+   - The first `curl` command returns `Cookie value: None` because no cookie named `_my_session_id` was provided in the request.
+
+2. **Cookie with Valid Value Provided:**
+   - The second and third `curl` commands return the values `"Hello"` and `"C is fun"`, respectively, because cookies with these values are provided using the correct name (`_my_session_id`).
+
+3. **Incorrect Cookie Name Provided:**
+   - The fourth `curl` command returns `Cookie value: None` because the cookie provided does not match the name defined by the environment variable `SESSION_NAME`.
+
+### Testing with Postman
+
+To test the session cookie functionality with Postman:
+
+1. **Open Postman** and create a new `GET` request to:
+   ```
+   http://localhost:5000/
+   ```
+2. **Add a Cookie:**
+   - Click on the **Cookies** tab (located below the request URL).
+   - Click on "Add Cookie" for the domain `localhost`.
+   - Enter the following details:
+     - **Name:** `_my_session_id`
+     - **Value:** `Hello`
+   - Click **Save**.
+   
+3. **Send the Request:**
+   - Go back to the **Headers** tab.
+   - Click **Send** to make the request.
+   - **Expected Response:**
+     ```
+     Cookie value: Hello
+     ```
+
+4. **Change the Cookie Value:**
+   - Go back to the **Cookies** tab.
+   - Modify the cookie value from `Hello` to `C is fun`.
+   - Click **Save**.
+
+5. **Send the Request Again:**
+   - Click **Send** once more.
+   - **Expected Response:**
+     ```
+     Cookie value: C is fun
+     ```
+
+6. **Test with Incorrect or Missing Cookies:**
+   - Delete the `_my_session_id` cookie or rename it to `_my_session_id_fake`.
+   - Send the request again.
+   - **Expected Response:**
+     ```
+     Cookie value: None
+     ```
+
+### Testing with Web Browser
+
+1. **Open a Web Browser (e.g., Chrome, Firefox):**
+   - Enter the following URL in the address bar: 
+   ```
+   http://localhost:5000/
+   ```
+
+2. **Open Developer Tools:**
+   - Press `Ctrl+Shift+I` (Windows/Linux) or `Cmd+Option+I` (Mac) to open Developer Tools.
+   - Go to the **Application** tab (in Chrome) or **Storage** tab (in Firefox).
+   - Select **Cookies** from the left sidebar, and then click on `http://localhost:5000`.
+
+3. **Add a Cookie:**
+   - Right-click in the empty space under the cookies table (or click on "Add" if available).
+   - **Name:** Enter `_my_session_id`.
+   - **Value:** Enter `Hello`.
+   - **Domain:** Should automatically be set to `localhost`.
+
+4. **Refresh the Page:**
+   - Refresh the browser page (`http://localhost:5000/`).
+   - **Expected Output:**
+     ```
+     Cookie value: Hello
+     ```
+
+5. **Modify the Cookie Value:**
+   - Change the value of `_my_session_id` to `C is fun` in the same Cookies section.
+   - Refresh the page.
+   - **Expected Output:**
+     ```
+     Cookie value: C is fun
+     ```
+
+6. **Test with Incorrect or Missing Cookies:**
+   - Delete the `_my_session_id` cookie or rename it to `_my_session_id_fake`.
+   - Refresh the page.
+   - **Expected Output:**
+     ```
+     Cookie value: None
+     ```
+
+
+</details>
+
