@@ -1930,3 +1930,159 @@ To test the session authentication route using a web browser, follow these steps
 
 
 </details>
+
+
+<details>
+<summary><strong>Task 8: Logout</strong></summary>
+
+This task involves adding functionality to log out a user by deleting their session. We update the `SessionAuth` class and create a new route to handle session logout.
+
+<details>
+<summary>Instructions Provided in the Curriculum</summary>
+
+1. **Update the `SessionAuth` Class:**
+    - Create an instance method `destroy_session(self, request=None)` that deletes the user session/logout:
+      - If `request` is `None`, return `False`.
+      - If the request doesn’t contain the Session ID cookie, return `False` — you must use `self.session_cookie(request)`.
+      - If the Session ID of the request is not linked to any User ID, return `False` — you must use `self.user_id_for_session_id(...)`.
+      - Otherwise, delete the Session ID from `self.user_id_by_session_id` (as a key of this dictionary) and return `True`.
+
+2. **Update the `session_auth.py` File:**
+    - Add a new route `DELETE /api/v1/auth_session/logout`:
+        - Slash tolerant.
+        - Import `auth` only where needed (from `api.v1.app import auth`).
+        - Use `auth.destroy_session(request)` to delete the Session ID contained in the request as a cookie:
+            - If `destroy_session` returns `False`, abort with status code `404`.
+            - Otherwise, return an empty JSON dictionary with the status code `200`.
+
+</details>
+
+---
+
+### Step-by-Step Instructions
+
+1. **Update the `SessionAuth` Class:**
+
+   Update the `SessionAuth` class located in `api/v1/auth/session_auth.py` to include the `destroy_session` method.
+
+   **Code:**
+   ```python
+   def destroy_session(self, request=None):
+       """Deletes the user session (logs out the user)."""
+       if request is None:
+           return False
+
+       # Retrieve session cookie value
+       session_id = self.session_cookie(request)
+       if session_id is None:
+           return False
+
+       # Check if session ID is linked to any user ID
+       user_id = self.user_id_for_session_id(session_id)
+       if user_id is None:
+           return False
+
+       # Delete the session ID from the dictionary
+       del self.user_id_by_session_id[session_id]
+
+       return True
+   ```
+
+2. **Update the `session_auth.py` View:**
+
+   In `api/v1/views/session_auth.py`, add the following route to handle the logout request:
+
+   **Code:**
+   ```python
+   @app_views.route(
+           '/auth_session/logout', methods=['DELETE'], strict_slashes=False)
+   def session_auth_logout():
+       """DELETE /api/v1/auth_session/logout
+       Deletes the user session (logs out).
+       """
+       from api.v1.app import auth
+
+       # Check if the session can be destroyed
+       if not auth.destroy_session(request):
+           abort(404)
+
+       return jsonify({}), 200
+   ```
+
+
+### Testing with `curl`
+
+1. **Login and Create a Session:**
+
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/auth_session/login" -XPOST -d "email=bobsession@hbtn.io" -d "password=fake pwd" -vvv
+   ```
+   Expected output:
+   ```json
+   {
+     "created_at": "2024-09-17T19:52:13",
+     "email": "bobsession@hbtn.io",
+     "first_name": null,
+     "id": "7b249379-5973-4a59-a862-0378e419bc3a",
+     "last_name": null,
+     "updated_at": "2024-09-17T19:52:13"
+   }
+   ```
+   Check the `Set-Cookie` header to get the session ID (`_my_session_id`).
+
+2. **Access User Info with Session ID:**
+
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/users/me" --cookie "_my_session_id=YOUR_SESSION_ID"
+   ```
+   Replace `YOUR_SESSION_ID` with the actual session ID obtained from the login response.
+
+3. **Logout by Deleting the Session:**
+
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/auth_session/logout" --cookie "_my_session_id=YOUR_SESSION_ID" -XDELETE
+   ```
+   Expected output:
+   ```json
+   {}
+   ```
+
+4. **Attempt to Access User Info After Logout:**
+
+   ```bash
+   curl "http://0.0.0.0:5000/api/v1/users/me" --cookie "_my_session_id=YOUR_SESSION_ID"
+   ```
+   Expected output:
+   ```json
+   {"error": "Forbidden"}
+   ```
+
+#### Testing with Postman
+
+1. **Login to Create a Session:**
+   - Send a `POST` request to `http://0.0.0.0:5000/api/v1/auth_session/login`.
+   - Add form data:
+     - `email`: `bobsession@hbtn.io`
+     - `password`: `fake pwd`
+   - Note the `Set-Cookie` header from the response.
+
+2. **Access User Info:**
+   - Send a `GET` request to `http://0.0.0.0:5000/api/v1/users/me`.
+   - Add a cookie with key `_my_session_id` and the value of the session ID obtained in step 1.
+
+3. **Logout:**
+   - Send a `DELETE` request to `http://0.0.0.0:5000/api/v1/auth_session/logout`.
+   - Include the same session ID cookie as in step 2.
+
+4. **Check Access After Logout:**
+   - Send a `GET` request again to `http://0.0.0.0:5000/api/v1/users/me` using the same cookie.
+   - The response should show an error: `{"error": "Forbidden"}`.
+
+
+### Troubleshooting Notes
+
+- **Correct Session ID:** Always ensure that you are using the correct and active session ID in your requests. If you encounter a "Forbidden" error after logging out, make sure that you are using the session ID created during the login.
+- **Use the Right Cookie:** Verify that the cookie name (`_my_session_id`) matches the environment variable `SESSION_NAME`.
+- **Check the Terminal Outputs:** Review the output in both terminals to confirm that the session creation and deletion processes are handled as expected.
+
+</details>
