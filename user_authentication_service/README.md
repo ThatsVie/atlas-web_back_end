@@ -158,7 +158,7 @@ bob@dylan:~$
 4. **Run the test script**:
    - Execute the `main.py` file to verify that the model is correctly created:
    ```bash
-   python3 main.py
+   ./main.py
    ```
 
 5. **Expected Output**:
@@ -349,7 +349,7 @@ bob@dylan:~$
 5. **Run the test script**:
    - Execute the `main_1.py` script to verify that the users are correctly added to the database:
    ```bash
-   python3 main_1.py
+   ./main_1.py
    ```
 
 6. **Expected Output**:
@@ -554,7 +554,7 @@ bob@dylan:~$
 5. **Run the test script**:
    - Execute the `main_2.py` script to verify that users can be found, and exceptions are raised as expected:
    ```bash
-   python3 main_2.py
+   ./main_2.py
    ```
 
 6. **Expected Output**:
@@ -759,7 +759,7 @@ bob@dylan:~$
 5. **Run the test script**:
    - Execute the `main_3.py` script to verify that users can be updated, and exceptions are raised for invalid cases:
    ```bash
-   python3 main_3.py
+   ./main_3.py
    ```
 
 6. **Expected Output**:
@@ -786,5 +786,282 @@ bob@dylan:~$
   - It loops through each provided keyword argument and uses Python’s `setattr` function to dynamically update the user’s attributes.
   - The session is committed to save the changes in the database.
   - Running `main_3.py` demonstrates this behavior by successfully updating the password and raising exceptions for invalid attributes.
+
+</details>
+
+<details>
+<summary><strong>Task 4: Hash password</strong></summary>
+
+In this task, we will implement the `_hash_password` method in the `auth.py` file. This method takes in a password string as an argument and returns the password as a salted hash using the `bcrypt.hashpw` function.
+
+### Password Hashing
+
+- **bcrypt.hashpw**: This function applies a hashing algorithm to the password, creating a secure, salted hash that can be stored in the database. The returned value is in bytes, making it secure for use in authentication processes.
+  
+This method is essential for ensuring user passwords are securely stored in the database.
+
+<details>
+<summary><strong>Instructions Provided in Curriculum</strong></summary>
+
+You will define a `_hash_password` method that takes in a password string argument and returns bytes. The returned bytes are a salted hash of the input password, hashed with `bcrypt.hashpw`.
+
+```bash
+bob@dylan:~$ cat main.py
+#!/usr/bin/env python3
+"""
+Main file
+"""
+from auth import _hash_password
+
+print(_hash_password("Hello Holberton"))
+
+bob@dylan:~$ python3 main.py
+b'$2b$12$eUDdeuBtrD41c8dXvzh95ehsWYCCAi4VH1JbESzgbgZT.eMMzi.G2'
+bob@dylan:~$
+```
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Create  the `auth.py` file**:
+   - Implement the `_hash_password` method in `auth.py`. This method takes in a password string and returns a salted hash of that password using `bcrypt.hashpw`.
+
+   Here’s the code for `auth.py`:
+
+   ```python
+   #!/usr/bin/env python3
+   '''
+   This module contains methods for user authentication, including password hashing.
+   '''
+   import bcrypt
+
+   def _hash_password(password: str) -> bytes:
+       '''Hashes a password using bcrypt and returns the hashed password as bytes'''
+       salt = bcrypt.gensalt()
+       hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+       return hashed
+   ```
+
+2. **Create the test script**:
+   - Create a test script named `main_4.py` to verify that the password hashing function works correctly.
+
+   Here’s the content of `main_4.py`:
+
+   ```python
+   #!/usr/bin/env python3
+   '''
+   This module contains a script to test the _hash_password method in auth.py.
+   '''
+   from auth import _hash_password
+
+   print(_hash_password("Hello Holberton"))
+   ```
+
+3. **Make the `main_4.py` script executable**:
+   - Ensure the test file `main_4.py` is executable:
+   ```bash
+   chmod +x main_4.py
+   ```
+
+4. **Run the test script**:
+   - Execute the `main_4.py` script to verify that the password hashing method works as expected:
+   ```bash
+   ./main_4.py
+   ```
+
+5. **Expected Output**:
+
+   The expected output should show the salted hash of the password:
+
+   ```bash
+   b'$2b$12$yWR1itCMO3AmEtRnnoGjeemAIyDhnz7Xxxk7.XOBjjSRUYodiQ8a.'
+   ```
+
+### Explanation
+
+- **Why bcrypt is used**:
+  - `bcrypt` is a robust library used for password hashing. It applies a hashing algorithm with salting, which ensures that even identical passwords produce different hashes. This makes it resistant to common attacks such as dictionary attacks.
+
+- **Why this works**:
+  - The `_hash_password` method uses `bcrypt.gensalt()` to generate a unique salt for each password. This salt is then combined with the password and hashed using `bcrypt.hashpw`. The resulting hash is stored as bytes and can be used later for password verification.
+
+- **How it works**:
+  - The method encodes the password into bytes, generates a salt, and hashes the password using the salt.
+  - Running `main_4.py` demonstrates this behavior by hashing the provided password and printing the resulting salted hash.
+
+</details>
+
+<details>
+<summary><strong>Task 5: Register user</strong></summary>
+
+In this task, we implemented the `Auth.register_user` method in the `Auth` class. This method is responsible for registering a new user in the system by taking their email and password. It checks if a user with the provided email already exists in the database and raises a `ValueError` if so. If the email is not already registered, it securely hashes the password using `_hash_password` and adds the new user to the database.
+
+### Error Handling
+
+- **ValueError**: Raised if a user with the provided email already exists in the database.
+
+<details>
+<summary><strong>Instructions Provided in Curriculum</strong></summary>
+
+You will implement the `Auth.register_user` method in the `Auth` class. This method should take mandatory email and password string arguments and return a `User` object. 
+
+- If a user already exists with the given email, raise a `ValueError` with the message `User <user's email> already exists`.
+- If the user does not exist, hash the password using `_hash_password`, save the user to the database, and return the `User` object.
+
+```bash
+bob@dylan:~$ cat main.py
+#!/usr/bin/env python3
+"""
+Main file
+"""
+from auth import Auth
+
+email = 'me@me.com'
+password = 'mySecuredPwd'
+
+auth = Auth()
+
+try:
+    user = auth.register_user(email, password)
+    print("successfully created a new user!")
+except ValueError as err:
+    print("could not create a new user: {}".format(err))
+
+try:
+    user = auth.register_user(email, password)
+    print("successfully created a new user!")
+except ValueError as err:
+    print("could not create a new user: {}".format(err))
+
+bob@dylan:~$ python3 main.py
+successfully created a new user!
+could not create a new user: User me@me.com already exists
+bob@dylan:~$
+```
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update the `Auth` class**:
+   - In the `auth.py` file, implement the `register_user` method. This method first checks if a user with the provided email already exists in the database. If the user exists, it raises a `ValueError`. Otherwise, it hashes the password using `_hash_password`, creates a new user, and adds them to the database.
+
+   Here’s the content of `auth.py`:
+
+   ```python
+   #!/usr/bin/env python3
+   '''
+   This module handles user authentication.
+   It provides: 
+   - User registration with duplicate email checks.
+   - Password hashing using bcrypt for security.
+   '''
+
+   import bcrypt
+   from db import DB
+   from user import User
+   from sqlalchemy.orm.exc import NoResultFound
+
+
+   def _hash_password(password: str) -> bytes:
+       '''
+       Hashes a password using bcrypt and returns the hashed password as bytes
+       '''
+       salt = bcrypt.gensalt()
+       hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+       return hashed
+
+
+   class Auth:
+       '''Auth class to interact with the authentication database'''
+
+       def __init__(self) -> None:
+           '''Initialize the Auth class'''
+           self._db = DB()
+
+       def register_user(self, email: str, password: str) -> User:
+           '''Registers a new user with a hashed password, returns the User object.
+           
+           Raises:
+               ValueError: If a user with the given email already exists.
+           '''
+           try:
+               # Check if the user already exists
+               self._db.find_user_by(email=email)
+               raise ValueError(f"User {email} already exists")
+           except NoResultFound:
+               # Hash the password and create a new user
+               hashed_password = _hash_password(password)
+               new_user = self._db.add_user(email, hashed_password)
+               return new_user
+   ```
+
+2. **Create the test script**:
+   - Create a test script named `main_5.py` to verify that the `register_user` function works correctly.
+
+   Here’s the content of `main_5.py`:
+
+   ```python
+   #!/usr/bin/env python3
+   '''
+   This module contains a script to test the Auth.register_user method.
+   '''
+   from auth import Auth
+
+   email = 'me@me.com'
+   password = 'mySecuredPwd'
+
+   auth = Auth()
+
+   try:
+       user = auth.register_user(email, password)
+       print("successfully created a new user!")
+   except ValueError as err:
+       print(f"could not create a new user: {err}")
+
+   # Attempting to register the same user again
+   try:
+       user = auth.register_user(email, password)
+       print("successfully created a new user!")
+   except ValueError as err:
+       print(f"could not create a new user: {err}")
+   ```
+
+3. **Make the `main_5.py` script executable**:
+   - Ensure the test file `main_5.py` is executable:
+   ```bash
+   chmod +x main_5.py
+   ```
+
+4. **Run the test script**:
+   - Execute the `main_5.py` script to verify that user registration works and that duplicate registration attempts raise the appropriate error:
+   ```bash
+   ./main_5.py
+   ```
+
+5. **Expected Output**:
+
+   The expected output should show that the first user registration is successful, while the second attempt to register the same user raises an error:
+
+   ```bash
+   successfully created a new user!
+   could not create a new user: User me@me.com already exists
+   ```
+
+### Detailed Usage and Explanation
+
+- **Why we check for existing users**:
+  - The method first checks if a user with the provided email already exists. If the user exists, the method raises a `ValueError` to prevent duplicate user registrations.
+  - This ensures that the system doesn’t allow multiple users with the same email address.
+
+- **Why bcrypt is used for password hashing**:
+  - To ensure that passwords are stored securely, the method hashes the password using `_hash_password` before storing it in the database.
+  - Hashing passwords prevents plain text passwords from being stored, ensuring that even if the database is compromised, the passwords remain secure.
+
+- **How it works**:
+  - The method first calls `find_user_by` to check if the email is already registered. If the user is found, a `ValueError` is raised.
+  - If the user is not found, the password is hashed and the user is added to the database using the `add_user` method.
+  - Running `main_5.py` demonstrates this behavior by successfully registering a new user and preventing duplicate registrations.
 
 </details>
