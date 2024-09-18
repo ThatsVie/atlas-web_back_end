@@ -1,4 +1,10 @@
-# User Authentication Service
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a68b0eed-dd09-4bf9-b140-ca2fd0a24ec4" alt="2beautifulAIPugs" />
+</p>
+
+<h1 align="center">User Pugthentication Service</h1>
+
 
 This project focuses on building a custom user authentication system for a Flask-based web application. While it's common in the industry to use frameworks such as [Flask-User](https://flask-user.readthedocs.io/en/latest/), this project walks through the process of implementing an authentication mechanism from scratch for educational purposes.
 
