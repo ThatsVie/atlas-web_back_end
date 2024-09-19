@@ -132,14 +132,13 @@ bob@dylan:~$
        reset_token = Column(String(250), nullable=True)
    ```
 
-2. **Make the `main.py` script executable**:
-   - In the terminal, run the following command to ensure the `main.py` script is executable:
+2. **Rename the `main.py`to `main_0.py` and make it script executable**:
+   - In the terminal, run the following command to ensure the `main_0.py` script is executable:
    ```bash
-   chmod +x main.py
+   chmod +x main_0.py
    ```
 
-3. **Test the model**:
-   - Create a file `main.py` and add the following script to test your model and print out the table and column details:
+3. **main_0.py**:
    
    ```python
    #!/usr/bin/env python3
@@ -156,9 +155,9 @@ bob@dylan:~$
    ```
 
 4. **Run the test script**:
-   - Execute the `main.py` file to verify that the model is correctly created:
+   - Execute the `main_01.py` file to verify that the model is correctly created:
    ```bash
-   ./main.py
+   ./main_01.py
    ```
 
 5. **Expected Output**:
@@ -182,7 +181,7 @@ bob@dylan:~$
   - The `session_id` and `reset_token` are nullable because they may not always be present for a user. The `session_id` is used to track user sessions, and the `reset_token` is only needed when the user requests a password reset.
 
 - **How it works**:
-  - When you run `main.py`, SQLAlchemy introspects the `User` class, and the `__table__` attribute holds the table structure.
+  - When you run `main_0.py`, SQLAlchemy introspects the `User` class, and the `__table__` attribute holds the table structure.
   - The script prints out each column along with its corresponding data type, showing how SQLAlchemy maps Python code to database schema.
 
 This task lays the foundation for managing user data securely, setting the stage for authentication mechanisms in later tasks.
@@ -325,7 +324,6 @@ bob@dylan:~$
    ```
 
 4. **Test the `add_user` method**:
-   - Update `main_1.py` to test the functionality of the `add_user` method.
 
    Here’s the content of `main_1.py`:
 
@@ -512,7 +510,6 @@ bob@dylan:~$
    ```
 
 4. **Test the `find_user_by` method**:
-   - Update `main_2.py` to test the functionality of the `find_user_by` method.
 
    Here’s the content of `main_2.py`:
 
@@ -725,7 +722,6 @@ bob@dylan:~$
    ```
 
 4. **Test the `update_user` method**:
-   - Update `main_3.py` to test the functionality of the `update_user` method.
 
    Here’s the content of `main_3.py`:
 
@@ -844,7 +840,6 @@ bob@dylan:~$
    ```
 
 2. **Create the test script**:
-   - Create a test script named `main_4.py` to verify that the password hashing function works correctly.
 
    Here’s the content of `main_4.py`:
 
@@ -998,7 +993,6 @@ bob@dylan:~$
    ```
 
 2. **Create the test script**:
-   - Create a test script named `main_5.py` to verify that the `register_user` function works correctly.
 
    Here’s the content of `main_5.py`:
 
@@ -1063,5 +1057,120 @@ bob@dylan:~$
   - The method first calls `find_user_by` to check if the email is already registered. If the user is found, a `ValueError` is raised.
   - If the user is not found, the password is hashed and the user is added to the database using the `add_user` method.
   - Running `main_5.py` demonstrates this behavior by successfully registering a new user and preventing duplicate registrations.
+
+</details>
+
+<details>
+<summary><strong>Task 6: Basic Flask app</strong></summary>
+
+In this task, we set up a basic Flask app with a single GET route at `/` that returns a JSON response. The response contains the message `"Bienvenue"`. The app listens on all available network interfaces (`0.0.0.0`) on port `5000`. For testing in the browser, I use **localhost**, but for commands like `curl`, `0.0.0.0` is used. In **Postman**, both `localhost` and `0.0.0.0` can be used.
+
+### Flask App
+
+- **Route**: `GET /`
+- **Response**: `{"message": "Bienvenue"}`
+
+This task demonstrates setting up a simple Flask application and handling a basic GET request.
+
+<details>
+<summary><strong>Instructions Provided in Curriculum</strong></summary>
+
+You will set up a basic Flask app that has a single GET route (`"/"`) and use `flask.jsonify` to return a JSON payload of the form:
+
+```json
+{"message": "Bienvenue"}
+```
+
+Add the following code at the end of the module:
+
+```python
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port="5000")
+```
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Create `app.py`**:
+   - Create a new file named `app.py` in your project directory and add the following code:
+
+   ```python
+   #!/usr/bin/env python3
+   '''
+   This module sets up a basic Flask app with a single route.
+   '''
+
+   from flask import Flask, jsonify
+
+   app = Flask(__name__)
+
+   @app.route("/", methods=["GET"])
+   def welcome():
+       '''Handles GET request and returns a JSON message'''
+       return jsonify({"message": "Bienvenue"})
+
+   if __name__ == "__main__":
+       app.run(host="0.0.0.0", port="5000")
+   ```
+
+2. **Make `app.py` executable**:
+   - Before running the app, make sure the script is executable:
+   ```bash
+   chmod +x app.py
+   ```
+
+3. **Run the Flask app**:
+   - You can run the app using:
+   ```bash
+   ./app.py
+   ```
+
+4. **Test the app using `curl`**:
+   - You can use `curl` to test the app using `0.0.0.0`:
+   ```bash
+   curl http://0.0.0.0:5000/
+   ```
+   - **Expected Output**:
+   ```json
+   {"message": "Bienvenue"}
+   ```
+
+5. **Testing in the Browser (`localhost`)**:
+   - You can test the app in a browser by navigating to:
+   ```bash
+   http://localhost:5000/
+   ```
+
+6. **Testing with Postman (Optional)**:
+   - In Postman, you can use either `localhost` or `0.0.0.0`:
+     1. Open **Postman**.
+     2. Create a new request.
+     3. Set the request method to **GET**.
+     4. Enter the URL:
+        - `http://localhost:5000/`
+        - or `http://0.0.0.0:5000/`
+     5. Click **Send**.
+     6. The expected response will be:
+     ```json
+     {"message": "Bienvenue"}
+     ```
+
+7. **Reminder to Terminate Before Next Task**:
+   - Before starting the next task, make sure to terminate the running Flask server. If you don’t, the port (`5000`) will remain busy, and you won’t be able to start a new server instance:
+   ```bash
+   CTRL + C
+   ```
+
+### Explanation
+
+- **Why Flask**: Flask is a lightweight web framework that makes it easy to create simple web applications with minimal setup. In this case, it handles a basic GET request.
+  
+- **Why jsonify**: Flask’s `jsonify` function automatically converts Python dictionaries into JSON responses. This ensures the response is correctly formatted as JSON and sets the appropriate content type (`application/json`).
+
+- **How it works**: 
+   - The `app.route("/")` decorator sets up the root route (`/`) to handle GET requests. The `welcome` function returns a JSON response when the route is accessed. 
+   - The app runs on `0.0.0.0` (all network interfaces) and listens on port `5000`. I use `localhost` in the browser for local testing.
+   - Running `curl http://0.0.0.0:5000/` or using Postman with `localhost` or `0.0.0.0` returns the expected JSON response.
 
 </details>
