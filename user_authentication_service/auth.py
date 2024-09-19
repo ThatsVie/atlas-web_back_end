@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 '''
 This module handles user authentication.
-It provides:
+Includes:
 User registration with duplicate email checks.
 Password hashing using bcrypt for security.
+Credentials validation to authenticate users.
 '''
 
 import bcrypt
@@ -30,7 +31,7 @@ class Auth:
 
     def register_user(self, email: str, password: str) -> User:
         '''
-        Registers a new user with a hashed password, returns the User object.
+        Registers a new user with a hashed password and returns the User object
         '''
         try:
             # Check if the user already exists
@@ -41,3 +42,20 @@ class Auth:
             hashed_password = _hash_password(password)
             new_user = self._db.add_user(email, hashed_password)
             return new_user
+
+    def valid_login(self, email: str, password: str) -> bool:
+        '''
+        Validates the email and password of a user.
+
+        Returns:
+            bool: True if credentials are valid, False otherwise
+        '''
+        try:
+            # Find the user by email
+            user = self._db.find_user_by(email=email)
+            # Check if the password matches using bcrypt
+            if bcrypt.checkpw(password.encode('utf-8'), user.hashed_password):
+                return True
+            return False
+        except (NoResultFound, ValueError):
+            return False

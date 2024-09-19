@@ -1174,3 +1174,294 @@ if __name__ == "__main__":
    - Running `curl http://0.0.0.0:5000/` or using Postman with `localhost` or `0.0.0.0` returns the expected JSON response.
 
 </details>
+
+<details>
+<summary><strong>Task 7: Register user (POST /users)</strong></summary>
+
+In this task, we implemented the `/users` endpoint that handles user registration via a POST request. The endpoint expects two form data fields: `"email"` and `"password"`. If the user is not already registered, it will create the user and return a success message. If the user is already registered, it will return an error message with a 400 status code.
+
+### POST /users
+
+- **Route**: `POST /users`
+- **Request form data**: `email` and `password`
+- **Success response**:  
+  ```json
+  {"email": "<registered email>", "message": "user created"}
+  ```
+- **Error response (email already registered)**:  
+  ```json
+  {"message": "email already registered"}
+  ```
+- **Error status code**: 400
+
+<details>
+<summary><strong>Instructions Provided in Curriculum</strong></summary>
+
+You will implement the `/users` route to register a new user. The endpoint should:
+- Accept two form data fields: `email` and `password`.
+- Register the user if they don't already exist and return a success message.
+- If the user is already registered, catch the exception and return a 400 status code with the appropriate error message.
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update `app.py`**:
+   - In `app.py`, implement the `/users` route:
+   
+ ```python
+#!/usr/bin/env python3
+'''
+This module sets up a basic Flask app with user registration functionality.
+'''
+
+from flask import Flask, jsonify, request
+from auth import Auth
+
+app = Flask(__name__)
+AUTH = Auth()
+
+
+@app.route("/", methods=["GET"])
+def welcome():
+    '''Handles GET request and returns a JSON message'''
+    return jsonify({"message": "Bienvenue"})
+
+
+@app.route("/users", methods=["POST"])
+def register_user():
+    '''Handles user registration via POST /users route'''
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    try:
+        user = AUTH.register_user(email, password)
+        return jsonify({"email": email, "message": "user created"})
+    except ValueError:
+        return jsonify({"message": "email already registered"}), 400
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port="5000")
+
+```
+
+2. **Make `app.py` executable**:
+   - Before running the app, make sure the script is executable:
+   ```bash
+   chmod +x app.py
+   ```
+
+3. **Run the Flask app**:
+   - Start the Flask app by running:
+   ```bash
+   ./app.py
+   ```
+
+4. **Testing the `/users` endpoint using `curl`**:
+   - **To register a new user**:
+     ```bash
+     curl -XPOST localhost:5000/users -d 'email=bob@me.com' -d 'password=mySuperPwd'
+     ```
+     Expected output:
+     ```json
+     {"email":"bob@me.com","message":"user created"}
+     ```
+
+   - **To attempt registering the same user again**:
+     ```bash
+     curl -XPOST localhost:5000/users -d 'email=bob@me.com' -d 'password=mySuperPwd'
+     ```
+     Expected output:
+     ```json
+     {"message":"email already registered"}
+     ```
+
+5. **Testing the `/users` endpoint in the browser**:
+   - You can also use an HTML form to send the `POST` request in the browser. However, testing directly in the browser is more difficult for POST requests.
+   - Instead, testing tools like **Postman** are recommended for POST requests.
+
+6. **Testing the `/users` endpoint using Postman**:
+   - Open **Postman** and create a new request.
+   - Set the method to **POST**.
+   - Set the URL to `http://localhost:5000/users`.
+   - Under the **Body** tab, select **x-www-form-urlencoded**.
+   - Add two keys:  
+     - **Key**: `email` | **Value**: `bob@me.com`
+     - **Key**: `password` | **Value**: `mySuperPwd`
+   - Click **Send**.  
+     You should receive a success message:
+     ```json
+     {"email":"bob@me.com","message":"user created"}
+     ```
+
+   - Try sending the request again with the same email. This time, you should receive:
+     ```json
+     {"message":"email already registered"}
+     ```
+
+7. **Reminder to Terminate Before Next Task**:
+   - Before starting the next task, make sure to terminate the running Flask server. If you don’t, the port (`5000`) will remain busy, and you won’t be able to start a new server instance:
+   ```bash
+   CTRL + C
+   ```
+
+### Explanation
+
+- **Why POST**: The `POST` method is used when creating new resources, such as registering a new user. Form data is sent securely through the request body.
+  
+- **Why check for existing users**: The route checks if a user with the provided email is already registered to avoid duplicates. If the user exists, it raises a `ValueError`, and the API responds with a 400 status code.
+
+- **How it works**: 
+   - The endpoint processes the form data for `email` and `password`.
+   - It attempts to register the user via `AUTH.register_user`. If successful, it returns a success message.
+   - If the user already exists, it catches the exception and returns a 400 error message.
+
+</details>
+
+
+<details>
+<summary><strong>Task 8: Credentials validation (Auth.valid_login)</strong></summary>
+
+In this task, we implemented the `Auth.valid_login` method, which checks if the provided email and password are valid for an existing user. This method returns `True` if the credentials are correct and `False` otherwise.
+
+### Auth.valid_login
+
+- **Method**: `valid_login(email: str, password: str) -> bool`
+- **Parameters**:
+  - `email`: The user’s email address.
+  - `password`: The user’s plaintext password.
+- **Returns**:
+  - `True`: If the email exists and the password matches the hashed password stored in the database.
+  - `False`: If the email does not exist or the password is incorrect.
+
+<details>
+<summary><strong>Instructions Provided in Curriculum</strong></summary>
+
+In this task, you will implement the Auth.valid_login method. It should expect email and password required arguments and return a boolean.
+Try locating the user by email. If it exists, check the password with bcrypt.checkpw. If it matches return True. In any other case, return False.
+
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update `auth.py`**:
+   - Add the `valid_login` method to the `Auth` class in `auth.py`:
+
+```python
+#!/usr/bin/env python3
+'''
+This module handles user authentication.
+Includes:
+User registration with duplicate email checks.
+Password hashing using bcrypt for security.
+Credentials validation to authenticate users.
+'''
+
+import bcrypt
+from db import DB
+from user import User
+from sqlalchemy.orm.exc import NoResultFound
+
+
+def _hash_password(password: str) -> bytes:
+    '''
+    Hashes a password using bcrypt and returns the hashed password as bytes
+    '''
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed
+
+
+class Auth:
+    '''Auth class to interact with the authentication database'''
+
+    def __init__(self) -> None:
+        '''Initialize the Auth class'''
+        self._db = DB()
+
+    def register_user(self, email: str, password: str) -> User:
+        '''
+        Registers a new user with a hashed password and returns the User object
+        '''
+        try:
+            # Check if the user already exists
+            self._db.find_user_by(email=email)
+            raise ValueError(f"User {email} already exists")
+        except NoResultFound:
+            # Hash the password and create a new user
+            hashed_password = _hash_password(password)
+            new_user = self._db.add_user(email, hashed_password)
+            return new_user
+
+    def valid_login(self, email: str, password: str) -> bool:
+        '''
+        Validates the email and password of a user.
+
+        Returns:
+            bool: True if credentials are valid, False otherwise
+        '''
+        try:
+            # Find the user by email
+            user = self._db.find_user_by(email=email)
+            # Check if the password matches using bcrypt
+            if bcrypt.checkpw(password.encode('utf-8'), user.hashed_password):
+                return True
+            return False
+        except (NoResultFound, ValueError):
+            return False
+
+```
+
+2. **Make `auth.py` executable**:
+   - Ensure the script is executable:
+   ```bash
+   chmod +x auth.py
+   ```
+
+3. **Test the `valid_login` method**:
+   -  `main_8.py`:
+
+   ```python
+   #!/usr/bin/env python3
+   """
+   Main file to test Auth.valid_login
+   """
+   from auth import Auth
+
+   email = 'bob@bob.com'
+   password = 'MyPwdOfBob'
+   auth = Auth()
+
+   auth.register_user(email, password)
+
+   print(auth.valid_login(email, password))   # Expected output: True
+   print(auth.valid_login(email, "WrongPwd"))  # Expected output: False
+   print(auth.valid_login("unknown@email", password))  # Expected output: False
+   ```
+
+4. **Run the test script**:
+   ```bash
+   ./main_8.py
+   ```
+
+5. **Expected Output**:
+   ```bash
+   True
+   False
+   False
+   ```
+
+### Explanation
+
+- **Why bcrypt**: Using `bcrypt.checkpw` ensures that passwords are securely compared without revealing the actual password in plaintext.
+  
+- **Why valid_login**: The `valid_login` method allows for secure verification of user credentials by matching the provided password against the stored hashed password in the database. This prevents unauthorized access while maintaining security.
+
+- **How it works**: 
+   - The method retrieves the user by email. 
+   - If the user exists, it uses `bcrypt.checkpw` to verify the provided password against the stored hash.
+   - If the credentials match, it returns `True`; otherwise, it returns `False`.
+
+</details>
