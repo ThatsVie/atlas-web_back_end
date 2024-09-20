@@ -2522,3 +2522,183 @@ if __name__ == "__main__":
 - **Testing in multiple environments**: Using `curl`, Postman, and the browser ensures that the app handles logout correctly in different scenarios.
 
 </details>
+
+
+<details>
+<summary><strong>Task 15: User profile (GET /profile)</strong></summary>
+
+In this task, we implemented the `GET /profile` route to retrieve a user’s profile using their session ID stored in a cookie. The session ID is used to find the corresponding user. If valid, the user’s email is returned in the response. If invalid, a `403 Forbidden` status is returned.
+
+### Endpoint: GET /profile
+
+- **Endpoint**: `/profile`
+- **Method**: `GET`
+- **Request**: The session ID is expected to be in the `session_id` cookie.
+- **Response**:
+  - **200 OK**: If the session ID is valid, the response contains the user’s email in JSON format:
+    ```json
+    {"email": "<user email>"}
+    ```
+  - **403 Forbidden**: If the session ID is invalid or no user is found, a `403 Forbidden` response is returned.
+
+<details>
+<summary><strong>Instructions Provided in Curriculum</strong></summary>
+
+In this task, you will implement a profile function to respond to the `GET /profile` route.
+
+The request is expected to contain a session_id cookie. Use it to find the user. If the user exists, respond with a 200 HTTP status and the following JSON payload:
+
+```json
+{"email": "<user email>"}
+```
+
+If the session ID is invalid or the user does not exist, respond with a `403 HTTP` status.
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update `app.py`**:
+   - Add the `profile` route to handle GET requests to `/profile`:
+
+   ```python
+   @app.route("/profile", methods=["GET"])
+   def profile():
+       '''Handles user profile retrieval via GET /profile route'''
+       session_id = request.cookies.get("session_id")
+
+       if not session_id:
+           abort(403)
+
+       user = AUTH.get_user_from_session_id(session_id)
+
+       if not user:
+           abort(403)
+
+       # Return the user's email in the response
+       return jsonify({"email": user.email})
+   ```
+
+2. **Run the Flask App**:
+   - Make sure the Flask app is running:
+     ```bash
+     ./app.py
+     ```
+
+   - You should see output like this, indicating the app is running:
+     ```
+     * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+     ```
+
+3. **Test the `profile` route**:
+
+#### 1. Testing with `curl`:
+
+- **Register and log in a user**:
+   ```bash
+   curl -XPOST localhost:5000/users -d 'email=bob@bob.com' -d 'password=mySuperPwd'
+   curl -XPOST localhost:5000/sessions -d 'email=bob@bob.com' -d 'password=mySuperPwd' -v
+   ```
+
+   The output should include the `Set-Cookie` header with the session ID:
+   ```
+   < Set-Cookie: session_id=<session_id_value>; Path=/
+   ```
+
+- **Get the user’s profile**:
+   Replace `<session_id_value>` with the actual session ID you received in the login response:
+   ```bash
+   curl -XGET localhost:5000/profile -b "session_id=<session_id_value>" -v
+   ```
+
+   If the session is valid, you will get the user’s email:
+   ```
+   {"email": "bob@bob.com"}
+   ```
+
+- **Invalid session test**:
+   ```bash
+   curl -XGET localhost:5000/profile -b "session_id=invalidsessionid" -v
+   ```
+
+   This should return a `403 Forbidden` response:
+   ```
+   < HTTP/1.0 403 FORBIDDEN
+   ```
+
+#### 2. Testing in the Browser:
+
+- **Log in**:
+   - First, log in using the `/sessions` route to create a session cookie:
+     ```javascript
+     fetch('http://localhost:5000/sessions', {
+         method: 'POST',
+         body: new URLSearchParams({
+             email: 'bob@bob.com',
+             password: 'mySuperPwd'
+         }),
+         credentials: 'include'
+     }).then(response => response.json())
+       .then(data => console.log(data));
+     ```
+
+- **Retrieve Profile**:
+   - Once logged in, open the browser’s console and run this fetch request to get the profile:
+     ```javascript
+     fetch('http://localhost:5000/profile', {
+         method: 'GET',
+         credentials: 'include'
+     })
+     .then(response => response.json())
+     .then(data => console.log(data));
+     ```
+
+   - You should see the logged-in user’s email in the console:
+     ```json
+     {"email": "bob@bob.com"}
+     ```
+
+#### 3. Testing in Postman:
+
+- **Log in**:
+   - Use a **POST** request to `http://localhost:5000/sessions` with form data:
+     - **email**: `bob@bob.com`
+     - **password**: `mySuperPwd`
+
+   - In the **Cookies** section, you should see the `session_id`.
+
+- **Retrieve Profile**:
+   - Use a **GET** request to `http://localhost:5000/profile`.
+   - In the **Headers** section, add the `Cookie` header with the `session_id`:
+     ```
+     session_id=<session_id_value>
+     ```
+
+   - You will receive a response containing the user’s email:
+     ```json
+     {"email": "bob@bob.com"}
+     ```
+
+- **Invalid session**:
+   - If you use an invalid session ID, you will receive a `403 Forbidden` response.
+
+
+
+### Explanation
+
+- **Purpose of the `profile` route**:  
+  The `/profile` route is used to allow authenticated users to retrieve their own profile information using a session ID stored in their browser or client as a cookie. This is a common feature in web applications, allowing users to see or edit their personal data after logging in.
+
+- **Session ID-based Authentication**:  
+  The session ID is a unique identifier that is generated when the user logs in. This session ID is stored in a cookie on the client-side and is sent with each request to the server. In this task, the session ID is used to find the corresponding user and return their email address as part of their profile information.
+
+- **Security Consideration**:  
+  The session ID is essential for ensuring that only logged-in users can access their profile. If the session ID is missing or invalid, the server responds with a `403 Forbidden` status to protect sensitive user information. This ensures that users can only retrieve their own information and that their session remains private and secure.
+
+- **Testing Across Environments**:  
+  Testing the `/profile` route in multiple environments, using `curl`, the browser, and Postman, ensures that the functionality works in different client scenarios. For instance, `curl` simulates a command-line HTTP client, the browser tests front-end behavior, and Postman provides a controlled environment for API requests.
+
+- **Common Error Handling**:  
+  If a user provides an invalid or missing session ID, the server responds with a `403 Forbidden` status. This is important for maintaining the security of user data, as unauthorized access attempts are denied.
+
+</details>
