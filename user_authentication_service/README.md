@@ -13,13 +13,63 @@ This project focuses on building a custom user authentication system for a Flask
 - **[Flask documentation](https://flask.palletsprojects.com/en/1.1.x/quickstart/):** Comprehensive guide to Flask, covering everything from app initialization to routing and cookies.
 - **[Requests module](https://requests.kennethreitz.org/en/latest/user/quickstart/):** A powerful HTTP library for Python used to make HTTP requests.
 - **[HTTP status codes](https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html):** Understanding the various status codes and their meaning.
+- **[Generating Random IDs using UUID in Python](https://www.geeksforgeeks.org/generating-random-ids-using-uuid-python/)**  
+   Useful for understanding how to generate UUIDs, which are used for session IDs and password reset tokens.
+- **[GET and POST requests using Python](https://www.geeksforgeeks.org/get-post-requests-using-python/?ref=oin_asr6)**  
+   This guide covers how to make HTTP requests using the `requests` module, which is useful for testing your API endpoints.
+
 
 ## Learning Objectives
 
-1. **Declare API routes** in a Flask app.
-2. **Get and set cookies** for session management.
-3. **Retrieve request form data** from clients.
-4. **Return various HTTP status codes** in your Flask app.
+<details>
+  <summary>1. How to declare API routes in a Flask app</summary>
+  
+  **Tasks Covered**:
+   - **Task 6**: Basic Flask app (GET / route).
+   - **Task 7**: Register user (POST /users).
+   - **Task 11**: Log in (POST /sessions).
+   - **Task 14**: Log out (DELETE /sessions).
+   - **Task 15**: User profile (GET /profile).
+   - **Task 17**: Get reset password token (POST /reset_password).
+   - **Task 19**: Update password (PUT /reset_password).
+</details>
+
+
+<details>
+  <summary>2. How to get and set cookies</summary>
+  
+  **Tasks Covered**:
+   - **Task 11**: Log in (setting the session ID as a cookie in the POST /sessions route).
+   - **Task 14**: Log out (retrieving the session ID from cookies in the DELETE /sessions route).
+   - **Task 15**: User profile (retrieving the session ID from cookies to authenticate the user).
+</details>
+
+
+
+<details>
+  <summary>3. How to retrieve request form data</summary>
+  
+  **Tasks Covered**:
+   - **Task 7**: Register user (retrieving email and password from form data).
+   - **Task 11**: Log in (retrieving email and password for login from form data).
+   - **Task 17**: Get reset password token (retrieving email from form data).
+   - **Task 19**: Update password (retrieving email, reset_token, and new_password from form data).
+</details>
+
+
+
+<details>
+  <summary>4. How to return various HTTP status codes</summary>
+  
+  **Tasks Covered**:
+   - **Task 7**: Register user (400 if email already registered, 200 for successful registration).
+   - **Task 11**: Log in (401 for invalid login, 200 for successful login).
+   - **Task 14**: Log out (403 if no session or user not found, 200 for successful logout).
+   - **Task 15**: User profile (403 if session ID is missing or invalid, 200 if successful).
+   - **Task 17**: Get reset password token (403 if email is not found, 200 if successful).
+   - **Task 19**: Update password (403 if reset token is invalid, 200 if successful).
+</details>
+
 
 ## Requirements
 
@@ -3480,5 +3530,203 @@ If the token is valid, respond with a 200 HTTP code and the following JSON paylo
   2. The server verifies the reset token and updates the password if the token is valid.
   3. The reset token is then cleared from the database to prevent reuse.
   4. If the token is invalid, the server responds with a `403` status code.
+
+</details>
+
+<details>
+<summary><strong>Task 20: End-to-End Integration Test</strong></summary>
+
+In this task, we created an end-to-end integration test to validate the user authentication service by testing each key functionality through HTTP requests to the API.
+
+### Functionality
+
+The `main.py` script performs the following actions in sequence:
+
+- **Register a user**.
+- **Attempt to log in with the wrong password**.
+- **Log in with the correct password** and retrieve the session ID.
+- **Access the profile without being logged in** (expected to fail).
+- **Access the profile while logged in** using the session ID.
+- **Log out the user**.
+- **Request a reset password token**.
+- **Update the password** using the reset token.
+- **Log in with the new password**.
+
+Each action is performed using the `requests` module to send HTTP requests to the corresponding API endpoints.
+
+<details>
+<summary><strong>Instructions Provided in Curriculum</strong></summary>
+
+Create a new module called `main.py`. Create one function for each of the following tasks. Use the `requests` module to query your web server for the corresponding end-point. Use `assert` to validate the response’s expected status code and payload (if any) for each task.
+
+- `register_user(email: str, password: str) -> None`
+- `log_in_wrong_password(email: str, password: str) -> None`
+- `log_in(email: str, password: str) -> str`
+- `profile_unlogged() -> None`
+- `profile_logged(session_id: str) -> None`
+- `log_out(session_id: str) -> None`
+- `reset_password_token(email: str) -> str`
+- `update_password(email: str, reset_token: str, new_password: str) -> None`
+
+Then copy the following code at the end of the main module:
+
+```python
+EMAIL = "guillaume@holberton.io"
+PASSWD = "b4l0u"
+NEW_PASSWD = "t4rt1fl3tt3"
+
+
+if __name__ == "__main__":
+
+    register_user(EMAIL, PASSWD)
+    log_in_wrong_password(EMAIL, NEW_PASSWD)
+    profile_unlogged()
+    session_id = log_in(EMAIL, PASSWD)
+    profile_logged(session_id)
+    log_out(session_id)
+    reset_token = reset_password_token(EMAIL)
+    update_password(EMAIL, reset_token, NEW_PASSWD)
+    log_in(EMAIL, NEW_PASSWD)
+```
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Install the `requests` module**:
+   
+   If you don’t have the `requests` module installed, use the following command:
+   ```bash
+   pip3 install requests
+   ```
+
+  If you encounter an issue with `urllib3` related to the `Mapping` import error, which occurs due to changes in Python 3.10,  this can be resolved by upgrading the necessary dependencies:
+
+```bash
+pip3 install --upgrade requests urllib3
+```
+
+
+2. **Create `main.py`**:
+   
+   Here’s the `main.py` file:
+
+   ```python
+   #!/usr/bin/env python3
+   '''
+   End-to-end integration test for user authentication service.
+   '''
+   
+   import requests
+   
+   
+   BASE_URL = "http://localhost:5000"
+   
+   
+   def register_user(email: str, password: str) -> None:
+       '''Register a new user'''
+       response = requests.post(f"{BASE_URL}/users", data={"email": email, "password": password})
+       assert response.status_code == 200
+       assert response.json() == {"email": email, "message": "user created"}
+   
+   
+   def log_in_wrong_password(email: str, password: str) -> None:
+       '''Log in with the wrong password'''
+       response = requests.post(f"{BASE_URL}/sessions", data={"email": email, "password": password})
+       assert response.status_code == 401
+   
+   
+   def log_in(email: str, password: str) -> str:
+       '''Log in with correct credentials and return session ID'''
+       response = requests.post(f"{BASE_URL}/sessions", data={"email": email, "password": password})
+       assert response.status_code == 200
+       session_id = response.cookies.get("session_id")
+       assert session_id is not None
+       return session_id
+   
+   
+   def profile_unlogged() -> None:
+       '''Try to access the profile without logging in'''
+       response = requests.get(f"{BASE_URL}/profile")
+       assert response.status_code == 403
+   
+   
+   def profile_logged(session_id: str) -> None:
+       '''Access the profile while logged in'''
+       response = requests.get(f"{BASE_URL}/profile", cookies={"session_id": session_id})
+       assert response.status_code == 200
+       assert "email" in response.json()
+   
+   
+   def log_out(session_id: str) -> None:
+       '''Log out by destroying the session'''
+       response = requests.delete(f"{BASE_URL}/sessions", cookies={"session_id": session_id})
+       assert response.status_code == 200
+   
+   
+   def reset_password_token(email: str) -> str:
+       '''Request a reset password token'''
+       response = requests.post(f"{BASE_URL}/reset_password", data={"email": email})
+       assert response.status_code == 200
+       reset_token = response.json().get("reset_token")
+       assert reset_token is not None
+       return reset_token
+   
+   
+   def update_password(email: str, reset_token: str, new_password: str) -> None:
+       '''Update the password using the reset token'''
+       response = requests.put(f"{BASE_URL}/reset_password", data={
+           "email": email,
+           "reset_token": reset_token,
+           "new_password": new_password
+       })
+       assert response.status_code == 200
+       assert response.json() == {"email": email, "message": "Password updated"}
+   
+   
+   # End-to-end integration test
+   EMAIL = "guillaume@holberton.io"
+   PASSWD = "b4l0u"
+   NEW_PASSWD = "t4rt1fl3tt3"
+   
+   
+   if __name__ == "__main__":
+       register_user(EMAIL, PASSWD)
+       log_in_wrong_password(EMAIL, NEW_PASSWD)
+       profile_unlogged()
+       session_id = log_in(EMAIL, PASSWD)
+       profile_logged(session_id)
+       log_out(session_id)
+       reset_token = reset_password_token(EMAIL)
+       update_password(EMAIL, reset_token, NEW_PASSWD)
+       log_in(EMAIL, NEW_PASSWD)
+   ```
+
+3. **Run the Flask app**:
+
+   First, make sure the Flask app (`app.py`) is running. You can start the app by running:
+   ```bash
+   ./app.py
+   ```
+
+4. **Run the end-to-end test**:
+
+   Open another terminal and run:
+   ```bash
+   ./main.py
+   ```
+
+   If all the assertions pass, the script will complete without any output.
+
+### Explanation of Each Function
+
+- **`register_user`**: Registers a new user by sending a POST request to `/users` and validates that the user is created.
+- **`log_in_wrong_password`**: Attempts to log in with the wrong password, expecting a 401 Unauthorized response.
+- **`log_in`**: Logs in with the correct credentials, retrieves the session ID from the response cookie, and asserts that it is returned.
+- **`profile_unlogged`**: Tries to access the user profile without logging in, expecting a 403 Forbidden response.
+- **`profile_logged`**: Accesses the profile using the session ID, expecting a 200 OK response and confirming that the email is returned.
+- **`log_out`**: Logs out by deleting the session, expecting a 200 OK response.
+- **`reset_password_token`**: Requests a reset password token by sending a POST request to `/reset_password` and validates that a token is returned.
+- **`update_password`**: Updates the user’s password by sending a PUT request to `/reset_password`, providing the reset token and new password, and confirming the success message.
 
 </details>
