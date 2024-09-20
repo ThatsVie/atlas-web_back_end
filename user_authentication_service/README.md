@@ -1043,7 +1043,7 @@ bob@dylan:~$
    could not create a new user: User me@me.com already exists
    ```
 
-### Detailed Usage and Explanation
+### Explanation
 
 - **Why we check for existing users**:
   - The method first checks if a user with the provided email already exists. If the user exists, the method raises a `ValueError` to prevent duplicate user registrations.
@@ -1599,7 +1599,7 @@ class Auth:
      e.g. '8d1d3f2b-4e88-4e72-a74e-1a7e6e41e0bb'
      ```
 
-### Detailed Usage and Explanation
+### Explanation
 
 - **Why UUIDs**: UUIDs are globally unique identifiers that are useful for ensuring that generated IDs, such as session tokens, are unique and not easily guessable.
   
@@ -1770,7 +1770,7 @@ class Auth:
      None
      ```
 
-### Detailed Usage and Explanation
+### Explanation
 
 - **Why session IDs**: Session IDs are used to maintain a user’s authentication state across multiple requests. They allow users to stay logged in after initial authentication.
   
@@ -1782,3 +1782,550 @@ class Auth:
    - If the user is not found, it returns `None`.
 
 </details>
+
+<details>
+<summary><strong>Task 11: Log in (POST /sessions)</strong></summary>
+
+In this task, we implemented the `/sessions` POST route to handle user login. The request is expected to contain `email` and `password` form data. If the login information is correct, a session ID is created and returned as a cookie.
+
+### Endpoint: POST /sessions
+
+- **Endpoint**: `/sessions`
+- **Method**: `POST`
+- **Request Body**:
+  - `email`: The user's email.
+  - `password`: The user's password.
+- **Response**:
+  - **200 OK**: If the login is successful, a session ID is created, and a cookie is set with the session ID. The response payload will be:
+    ```json
+    {"email": "<user email>", "message": "logged in"}
+    ```
+  - **401 Unauthorized**: If the login information is incorrect, the server responds with a 401 status:
+    ```html
+    <h1>Unauthorized</h1>
+    ```
+
+<details>
+<summary><strong>Instructions Provided in Curriculum</strong></summary>
+
+In this task, you will implement a login function to respond to the POST `/sessions` route.
+
+The request is expected to contain form data with "email" and a "password" field.
+
+If the login information is incorrect, use `flask.abort` to respond with a 401 HTTP status.
+
+Otherwise, create a new session for the user, store the session ID as a cookie with the key "session_id" on the response, and return a JSON payload of the form:
+
+```json
+{"email": "<user email>", "message": "logged in"}
+```
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update `app.py`**:
+   - Add the login route to handle POST requests to `/sessions`:
+
+```python
+#!/usr/bin/env python3
+'''
+This module sets up a basic Flask app with user registration
+and login functionality.
+'''
+
+from flask import Flask, jsonify, request, abort, make_response
+from auth import Auth
+
+app = Flask(__name__)
+AUTH = Auth()
+
+
+@app.route("/", methods=["GET"])
+def welcome():
+    '''Handles GET request and returns a JSON message'''
+    return jsonify({"message": "Bienvenue"})
+
+
+@app.route("/users", methods=["POST"])
+def register_user():
+    '''Handles user registration via POST /users route'''
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    try:
+        user = AUTH.register_user(email, password)
+        return jsonify({"email": email, "message": "user created"})
+    except ValueError:
+        return jsonify({"message": "email already registered"}), 400
+
+
+@app.route("/sessions", methods=["POST"])
+def login():
+    '''Handles user login via POST /sessions route'''
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    if not AUTH.valid_login(email, password):
+        abort(401)
+
+    # Create a session ID for the user
+    session_id = AUTH.create_session(email)
+
+    # Set the session_id as a cookie in the response
+    response = make_response(jsonify({"email": email, "message": "logged in"}))
+    response.set_cookie("session_id", session_id)
+
+    return response
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port="5000")
+
+```
+
+### Testing the `/sessions` Route
+
+#### 1. Testing with `curl`:
+
+After starting the Flask app, you can use the following curl commands to test the `/sessions` endpoint:
+
+- **Register a user**:
+   ```bash
+   curl -XPOST localhost:5000/users -d 'email=bob@bob.com' -d 'password=mySuperPwd'
+   ```
+   Expected output:
+   ```json
+   {"email":"bob@bob.com","message":"user created"}
+   ```
+
+- **Log in the user**:
+   ```bash
+   curl -XPOST localhost:5000/sessions -d 'email=bob@bob.com' -d 'password=mySuperPwd' -v
+   ```
+   Expected output:
+   ```json
+   {"email":"bob@bob.com","message":"logged in"}
+   ```
+
+   In the verbose output, you will see the session ID set in the response:
+   ```
+   < Set-Cookie: session_id=<session_id_value>; Path=/
+   ```
+
+- **Test invalid login**:
+   ```bash
+   curl -XPOST localhost:5000/sessions -d 'email=bob@bob.com' -d 'password=wrongPwd' -v
+   ```
+   Expected output:
+   ```
+   < HTTP/1.0 401 UNAUTHORIZED
+   ```
+
+#### 2. Testing in the Browser:
+
+You can test the login functionality in the browser by sending a POST request using JavaScript. Here’s how:
+
+- Open the browser's developer tools (F12) and paste the following code into the console:
+   ```javascript
+   fetch('http://localhost:5000/sessions', {
+       method: 'POST',
+       headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+       },
+       body: new URLSearchParams({
+           'email': 'bob@bob.com',
+           'password': 'mySuperPwd'
+       })
+   })
+   .then(response => response.json())
+   .then(data => console.log(data))
+   ```
+   - If the login is successful, the browser console will display:
+     ```json
+     {"email":"bob@bob.com","message":"logged in"}
+     ```
+
+   - You can check the cookie set by the session using the browser's storage inspector (under Application > Cookies in the developer tools).
+
+#### 3. Testing in Postman:
+
+To test the login route in Postman:
+
+- **Create a new POST request** in Postman:
+   - **URL**: `http://localhost:5000/sessions`
+   - **Body**: Set the request body to `x-www-form-urlencoded` and add the following fields:
+     - `email`: `bob@bob.com`
+     - `password`: `mySuperPwd`
+   - **Send the request**. The expected response is:
+     ```json
+     {
+         "email": "bob@bob.com",
+         "message": "logged in"
+     }
+     ```
+
+   - Check the **Cookies** tab in Postman to confirm the `session_id` cookie has been set.
+
+### Explanation
+
+- **Why the session ID**: Session IDs are important for maintaining a user’s authentication state across multiple requests. By setting the session ID in a cookie, the server can identify the user in subsequent requests.
+
+</details>
+
+<details>
+<summary><strong>Task 12: Find user by session ID (Auth.get_user_from_session_id)</strong></summary>
+
+In this task, we implemented the `Auth.get_user_from_session_id` method, which retrieves a user based on their session ID. If the session ID is `None` or no user is found, it returns `None`.
+
+### Method: `Auth.get_user_from_session_id`
+
+- **Method**: `get_user_from_session_id(session_id: str) -> User`
+- **Parameters**:
+  - `session_id`: The session ID of the user.
+- **Returns**:
+  - The user corresponding to the session ID, or `None` if the session ID is invalid or no user is found.
+
+<details>
+<summary><strong>Instructions Provided in Curriculum</strong></summary>
+
+In this task, you will implement the `Auth.get_user_from_session_id` method. It takes a single `session_id` string argument and returns the corresponding User or `None`.
+
+If the session ID is `None` or no user is found, return `None`. Otherwise, return the corresponding user.
+
+Remember to only use public methods of `self._db`.
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update `auth.py`**:
+   - Add the `get_user_from_session_id` method to handle session-based user retrieval:
+
+```python
+#!/usr/bin/env python3
+'''
+This module handles user authentication.
+Includes:
+- User registration with duplicate email checks.
+- Password hashing using bcrypt for security.
+- Credentials validation to authenticate users.
+- Generates UUIDs for unique user identification.
+- Creates session IDs for user authentication.
+- Retrieves users based on session IDs.
+'''
+
+import bcrypt
+import uuid
+from db import DB
+from user import User
+from sqlalchemy.orm.exc import NoResultFound
+
+
+def _hash_password(password: str) -> bytes:
+    '''
+    Hashes a password using bcrypt and returns the hashed password as bytes
+    '''
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode('utf-8'), salt)
+
+
+def _generate_uuid() -> str:
+    '''
+    Generates a new UUID and returns it as a string
+    '''
+    return str(uuid.uuid4())
+
+
+class Auth:
+    '''Auth class to interact with the authentication database'''
+
+    def __init__(self) -> None:
+        '''Initialize the Auth class'''
+        self._db = DB()
+
+    def register_user(self, email: str, password: str) -> User:
+        '''
+        Registers a new user with a hashed password and returns the User object
+        '''
+        try:
+            self._db.find_user_by(email=email)
+            raise ValueError(f"User {email} already exists")
+        except NoResultFound:
+            hashed_password = _hash_password(password)
+            new_user = self._db.add_user(email, hashed_password)
+            return new_user
+
+    def valid_login(self, email: str, password: str) -> bool:
+        '''
+        Validates the email and password of a user.
+
+        Returns:
+            bool: True if credentials are valid, False otherwise
+        '''
+        try:
+            user = self._db.find_user_by(email=email)
+            if bcrypt.checkpw(password.encode('utf-8'), user.hashed_password):
+                return True
+            return False
+        except (NoResultFound, ValueError):
+            return False
+
+    def create_session(self, email: str) -> str:
+        '''
+        Creates a new session ID for a user based on their email.
+
+        Returns:
+            str: The session ID or None if the user does not exist.
+        '''
+        try:
+            user = self._db.find_user_by(email=email)
+            session_id = _generate_uuid()
+            self._db.update_user(user.id, session_id=session_id)
+            return session_id
+        except NoResultFound:
+            return None
+
+    def get_user_from_session_id(self, session_id: str) -> User:
+        '''
+        Retrieves a user from the session ID.
+        '''
+        if session_id is None:
+            return None
+        try:
+            user = self._db.find_user_by(session_id=session_id)
+            return user
+        except NoResultFound:
+            return None
+
+```
+
+2. **Test the `get_user_from_session_id` method**:
+   - Create a test script named `main_12.py`:
+
+   ```python
+   #!/usr/bin/env python3
+   """
+   Main file to test Auth.get_user_from_session_id
+   """
+   from auth import Auth
+
+   auth = Auth()
+
+   # Assume user has already logged in and session ID is generated
+   email = 'bob@bob.com'
+   password = 'MyPwdOfBob'
+
+   # Register and create a session
+   auth.register_user(email, password)
+   session_id = auth.create_session(email)
+
+   # Retrieve user from session ID
+   print(auth.get_user_from_session_id(session_id))  # Should print the user object
+
+   # Test invalid session ID
+   print(auth.get_user_from_session_id("invalid_session_id"))  # Should print None
+
+   # Test None session ID
+   print(auth.get_user_from_session_id(None))  # Should print None
+   ```
+
+3. **Make `main_12.py` executable**:
+   ```bash
+   chmod +x main_12.py
+   ```
+
+4. **Run the test script**:
+   ```bash
+   ./main_12.py
+   ```
+
+5. **Expected Output**:
+   - The first call should print the user object based on the valid session ID.
+   - The second call with an invalid session ID should print `None`.
+   - The third call with `None` as the session ID should also print `None`.
+
+### Detailed Usage and Explanation
+
+- **Why session-based user retrieval**: This functionality allows the app to retrieve user data based on a session ID, which is essential for maintaining user authentication across multiple requests.
+  
+- **Error handling**: If the session ID is invalid or `None`, the method will gracefully return `None` instead of raising an exception.
+
+</details>
+
+<details>
+<summary><strong>Task 13: Destroy session (Auth.destroy_session)</strong></summary>
+
+In this task, we implemented the `Auth.destroy_session` method, which takes a `user_id` and destroys the session by setting the session ID to `None`.
+
+### Method: `Auth.destroy_session`
+
+- **Method**: `destroy_session(user_id: int) -> None`
+- **Parameters**:
+  - `user_id`: The ID of the user whose session needs to be destroyed.
+- **Returns**:
+  - `None`
+
+<details>
+<summary><strong>Instructions Provided in Curriculum</strong></summary>
+
+In this task, you will implement the `Auth.destroy_session` method. The method takes a single `user_id` integer argument and returns `None`.
+
+The method updates the corresponding user’s session ID to `None`.
+
+Remember to only use public methods of `self._db`.
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update `auth.py`**:
+   - Add the `destroy_session` method to handle session destruction:
+
+   ```python
+   def destroy_session(self, user_id: int) -> None:
+       '''
+       Destroys a user session by setting the session ID to None.
+       '''
+       try:
+           self._db.update_user(user_id, session_id=None)
+       except NoResultFound:
+           pass
+   ```
+
+2. **Test the `destroy_session` method**:
+   - Create a test script named `main_13.py`:
+
+```python
+#!/usr/bin/env python3
+'''
+This module handles user authentication.
+Includes:
+- User registration with duplicate email checks.
+- Password hashing using bcrypt for security.
+- Credentials validation to authenticate users.
+- Generates UUIDs for unique user identification.
+- Creates session IDs for user authentication.
+- Retrieves users based on session IDs.
+- Destroys user sessions by setting session ID to None.
+'''
+
+import bcrypt
+import uuid
+from db import DB
+from user import User
+from sqlalchemy.orm.exc import NoResultFound
+
+
+def _hash_password(password: str) -> bytes:
+    '''
+    Hashes a password using bcrypt and returns the hashed password as bytes
+    '''
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode('utf-8'), salt)
+
+
+def _generate_uuid() -> str:
+    '''
+    Generates a new UUID and returns it as a string
+    '''
+    return str(uuid.uuid4())
+
+
+class Auth:
+    '''Auth class to interact with the authentication database'''
+
+    def __init__(self) -> None:
+        '''Initialize the Auth class'''
+        self._db = DB()
+
+    def register_user(self, email: str, password: str) -> User:
+        '''
+        Registers a new user with a hashed password and returns the User object
+        '''
+        try:
+            self._db.find_user_by(email=email)
+            raise ValueError(f"User {email} already exists")
+        except NoResultFound:
+            hashed_password = _hash_password(password)
+            new_user = self._db.add_user(email, hashed_password)
+            return new_user
+
+    def valid_login(self, email: str, password: str) -> bool:
+        '''
+        Validates the email and password of a user.
+
+        Returns:
+            bool: True if credentials are valid, False otherwise
+        '''
+        try:
+            user = self._db.find_user_by(email=email)
+            if bcrypt.checkpw(password.encode('utf-8'), user.hashed_password):
+                return True
+            return False
+        except (NoResultFound, ValueError):
+            return False
+
+    def create_session(self, email: str) -> str:
+        '''
+        Creates a new session ID for a user based on their email.
+        '''
+        try:
+            user = self._db.find_user_by(email=email)
+            session_id = _generate_uuid()
+            self._db.update_user(user.id, session_id=session_id)
+            return session_id
+        except NoResultFound:
+            return None
+
+    def get_user_from_session_id(self, session_id: str) -> User:
+        '''
+        Retrieves a user from the session ID.
+        '''
+        if session_id is None:
+            return None
+        try:
+            user = self._db.find_user_by(session_id=session_id)
+            return user
+        except NoResultFound:
+            return None
+
+    def destroy_session(self, user_id: int) -> None:
+        '''
+        Destroys a user session by setting the session ID to None.
+        '''
+        try:
+            self._db.update_user(user_id, session_id=None)
+        except NoResultFound:
+            pass
+
+```
+
+3. **Make `main_13.py` executable**:
+   ```bash
+   chmod +x main_13.py
+   ```
+
+4. **Run the test script**:
+   ```bash
+   ./main_13.py
+   ```
+
+5. **Expected Output**:
+   - The first `print` should return the user object before the session is destroyed:
+     ```
+     <user.User object at 0x7f639c8c6dd0>
+     ```
+   - The second `print` should return `None` after the session is destroyed:
+     ```
+     None
+     ```
+
+### Detailed Usage and Explanation
+
+- **Why destroy a session**: Destroying a session is essential for logging a user out and invalidating the session ID, preventing further access.
+  
+- **How it works**: The `destroy_session` method takes a `user_id` and updates the user's session ID to `None`. This makes the session ID invalid, and any subsequent attempts to retrieve the user using that session ID will return `None`.
+
+</details>
+

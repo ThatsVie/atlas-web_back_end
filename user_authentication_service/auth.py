@@ -7,6 +7,8 @@ Includes:
 - Credentials validation to authenticate users.
 - Generates UUIDs for unique user identification.
 - Creates session IDs for user authentication.
+- Retrieves users based on session IDs.
+- Destroys user sessions by setting session ID to None.
 '''
 
 import bcrypt
@@ -68,17 +70,32 @@ class Auth:
     def create_session(self, email: str) -> str:
         '''
         Creates a new session ID for a user based on their email.
-
-        Returns:
-            str: The session ID or None if the user does not exist.
         '''
         try:
-            # Find the user by email
             user = self._db.find_user_by(email=email)
-            # Generate a new session ID
             session_id = _generate_uuid()
-            # Update the user's session_id in the database
             self._db.update_user(user.id, session_id=session_id)
             return session_id
         except NoResultFound:
             return None
+
+    def get_user_from_session_id(self, session_id: str) -> User:
+        '''
+        Retrieves a user from the session ID.
+        '''
+        if session_id is None:
+            return None
+        try:
+            user = self._db.find_user_by(session_id=session_id)
+            return user
+        except NoResultFound:
+            return None
+
+    def destroy_session(self, user_id: int) -> None:
+        '''
+        Destroys a user session by setting the session ID to None.
+        '''
+        try:
+            self._db.update_user(user_id, session_id=None)
+        except NoResultFound:
+            pass
