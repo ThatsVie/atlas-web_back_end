@@ -2329,3 +2329,196 @@ class Auth:
 
 </details>
 
+<details>
+<summary><strong>Task 14: Log out (DELETE /sessions)</strong></summary>
+
+In this task, we implemented the `DELETE /sessions` route to log out a user by destroying their session. The session ID is expected to be stored as a cookie, and if the session exists, it will be destroyed, logging the user out and redirecting them to the home page (`GET /`). If no valid session exists, a `403 Forbidden` status is returned.
+
+### Endpoint: DELETE /sessions
+
+- **Endpoint**: `/sessions`
+- **Method**: `DELETE`
+- **Request**: The session ID is expected to be in the `session_id` cookie.
+- **Response**:
+  - **302 Found**: If the session ID is valid, the session is destroyed and the user is redirected to the home page (`/`).
+  - **403 Forbidden**: If the session ID is invalid or missing, the server responds with a `403 Forbidden` status.
+
+<details>
+<summary><strong>Instructions Provided in Curriculum</strong></summary>
+
+In this task, you will implement a logout function to respond to the `DELETE /sessions` route.
+
+The request is expected to contain the session ID as a cookie with key `"session_id"`.
+
+Find the user with the requested session ID. If the user exists, destroy the session and redirect the user to `GET /`. If the user does not exist, respond with a `403 HTTP` status.
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update `app.py`**:
+   - Add the `logout` route to handle DELETE requests to `/sessions`.
+
+```python
+#!/usr/bin/env python3
+'''
+This module sets up a basic Flask app with user registration,
+login, and session management functionality.
+'''
+
+from flask import Flask, jsonify, request, abort, make_response, redirect
+from auth import Auth
+
+app = Flask(__name__)
+AUTH = Auth()
+
+
+@app.route("/", methods=["GET"])
+def welcome():
+    '''Handles GET request and returns a JSON message'''
+    return jsonify({"message": "Bienvenue"})
+
+
+@app.route("/users", methods=["POST"])
+def register_user():
+    '''Handles user registration via POST /users route'''
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    try:
+        user = AUTH.register_user(email, password)
+        return jsonify({"email": email, "message": "user created"})
+    except ValueError:
+        return jsonify({"message": "email already registered"}), 400
+
+
+@app.route("/sessions", methods=["POST"])
+def login():
+    '''Handles user login via POST /sessions route'''
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    if not AUTH.valid_login(email, password):
+        abort(401)
+
+    # Create a session ID for the user
+    session_id = AUTH.create_session(email)
+
+    # Set the session_id as a cookie in the response
+    response = make_response(jsonify({"email": email, "message": "logged in"}))
+    response.set_cookie("session_id", session_id)
+
+    return response
+
+
+@app.route("/sessions", methods=["DELETE"])
+def logout():
+    '''Handles user logout via DELETE /sessions route'''
+    session_id = request.cookies.get("session_id")
+
+    if not session_id:
+        abort(403)
+
+    user = AUTH.get_user_from_session_id(session_id)
+
+    if not user:
+        abort(403)
+
+    # Destroy the user's session
+    AUTH.destroy_session(user.id)
+
+    # Redirect the user to the home page
+    return redirect("/")
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port="5000")
+```
+
+2. **Run the Flask App**:
+   - Before testing with curl or any other tool, you need to run the Flask app by opening a terminal and running the following command:
+     ```bash
+     ./app.py
+     ```
+
+   - You should see output like this, indicating the app is running:
+     ```
+     * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+     ```
+
+3. **Test the `logout` route**:
+
+#### 1. Testing with `curl`:
+
+- **Register and log in a user**:
+   ```bash
+   curl -XPOST localhost:5000/users -d 'email=bob@bob.com' -d 'password=mySuperPwd'
+   curl -XPOST localhost:5000/sessions -d 'email=bob@bob.com' -d 'password=mySuperPwd' -v
+   ```
+
+   The output should include the `Set-Cookie` header containing the session ID:
+   ```
+   < Set-Cookie: session_id=<session_id_value>; Path=/
+   ```
+
+- **Log out the user**:
+   ```bash
+   curl -XDELETE localhost:5000/sessions -b "session_id=<session_id>" -v
+   ```
+
+   Expected output:
+   - On successful logout, the output should show:
+     ```
+     < HTTP/1.0 302 FOUND
+     < Location: /
+     ```
+
+   - If the session ID is missing or invalid, the output should show:
+     ```
+     < HTTP/1.0 403 FORBIDDEN
+     ```
+
+#### 2. Testing in the Browser:
+
+- **Log in**:
+   - Perform a POST request to `/sessions` using JavaScript to log in the user and receive the session cookie.
+
+- **Log out**:
+   - In the browser's console, run:
+     ```javascript
+     fetch('http://localhost:5000/sessions', {
+         method: 'DELETE',
+         credentials: 'include'
+     })
+     .then(response => {
+         if (response.status === 403) {
+             console.log("Logout failed: Invalid session");
+         } else {
+             console.log("Logout successful");
+             window.location.href = "/";
+         }
+     });
+     ```
+
+- The user should be logged out, and the page will be redirected to `/` upon success.
+
+#### 3. Testing in Postman:
+
+- **Create a new DELETE request**:
+   - **URL**: `http://localhost:5000/sessions`
+   - In the **Headers** section, ensure that you include the `Cookie` header with the `session_id`:
+     ```
+     session_id=<session_id_value>
+     ```
+
+- **Expected behavior**:
+   - If the session is valid, Postman will show a `302` response and redirect you to `/`.
+   - If the session is invalid, you will receive a `403 Forbidden` response.
+
+### Explanation
+
+- **Why log out functionality is important**: This functionality allows users to securely log out by destroying their session. Once logged out, the session ID is invalid, preventing further access.
+  
+- **Testing in multiple environments**: Using `curl`, Postman, and the browser ensures that the app handles logout correctly in different scenarios.
+
+</details>

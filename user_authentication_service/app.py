@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 '''
-This module sets up a basic Flask app with user registration
-and login functionality.
+This module sets up a basic Flask app with user registration,
+login, and session management functionality.
 '''
 
-from flask import Flask, jsonify, request, abort, make_response
+from flask import Flask, jsonify, request, abort, make_response, redirect
 from auth import Auth
 
 app = Flask(__name__)
@@ -47,6 +47,26 @@ def login():
     response.set_cookie("session_id", session_id)
 
     return response
+
+
+@app.route("/sessions", methods=["DELETE"])
+def logout():
+    '''Handles user logout via DELETE /sessions route'''
+    session_id = request.cookies.get("session_id")
+
+    if not session_id:
+        abort(403)
+
+    user = AUTH.get_user_from_session_id(session_id)
+
+    if not user:
+        abort(403)
+
+    # Destroy the user's session
+    AUTH.destroy_session(user.id)
+
+    # Redirect the user to the home page
+    return redirect("/")
 
 
 if __name__ == "__main__":
