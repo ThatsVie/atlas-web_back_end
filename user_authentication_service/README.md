@@ -2929,3 +2929,556 @@ class Auth:
   This task is tested by trying to generate reset tokens for both valid and non-existent users. The output demonstrates how the system behaves when a valid user requests a reset token versus an invalid request.
 
 </details>
+
+<details>
+<summary><strong>Task 17: Get Reset Password Token</strong></summary>
+
+In this task, we implemented the `/reset_password` route to allow users to request a reset password token by providing their email address. If the email is registered, a reset token is generated and returned in the response. If the email is not registered, a `403 Forbidden` status is returned.
+
+### Method: `POST /reset_password`
+
+- **Input**:
+  - **email**: A string representing the email of the user requesting the password reset.
+  
+- **Output**:
+  - **Success**:
+    - Status code: `200 OK`
+    - JSON response:
+      ```json
+      {"email": "<user email>", "reset_token": "<reset token>"}
+      ```
+  - **Failure**:
+    - Status code: `403 Forbidden`
+    - JSON response:
+      ```json
+      {"message": "email not found"}
+      ```
+
+<details>
+<summary><strong>Instructions Provided in Curriculum</strong></summary>
+
+In this task, you will implement a `get_reset_password_token` function to respond to the `POST /reset_password` route.
+
+The request is expected to contain form data with the "email" field.
+
+If the email is not registered, respond with a 403 status code. Otherwise, generate a token and respond with a 200 HTTP status and the following JSON payload:
+
+```json
+{"email": "<user email>", "reset_token": "<reset token>"}
+```
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update `app.py`**:
+   - Add the `/reset_password` route to handle POST requests.
+   
+   
+```python
+   #!/usr/bin/env python3
+'''
+This module sets up a basic Flask app with user registration, login,
+session management, profile retrieval, and password reset functionality.
+'''
+
+from flask import Flask, jsonify, request, abort, make_response, redirect
+from auth import Auth
+
+app = Flask(__name__)
+AUTH = Auth()
+
+
+@app.route("/", methods=["GET"])
+def welcome():
+    '''Handles GET request and returns a JSON message'''
+    return jsonify({"message": "Bienvenue"})
+
+
+@app.route("/users", methods=["POST"])
+def register_user():
+    '''Handles user registration via POST /users route'''
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    try:
+        user = AUTH.register_user(email, password)
+        return jsonify({"email": email, "message": "user created"})
+    except ValueError:
+        return jsonify({"message": "email already registered"}), 400
+
+
+@app.route("/sessions", methods=["POST"])
+def login():
+    '''Handles user login via POST /sessions route'''
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    if not AUTH.valid_login(email, password):
+        abort(401)
+
+    # Create a session ID for the user
+    session_id = AUTH.create_session(email)
+
+    # Set the session_id as a cookie in the response
+    response = make_response(jsonify({"email": email, "message": "logged in"}))
+    response.set_cookie("session_id", session_id)
+
+    return response
+
+
+@app.route("/sessions", methods=["DELETE"])
+def logout():
+    '''Handles user logout via DELETE /sessions route'''
+    session_id = request.cookies.get("session_id")
+
+    if not session_id:
+        abort(403)
+
+    user = AUTH.get_user_from_session_id(session_id)
+
+    if not user:
+        abort(403)
+
+    # Destroy the user's session
+    AUTH.destroy_session(user.id)
+
+    # Redirect the user to the home page
+    return redirect("/")
+
+
+@app.route("/profile", methods=["GET"])
+def profile():
+    '''Handles user profile retrieval via GET /profile route'''
+    session_id = request.cookies.get("session_id")
+
+    if not session_id:
+        abort(403)
+
+    user = AUTH.get_user_from_session_id(session_id)
+
+    if not user:
+        abort(403)
+
+    # Return the user's email in the response
+    return jsonify({"email": user.email})
+
+
+@app.route("/reset_password", methods=["POST"])
+def get_reset_password_token():
+    '''Handles reset password token generation via POST /reset_password route'''
+    email = request.form.get("email")
+
+    try:
+        # Generate a reset password token for the user
+        reset_token = AUTH.get_reset_password_token(email)
+        return jsonify({"email": email, "reset_token": reset_token}), 200
+    except ValueError:
+        # If the user is not found, respond with 403
+        return jsonify({"message": "email not found"}), 403
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port="5000")
+
+```
+
+2. **Testing with `curl`**:
+
+- **Generate reset password token for a valid user**:
+   ```bash
+   curl -XPOST localhost:5000/reset_password -d 'email=bob@bob.com'
+   ```
+
+   **Expected Output**:
+   ```json
+   {"email":"bob@bob.com","reset_token":"<reset_token>"}
+   ```
+
+- **Invalid email**:
+   ```bash
+   curl -XPOST localhost:5000/reset_password -d 'email=nonexistent@bob.com'
+   ```
+
+   **Expected Output**:
+   ```json
+   {"message": "email not found"}
+   ```
+
+3. **Testing in the Browser**:
+
+- **Submit a POST request using Fetch**:
+   Open the browser's developer console and run the following command:
+   ```javascript
+   fetch('http://localhost:5000/reset_password', {
+       method: 'POST',
+       body: new URLSearchParams({
+           email: 'bob@bob.com'
+       })
+   }).then(response => response.json())
+     .then(data => console.log(data));
+   ```
+
+   **Expected Output**:
+   ```json
+   {"email": "bob@bob.com", "reset_token": "<reset_token>"}
+   ```
+
+- **Invalid email test using Fetch**:
+   ```javascript
+   fetch('http://localhost:5000/reset_password', {
+       method: 'POST',
+       body: new URLSearchParams({
+           email: 'nonexistent@bob.com'
+       })
+   }).then(response => response.json())
+     .then(data => console.log(data));
+   ```
+
+   **Expected Output**:
+   ```json
+   {"message": "email not found"}
+   ```
+
+4. **Testing with Postman**:
+
+- **Generate reset password token**:
+   - Use a **POST** request to `http://localhost:5000/reset_password`.
+   - In the **Body**, use form data:
+     - **email**: `bob@bob.com`
+  
+   **Expected Output**:
+   ```json
+   {"email": "bob@bob.com", "reset_token": "<reset_token>"}
+   ```
+
+- **Invalid email**:
+   - Send a request with an unregistered email and expect a `403 Forbidden` response:
+     ```json
+     {"message": "email not found"}
+     ```
+
+### Explanation of Changes
+
+- **Purpose of `/reset_password`**:  
+  This route allows users to request a reset password token by submitting their email address. If the user is registered, the server generates a unique reset token and returns it in the response. If the email is not found, the server responds with a `403 Forbidden` status.
+
+- **How It Works**:  
+  1. The user submits their email via a `POST` request to `/reset_password`.
+  2. The server attempts to find the user by their email and, if found, generates a reset password token using the `get_reset_password_token` method in `auth.py`.
+  3. The reset token and the user’s email are returned in the response.
+  4. If the email is not found, the server responds with a `403 Forbidden` status and a message indicating that the email is not registered.
+
+- **Testing Considerations**:  
+  This task can be tested by trying to generate reset tokens for both valid and non-existent users. The output demonstrates how the system behaves when a valid user requests a reset token versus an invalid request.
+
+</details>
+
+<details>
+<summary><strong>Task 18: Update Password</strong></summary>
+
+In this task, we implemented the `Auth.update_password` method to allow users to update their password using a reset token. The method takes in a reset token and a new password, validates the reset token, and updates the password in the database. If the reset token is invalid, a `ValueError` is raised.
+
+### Method: `Auth.update_password`
+
+- **Input**:
+  - **reset_token**: A string representing the user's reset token.
+  - **password**: The new password to set for the user.
+  
+- **Output**:
+  - **Success**: The user's password is updated, and the reset token is cleared.
+  - **Failure**: If the reset token is invalid, a `ValueError` is raised.
+
+<details>
+<summary><strong>Instructions Provided in Curriculum</strong></summary>
+
+In this task, you will implement the `Auth.update_password` method. It takes a `reset_token` string argument and a `password` string argument and returns `None`.
+
+Use the `reset_token` to find the corresponding user. If it does not exist, raise a `ValueError` exception.
+
+Otherwise, hash the password and update the user’s `hashed_password` field with the new hashed password and the `reset_token` field to `None`.
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update `auth.py`**:
+   - Implement the `Auth.update_password` method in the `Auth` class:
+   
+   Example:
+   ```python
+   def update_password(self, reset_token: str, password: str) -> None:
+       '''Updates a user's password using the reset token'''
+       try:
+           user = self._db.find_user_by(reset_token=reset_token)
+           hashed_password = _hash_password(password)
+           user.hashed_password = hashed_password
+           user.reset_token = None  # Clear the reset token after password update
+           self._db._session.commit()
+       except NoResultFound:
+           raise ValueError(f"Invalid reset token")
+   ```
+
+2. **Test with `main_18.py`**:
+
+   Create a file named `main_18.py` with the following content to test the `Auth.update_password` functionality in isolation:
+   
+   ```python
+   #!/usr/bin/env python3
+   """
+   Main file for testing Auth.update_password
+   """
+
+   from auth import Auth
+
+   # Initialize Auth
+   auth = Auth()
+
+   # Register a new user
+   email = "bob@bob.com"
+   password = "SuperSecurePwd"
+   user = auth.register_user(email, password)
+
+   # Generate a reset token
+   reset_token = auth.get_reset_password_token(email)
+   print(f"Generated reset token: {reset_token}")
+
+   # Test updating the password
+   try:
+       auth.update_password(reset_token, "NewSuperSecurePwd")
+       print("Password updated successfully")
+   except ValueError as e:
+       print(f"Error updating password: {e}")
+
+   # Try updating the password with an invalid token
+   try:
+       auth.update_password("invalid_token", "NewSuperSecurePwd")
+   except ValueError as e:
+       print(f"Expected error: {e}")
+   ```
+
+   Run the file:
+
+   ```bash
+   ./main_18.py
+   ```
+
+   **Expected Output**:
+   ```
+   Generated reset token: <actual_reset_token>
+   Password updated successfully
+   Expected error: Invalid reset token
+   ```
+
+3. **Start the Flask app**:
+   After confirming the functionality with `main_18.py`, start the Flask app to handle the requests by running:
+
+   ```bash
+   ./app.py
+   ```
+
+4. **Testing with `curl`**:
+
+- **Register a user**:
+   ```bash
+   curl -XPOST localhost:5000/users -d 'email=bob@bob.com' -d 'password=mySuperPwd'
+   ```
+
+- **Generate a reset token**:
+   ```bash
+   curl -XPOST localhost:5000/reset_password -d 'email=bob@bob.com'
+   ```
+
+   **Expected Output**:
+   ```json
+   {"email": "bob@bob.com", "reset_token": "<generated_token>"}
+   ```
+
+- **Update the password using the reset token**:
+   ```bash
+   curl -XPOST localhost:5000/update_password -d 'reset_token=<generated_token>' -d 'password=myNewPwd'
+   ```
+
+   **Expected Output**:
+   ```json
+   {"message": "password updated"}
+   ```
+
+5. **Testing in the Browser**:
+
+- **Submit a POST request using Fetch**:
+   Open the browser's developer console and run the following command to update the password:
+   ```javascript
+   fetch('http://localhost:5000/update_password', {
+       method: 'POST',
+       body: new URLSearchParams({
+           reset_token: '<generated_token>',
+           password: 'myNewPwd'
+       })
+   }).then(response => response.json())
+     .then(data => console.log(data));
+   ```
+
+   **Expected Output**:
+   ```json
+   {"message": "password updated"}
+   ```
+
+6. **Testing with Postman**:
+
+- **Update the password**:
+   - Use a **POST** request to `http://localhost:5000/update_password`.
+   - In the **Body**, use form data:
+     - **reset_token**: `<generated_token>`
+     - **password**: `myNewPwd`
+
+   **Expected Output**:
+   ```json
+   {"message": "password updated"}
+   ```
+
+### Explanation
+
+- **Purpose of `update_password`**:  
+  This method allows users to update their password using a reset token. After validating the token, it securely hashes the new password and updates the database, clearing the reset token to ensure it cannot be reused.
+
+- **How It Works**:  
+  1. The user submits a request with their reset token and new password.
+  2. The server validates the reset token by searching for the corresponding user in the database.
+  3. If the token is valid, the server hashes the new password and updates the user's `hashed_password` field.
+  4. The reset token is cleared, and the user’s password is updated successfully.
+  5. If the token is invalid, a `ValueError` is raised, and the operation fails.
+</details>
+
+<details>
+<summary><strong>Task 19: Update Password Endpoint</strong></summary>
+
+In this task, we implemented the `update_password` function to respond to the `PUT /reset_password` route. This allows users to update their password using their reset token.
+
+### Functionality
+
+- **Route**: `PUT /reset_password`
+- **Form Data**:
+  - `email`: The email of the user.
+  - `reset_token`: The reset token generated for the user.
+  - `new_password`: The new password to be set.
+- **Response**:
+  - On success: A `200` status code with the JSON payload: `{"email": "<user email>", "message": "Password updated"}`.
+  - On failure (invalid token): A `403` status code with the JSON payload: `{"message": "Invalid reset token"}`.
+
+<details>
+<summary><strong>Instructions Provided in Curriculum</strong></summary>
+
+In this task, you will implement the `update_password` function in the app module to respond to the `PUT /reset_password` route.
+
+The request is expected to contain form data with fields "email", "reset_token" and "new_password".
+
+Update the password. If the token is invalid, catch the exception and respond with a 403 HTTP code.
+
+If the token is valid, respond with a 200 HTTP code and the following JSON payload:
+
+`{"email": "<user email>", "message": "Password updated"}`
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update `app.py`**:
+   - Implement the `/reset_password` route with the `PUT` method to handle password updates.
+   
+   Example:
+   ```python
+   @app.route("/reset_password", methods=["PUT"])
+   def update_password():
+       '''Handles password updates via PUT /reset_password route'''
+       email = request.form.get("email")
+       reset_token = request.form.get("reset_token")
+       new_password = request.form.get("new_password")
+
+       try:
+           AUTH.update_password(reset_token, new_password)
+           return jsonify({"email": email, "message": "Password updated"}), 200
+       except ValueError:
+           return jsonify({"message": "Invalid reset token"}), 403
+   ```
+
+2. **Run the app**:
+   Start the Flask app by running:
+   ```bash
+   ./app.py
+   ```
+
+3. **Testing with `curl`**:
+
+- **Register a user**:
+   ```bash
+   curl -XPOST localhost:5000/users -d 'email=bob@bob.com' -d 'password=mySuperPwd'
+   ```
+
+- **Generate a reset token**:
+   ```bash
+   curl -XPOST localhost:5000/reset_password -d 'email=bob@bob.com'
+   ```
+
+   **Expected Output**:
+   ```json
+   {"email": "bob@bob.com", "reset_token": "<generated_token>"}
+   ```
+
+- **Update the password using the reset token**:
+   ```bash
+   curl -XPUT localhost:5000/reset_password -d 'email=bob@bob.com' -d 'reset_token=<generated_token>' -d 'new_password=myNewPwd'
+   ```
+
+   **Expected Output**:
+   ```json
+   {"email": "bob@bob.com", "message": "Password updated"}
+   ```
+
+4. **Testing in the Browser**:
+
+- **Submit a PUT request using Fetch**:
+   Open the browser's developer console and run the following command:
+   ```javascript
+   fetch('http://localhost:5000/reset_password', {
+       method: 'PUT',
+       body: new URLSearchParams({
+           email: 'bob@bob.com',
+           reset_token: '<generated_token>',
+           new_password: 'myNewPwd'
+       })
+   }).then(response => response.json())
+     .then(data => console.log(data));
+   ```
+
+   **Expected Output**:
+   ```json
+   {"email": "bob@bob.com", "message": "Password updated"}
+   ```
+
+5. **Testing with Postman**:
+
+- **Update the password**:
+   - Use a **PUT** request to `http://localhost:5000/reset_password`.
+   - In the **Body**, use form data:
+     - **email**: `bob@bob.com`
+     - **reset_token**: `<generated_token>`
+     - **new_password**: `myNewPwd`
+
+   **Expected Output**:
+   ```json
+   {"email": "bob@bob.com", "message": "Password updated"}
+   ```
+
+### Explanation of Changes
+
+- **Purpose of `update_password` (PUT endpoint)**:  
+  This endpoint allows users to update their password using the reset token. The server verifies the token and, if valid, securely updates the user's password in the database.
+
+- **How It Works**:  
+  1. The user submits a request with their email, reset token, and new password.
+  2. The server verifies the reset token and updates the password if the token is valid.
+  3. The reset token is then cleared from the database to prevent reuse.
+  4. If the token is invalid, the server responds with a `403` status code.
+
+</details>
