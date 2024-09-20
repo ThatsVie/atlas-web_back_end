@@ -2702,3 +2702,230 @@ If the session ID is invalid or the user does not exist, respond with a `403 HTT
   If a user provides an invalid or missing session ID, the server responds with a `403 Forbidden` status. This is important for maintaining the security of user data, as unauthorized access attempts are denied.
 
 </details>
+
+<details>
+<summary><strong>Task 16: Generate Reset Password Token</strong></summary>
+
+In this task, we implemented the `Auth.get_reset_password_token` method, which generates a reset password token for users based on their email address. The reset token is stored in the `reset_token` field of the user in the database. This token can later be used to verify and reset the user's password.
+
+### Method: `Auth.get_reset_password_token(email: str) -> str`
+
+- **Input**:
+  - **email**: A string representing the email of the user requesting a password reset.
+
+- **Output**:
+  - **reset_token**: A string representing the generated reset password token (UUID).
+
+- **Functionality**:
+  1. Find the user by their email in the database.
+  2. If the user exists, generate a new UUID and store it in the `reset_token` field.
+  3. Return the reset token.
+  4. If the user does not exist, raise a `ValueError` with the message "User `<email>` does not exist".
+
+<details>
+<summary><strong>Instructions Provided in Curriculum</strong></summary>
+
+In this task, you will implement the `Auth.get_reset_password_token` method. It takes an email string argument and returns a string.
+
+Find the user corresponding to the email. If the user does not exist, raise a `ValueError` exception. If it exists, generate a UUID and update the user’s `reset_token` database field. Return the token.
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update `auth.py`**:
+   - Implement the `get_reset_password_token` method to generate a UUID for password resets and update the user’s `reset_token` in the database.
+  
+```python
+#!/usr/bin/env python3
+'''
+This module handles user authentication.
+Includes:
+User registration with duplicate email checks.
+Password hashing using bcrypt for security.
+Credentials validation to authenticate users.
+Session management and reset password tokens.
+'''
+
+import bcrypt
+from db import DB
+from user import User
+from sqlalchemy.orm.exc import NoResultFound
+import uuid
+
+
+def _hash_password(password: str) -> bytes:
+    '''
+    Hashes a password using bcrypt and returns the hashed password as bytes
+    '''
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed
+
+
+def _generate_uuid() -> str:
+    '''
+    Generates a new UUID and returns its string representation
+    '''
+    return str(uuid.uuid4())
+
+
+class Auth:
+    '''Auth class to interact with the authentication database'''
+
+    def __init__(self) -> None:
+        '''Initialize the Auth class'''
+        self._db = DB()
+
+    def register_user(self, email: str, password: str) -> User:
+        '''
+        Registers a new user with a hashed password and returns the User object
+        '''
+        try:
+            # Check if the user already exists
+            self._db.find_user_by(email=email)
+            raise ValueError(f"User {email} already exists")
+        except NoResultFound:
+            # Hash the password and create a new user
+            hashed_password = _hash_password(password)
+            new_user = self._db.add_user(email, hashed_password)
+            return new_user
+
+    def valid_login(self, email: str, password: str) -> bool:
+        '''
+        Validates the email and password of a user.
+
+        Returns:
+            bool: True if credentials are valid, False otherwise
+        '''
+        try:
+            # Find the user by email
+            user = self._db.find_user_by(email=email)
+            # Check if the password matches using bcrypt
+            if bcrypt.checkpw(password.encode('utf-8'), user.hashed_password):
+                return True
+            return False
+        except (NoResultFound, ValueError):
+            return False
+
+    def create_session(self, email: str) -> str:
+        '''
+        Creates a session for the user and returns the session ID
+        '''
+        try:
+            user = self._db.find_user_by(email=email)
+            session_id = _generate_uuid()
+            user.session_id = session_id
+            self._db._session.commit()
+            return session_id
+        except NoResultFound:
+            return None
+
+    def get_user_from_session_id(self, session_id: str) -> User:
+        '''
+        Retrieves a user based on the session ID
+        '''
+        if not session_id:
+            return None
+
+        try:
+            return self._db.find_user_by(session_id=session_id)
+        except NoResultFound:
+            return None
+
+    def destroy_session(self, user_id: int) -> None:
+        '''
+        Destroys a user's session by setting the session_id to None
+        '''
+        try:
+            user = self._db.find_user_by(id=user_id)
+            user.session_id = None
+            self._db._session.commit()
+        except NoResultFound:
+            pass
+
+    def get_reset_password_token(self, email: str) -> str:
+        '''
+        Generates a reset password token for the user
+        '''
+        try:
+            # Find the user by email
+            user = self._db.find_user_by(email=email)
+            # Generate a new UUID as reset token
+            reset_token = _generate_uuid()
+            # Update the user's reset_token field
+            user.reset_token = reset_token
+            self._db._session.commit()
+            return reset_token
+        except NoResultFound:
+            raise ValueError(f"User {email} does not exist")
+```
+
+2. **Run the Test Script**:
+   - Test the method by running the following test script (`main_16.py`):
+
+   ```python
+   #!/usr/bin/env python3
+   """
+   Main file for testing task 16
+   """
+   from auth import Auth
+
+   auth = Auth()
+
+   # Test user registration
+   email = "bob@bob.com"
+   password = "MyPwdOfBob"
+   auth.register_user(email, password)
+
+   # Generate reset password token
+   try:
+       token = auth.get_reset_password_token(email)
+       print(f"Reset token for {email}: {token}")
+   except ValueError as e:
+       print(e)
+
+   # Test non-existing user
+   try:
+       token = auth.get_reset_password_token("nonexistent@bob.com")
+       print(f"Reset token: {token}")
+   except ValueError as e:
+       print(e)
+   ```
+
+   3. **Make the Script Executable**:
+   ```bash
+   chmod +x main_16.py
+   ```
+
+4. **Run the Script**:
+   - Execute the script:
+   ```bash
+   ./main_16.py
+   ```
+
+   **Expected Output**:
+   - For a valid email:
+     ```
+     Reset token for bob@bob.com: <uuid_token>
+     ```
+   - For a non-existent email:
+     ```
+     User nonexistent@bob.com does not exist
+     ```
+
+### Explanation of Changes
+
+- **Purpose of `get_reset_password_token`**:  
+  This method allows a user to request a password reset by generating a unique token that can be later used to reset their password securely. It ensures that only users with a valid email in the database can receive this token.
+  
+- **How It Works**:  
+  1. The method first checks if the user exists based on the email.
+  2. If the user is found, a new UUID is generated as the reset token.
+  3. The token is stored in the `reset_token` field of the user and returned to the caller.
+  4. If the user does not exist, a `ValueError` is raised.
+
+- **Testing Considerations**:  
+  This task is tested by trying to generate reset tokens for both valid and non-existent users. The output demonstrates how the system behaves when a valid user requests a reset token versus an invalid request.
+
+</details>
