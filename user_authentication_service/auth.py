@@ -2,12 +2,15 @@
 '''
 This module handles user authentication.
 Includes:
-User registration with duplicate email checks.
-Password hashing using bcrypt for security.
-Credentials validation to authenticate users.
+- User registration with duplicate email checks.
+- Password hashing using bcrypt for security.
+- Credentials validation to authenticate users.
+- Generates UUIDs for unique user identification.
+- Creates session IDs for user authentication.
 '''
 
 import bcrypt
+import uuid
 from db import DB
 from user import User
 from sqlalchemy.orm.exc import NoResultFound
@@ -18,8 +21,14 @@ def _hash_password(password: str) -> bytes:
     Hashes a password using bcrypt and returns the hashed password as bytes
     '''
     salt = bcrypt.gensalt()
-    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hashed
+    return bcrypt.hashpw(password.encode('utf-8'), salt)
+
+
+def _generate_uuid() -> str:
+    '''
+    Generates a new UUID and returns it as a string
+    '''
+    return str(uuid.uuid4())
 
 
 class Auth:
@@ -34,11 +43,9 @@ class Auth:
         Registers a new user with a hashed password and returns the User object
         '''
         try:
-            # Check if the user already exists
             self._db.find_user_by(email=email)
             raise ValueError(f"User {email} already exists")
         except NoResultFound:
-            # Hash the password and create a new user
             hashed_password = _hash_password(password)
             new_user = self._db.add_user(email, hashed_password)
             return new_user
@@ -51,11 +58,27 @@ class Auth:
             bool: True if credentials are valid, False otherwise
         '''
         try:
-            # Find the user by email
             user = self._db.find_user_by(email=email)
-            # Check if the password matches using bcrypt
             if bcrypt.checkpw(password.encode('utf-8'), user.hashed_password):
                 return True
             return False
         except (NoResultFound, ValueError):
             return False
+
+    def create_session(self, email: str) -> str:
+        '''
+        Creates a new session ID for a user based on their email.
+
+        Returns:
+            str: The session ID or None if the user does not exist.
+        '''
+        try:
+            # Find the user by email
+            user = self._db.find_user_by(email=email)
+            # Generate a new session ID
+            session_id = _generate_uuid()
+            # Update the user's session_id in the database
+            self._db.update_user(user.id, session_id=session_id)
+            return session_id
+        except NoResultFound:
+            return None

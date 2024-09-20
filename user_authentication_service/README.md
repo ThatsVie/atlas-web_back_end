@@ -1465,3 +1465,320 @@ class Auth:
    - If the credentials match, it returns `True`; otherwise, it returns `False`.
 
 </details>
+
+
+
+
+<details>
+<summary><strong>Task 9: Generate UUIDs (_generate_uuid)</strong></summary>
+
+In this task, we implemented the `_generate_uuid` function, which generates a new UUID and returns its string representation. This function is private to the `auth.py` module and is meant for internal use only.
+
+### _generate_uuid
+
+- **Function**: `_generate_uuid() -> str`
+- **Returns**: A string representation of a new UUID.
+- **Purpose**: To generate unique identifiers for various purposes, such as user sessions.
+
+<details>
+<summary><strong>Instructions Provided in Curriculum</strong></summary>
+
+In this task, you will implement a `_generate_uuid` function in the `auth.py` module. The function should return a string representation of a new UUID. Use the `uuid` module.
+
+Note that the method is private to the auth module and should NOT be used outside of it.
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update `auth.py`**:
+   - Add the `_generate_uuid` function to `auth.py`:
+
+```python
+   #!/usr/bin/env python3
+'''
+This module handles user authentication.
+Includes:
+User registration with duplicate email checks.
+Password hashing using bcrypt for security.
+Credentials validation to authenticate users.
+Generates UUIDs for unique user identification.
+'''
+
+import bcrypt
+import uuid
+from db import DB
+from user import User
+from sqlalchemy.orm.exc import NoResultFound
+
+
+def _hash_password(password: str) -> bytes:
+    '''
+    Hashes a password using bcrypt and returns the hashed password as bytes
+    '''
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed
+
+
+def _generate_uuid() -> str:
+    '''
+    Generates a new UUID and returns it as a string
+    '''
+    return str(uuid.uuid4())
+
+
+class Auth:
+    '''Auth class to interact with the authentication database'''
+
+    def __init__(self) -> None:
+        '''Initialize the Auth class'''
+        self._db = DB()
+
+    def register_user(self, email: str, password: str) -> User:
+        '''
+        Registers a new user with a hashed password and returns the User object
+        '''
+        try:
+            # Check if the user already exists
+            self._db.find_user_by(email=email)
+            raise ValueError(f"User {email} already exists")
+        except NoResultFound:
+            # Hash the password and create a new user
+            hashed_password = _hash_password(password)
+            new_user = self._db.add_user(email, hashed_password)
+            return new_user
+
+    def valid_login(self, email: str, password: str) -> bool:
+        '''
+        Validates the email and password of a user.
+
+        Returns:
+            bool: True if credentials are valid, False otherwise
+        '''
+        try:
+            # Find the user by email
+            user = self._db.find_user_by(email=email)
+            # Check if the password matches using bcrypt
+            if bcrypt.checkpw(password.encode('utf-8'), user.hashed_password):
+                return True
+            return False
+        except (NoResultFound, ValueError):
+            return False
+
+```
+
+2. **Test the `_generate_uuid` function**:
+   - To test the UUID generation, create a simple test script called `main_9.py`:
+
+   ```python
+   #!/usr/bin/env python3
+   """
+   Main file to test _generate_uuid
+   """
+   from auth import _generate_uuid
+
+   print(_generate_uuid())  # Expected output: A unique UUID, e.g., '8d1d3f2b-4e88-4e72-a74e-1a7e6e41e0bb'
+   ```
+
+3. **Make `main_9.py` executable**:
+   - Ensure the `main_9.py` script is executable:
+   ```bash
+   chmod +x main_9.py
+   ```
+
+4. **Run the test script**:
+   - Run the script to see the UUID generated:
+   ```bash
+   ./main_9.py
+   ```
+
+5. **Expected Output**:
+   - The output will be a unique UUID in string format, similar to:
+     ```bash
+     e.g. '8d1d3f2b-4e88-4e72-a74e-1a7e6e41e0bb'
+     ```
+
+### Detailed Usage and Explanation
+
+- **Why UUIDs**: UUIDs are globally unique identifiers that are useful for ensuring that generated IDs, such as session tokens, are unique and not easily guessable.
+  
+- **Why `_generate_uuid` is private**: This function is intended for internal use within the `auth.py` module. By keeping it private, it helps ensure that UUID generation is handled consistently in the codebase and avoids misuse outside the module.
+
+- **How it works**: 
+   - The function leverages Python’s built-in `uuid` module to generate a UUID using `uuid.uuid4()`.
+   - It converts the UUID object to a string with `str()` and returns it.
+
+</details>
+
+
+<details>
+<summary><strong>Task 10: Get session ID (Auth.create_session)</strong></summary>
+
+In this task, we implemented the `Auth.create_session` method, which generates and returns a session ID for a user. The method takes the user’s email, locates the user in the database, generates a new session ID, and stores it as the user’s `session_id`.
+
+### Auth.create_session
+
+- **Method**: `create_session(email: str) -> str`
+- **Parameters**:
+  - `email`: The user’s email address.
+- **Returns**:
+  - A new session ID as a string (UUID) if the user is found.
+  - `None` if the user does not exist.
+
+<details>
+<summary><strong>Instructions Provided in Curriculum</strong></summary>
+
+In this task, you will implement the `Auth.create_session` method. It takes an email string argument and returns the session ID as a string.
+
+The method should find the user corresponding to the email, generate a new UUID, and store it in the database as the user’s session_id, then return the session ID.
+
+Remember that only public methods of `self._db` can be used.
+
+</details>
+
+### Step-by-Step Instructions
+
+1. **Update `auth.py`**:
+   - Add the `create_session` method to the `Auth` class in `auth.py`:
+
+```python
+#!/usr/bin/env python3
+'''
+This module handles user authentication.
+Includes:
+- User registration with duplicate email checks.
+- Password hashing using bcrypt for security.
+- Credentials validation to authenticate users.
+- Generates UUIDs for unique user identification.
+- Creates session IDs for user authentication.
+'''
+
+import bcrypt
+import uuid
+from db import DB
+from user import User
+from sqlalchemy.orm.exc import NoResultFound
+
+
+def _hash_password(password: str) -> bytes:
+    '''
+    Hashes a password using bcrypt and returns the hashed password as bytes
+    '''
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode('utf-8'), salt)
+
+
+def _generate_uuid() -> str:
+    '''
+    Generates a new UUID and returns it as a string
+    '''
+    return str(uuid.uuid4())
+
+
+class Auth:
+    '''Auth class to interact with the authentication database'''
+
+    def __init__(self) -> None:
+        '''Initialize the Auth class'''
+        self._db = DB()
+
+    def register_user(self, email: str, password: str) -> User:
+        '''
+        Registers a new user with a hashed password and returns the User object
+        '''
+        try:
+            self._db.find_user_by(email=email)
+            raise ValueError(f"User {email} already exists")
+        except NoResultFound:
+            hashed_password = _hash_password(password)
+            new_user = self._db.add_user(email, hashed_password)
+            return new_user
+
+    def valid_login(self, email: str, password: str) -> bool:
+        '''
+        Validates the email and password of a user.
+
+        Returns:
+            bool: True if credentials are valid, False otherwise
+        '''
+        try:
+            user = self._db.find_user_by(email=email)
+            if bcrypt.checkpw(password.encode('utf-8'), user.hashed_password):
+                return True
+            return False
+        except (NoResultFound, ValueError):
+            return False
+
+    def create_session(self, email: str) -> str:
+        '''
+        Creates a new session ID for a user based on their email.
+
+        Returns:
+            str: The session ID or None if the user does not exist.
+        '''
+        try:
+            # Find the user by email
+            user = self._db.find_user_by(email=email)
+            # Generate a new session ID
+            session_id = _generate_uuid()
+            # Update the user's session_id in the database
+            self._db.update_user(user.id, session_id=session_id)
+            return session_id
+        except NoResultFound:
+            return None
+
+```
+
+2. **Test the `create_session` method**:
+   - Create a test script named `main_10.py`:
+
+   ```python
+   #!/usr/bin/env python3
+   """
+   Main file to test Auth.create_session
+   """
+   from auth import Auth
+
+   email = 'bob@bob.com'
+   password = 'MyPwdOfBob'
+   auth = Auth()
+
+   auth.register_user(email, password)
+
+   print(auth.create_session(email))  # Expected output: A valid UUID (session ID)
+   print(auth.create_session("unknown@email.com"))  # Expected output: None
+   ```
+
+3. **Make `main_10.py` executable**:
+   ```bash
+   chmod +x main_10.py
+   ```
+
+4. **Run the test script**:
+   ```bash
+   ./main_10.py
+   ```
+
+5. **Expected Output**:
+   - If the user exists:
+     ```bash
+     e.g. '5a006849-343e-4a48-ba4e-bbd523fcca58'
+     ```
+   - If the user does not exist:
+     ```bash
+     None
+     ```
+
+### Detailed Usage and Explanation
+
+- **Why session IDs**: Session IDs are used to maintain a user’s authentication state across multiple requests. They allow users to stay logged in after initial authentication.
+  
+- **Why UUIDs for session IDs**: UUIDs provide a unique and unpredictable session ID that enhances security by making it difficult to guess valid session identifiers.
+
+- **How it works**: 
+   - The `create_session` method locates a user by email.
+   - If the user is found, it generates a unique session ID using `_generate_uuid` and updates the user’s session ID in the database.
+   - If the user is not found, it returns `None`.
+
+</details>
