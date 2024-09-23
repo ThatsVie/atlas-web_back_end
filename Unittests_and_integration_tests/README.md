@@ -38,11 +38,35 @@ Integration tests validate that all components work together as expected. Key po
 - Mock only low-level functions, such as HTTP requests or database I/O.
 - Test interactions between components end-to-end.
 
+### Setup
+
+To run the tests, make sure the following dependencies are installed:
+
+1. **unittest**: Python’s built-in testing library.
+   - `unittest` comes pre-installed with Python, so no additional installation is necessary. You can check it by running:
+   ```bash
+   python3 -m unittest --help
+   ```
+
+2. **parameterized**: If not installed, run:
+   ```bash
+   pip3 install parameterized
+   ```
 
 ## Executing Tests
 Run your tests with the following command:
 ```bash
 python3 -m unittest path/to/test_file.py
+```
+####  Output:
+```bash
+vie@ThatsVie:~/atlas-web_back_end/Unittests_and_integration_tests$ python3 -m unittest test_utils.py
+.....
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+OK
+vie@ThatsVie:~/atlas-web_back_end/Unittests_and_integration_tests$
 ```
 
 
@@ -101,16 +125,20 @@ In this task you will write the first unit test for `utils.access_nested_map`.
 
 5. **Test Method**: Use `assertEqual` to verify the expected results.
 
-#### Example Code:
+#### Code:
 ```python
 #!/usr/bin/env python3
+'''
+Unit tests for the access_nested_map function from the utils module.
+'''
+
 import unittest
 from parameterized import parameterized
 from utils import access_nested_map
 
 
 class TestAccessNestedMap(unittest.TestCase):
-    """Test cases for access_nested_map"""
+    '''Test cases for access_nested_map'''
 
     @parameterized.expand([
         ({"a": 1}, ("a",), 1),
@@ -118,6 +146,9 @@ class TestAccessNestedMap(unittest.TestCase):
         ({"a": {"b": 2}}, ("a", "b"), 2),
     ])
     def test_access_nested_map(self, nested_map, path, expected):
+        '''
+        Test access_nested_map with various nested dictionaries and paths.
+        '''
         self.assertEqual(access_nested_map(nested_map, path), expected)
 
 
@@ -141,4 +172,96 @@ Once installed, the test was rerun successfully using:
 ```bash
 python3 -m unittest test_utils.py
 ```
+</details>
+
+### Task 1: Parameterize a Unit Test for Handling Exceptions
+
+In this task, we extend our unit test for the `utils.access_nested_map` function to check for exceptions, specifically ensuring that a `KeyError` is raised for invalid inputs.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+Implement `TestAccessNestedMap.test_access_nested_map_exception`. Use the `assertRaises` context manager to test that a `KeyError` is raised for the following inputs (use `@parameterized.expand`):
+
+- `nested_map={}, path=("a",)`
+- `nested_map={"a": 1}, path=("a", "b")`
+
+Also, make sure that the exception message is as expected.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+### Steps:
+
+1. **Extend the Test Class**: Add a new method `test_access_nested_map_exception` in the `TestAccessNestedMap` class to handle cases where an exception is expected.
+  
+2. **Use the assertRaises Context Manager**: This will check if the correct exception (`KeyError`) is raised for invalid inputs.
+
+3. **Use Parameterized Testing**: Apply the `@parameterized.expand` decorator to test multiple cases where a `KeyError` should be raised.
+
+4. **Test Cases**:
+   - **Case 1**: `nested_map={}, path=("a",)` — Expected to raise `KeyError("a")`.
+   - **Case 2**: `nested_map={"a": 1}, path=("a", "b")` — Expected to raise `KeyError("b")`.
+
+#### Code:
+```python
+#!/usr/bin/env python3
+'''
+Unit tests for the access_nested_map function from the utils module.
+'''
+
+import unittest
+from parameterized import parameterized
+from utils import access_nested_map
+
+
+class TestAccessNestedMap(unittest.TestCase):
+    '''Test cases for access_nested_map'''
+
+    @parameterized.expand([
+        ({"a": 1}, ("a",), 1),
+        ({"a": {"b": 2}}, ("a",), {"b": 2}),
+        ({"a": {"b": 2}}, ("a", "b"), 2),
+    ])
+    def test_access_nested_map(self, nested_map, path, expected):
+        '''
+        Test access_nested_map with various nested dictionaries and paths.
+        '''
+        self.assertEqual(access_nested_map(nested_map, path), expected)
+
+    @parameterized.expand([
+        ({}, ("a",), 'a'),
+        ({"a": 1}, ("a", "b"), 'b'),
+    ])
+    def test_access_nested_map_exception(self, nested_map, path, expected_error):
+        '''
+        Test that KeyError is raised for invalid paths in access_nested_map.
+        '''
+        with self.assertRaises(KeyError) as context:
+            access_nested_map(nested_map, path)
+        self.assertEqual(str(context.exception), f"'{expected_error}'")
+
+
+if __name__ == "__main__":
+    unittest.main()
+```
+
+#### How to Run the Test:
+```bash
+python3 -m unittest test_utils.py
+```
+
+####  Output:
+```bash
+vie@ThatsVie:~/atlas-web_back_end/Unittests_and_integration_tests$ python3 -m unittest test_utils.py
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.000s
+
+OK
+vie@ThatsVie:~/atlas-web_back_end/Unittests_and_integration_tests$
+```
+
 </details>
