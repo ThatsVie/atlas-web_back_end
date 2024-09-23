@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/e42b6a69-0c9d-45c8-85f1-64f399f1d0b1" alt="smartpuggypuggy" />
+  <img src="https://github.com/user-attachments/assets/e42b6a69-0c9d-45c8-85f1-64f399f1d0b1" alt="smartpuggywuggy" />
 </p>
 
 <h1 align="center">Unittests and Integration Tests</h1>
@@ -894,10 +894,75 @@ python3 -m unittest test_client.py
 
 #### Output:
 ```bash
-vie@ThatsVie:~/source/atlas-web_back_end/Unittests_and_integration_tests$ python3 -m unittest test_client.py
+vie@ThatsVie:~/pug/atlas-web_back_end/Unittests_and_integration_tests$ python3 -m unittest test_client.py
 ....
 ----------------------------------------------------------------------
 Ran 4 tests in 0.001s
+
+OK
+```
+
+</details>
+
+### Task 7: Parameterize `has_license`
+
+In this task, we implement a unit test for the `GithubOrgClient.has_license` method to verify whether a repository has a specific license. The test is parameterized to check multiple input cases.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+Implement `TestGithubOrgClient.test_has_license` to unit-test `GithubOrgClient.has_license`.
+
+Parametrize the test with the following inputs:
+
+- `repo={"license": {"key": "my_license"}}, license_key="my_license"`
+- `repo={"license": {"key": "other_license"}}, license_key="my_license"`
+
+You should also parameterize the expected returned value.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+### Steps:
+
+1. **Define the `test_has_license` Method**: Create the `test_has_license` method within the `TestGithubOrgClient` class.
+   
+2. **Use `@parameterized.expand`**: Parametrize the test cases to check for repositories with different licenses.
+
+3. **Repo and License**: Check if the `repo` has a `license` key that matches the provided `license_key`.
+
+4. **Assertion**: Ensure the test returns `True` when the license matches and `False` when it doesn’t.
+
+#### Example Code:
+```python
+@parameterized.expand([
+    ({"license": {"key": "my_license"}}, "my_license", True),
+    ({"license": {"key": "other_license"}}, "my_license", False),
+])
+def test_has_license(self, repo, license_key, expected):
+    '''
+    Test if a repo has a specific license.
+    Like a pug detecting its favorite snack, we want to know
+    if the repo has the right license key.
+    '''
+    client = GithubOrgClient("google")
+    result = client.has_license(repo, license_key)
+    self.assertEqual(result, expected)
+```
+
+### How to Run the Test:
+```bash
+python3 -m unittest test_client.py
+```
+
+### Output:
+```bash
+vie@ThatsVie:~/pug/atlas-web_back_end/Unittests_and_integration_tests$ python3 -m unittest test_client.py
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.001s
 
 OK
 ```

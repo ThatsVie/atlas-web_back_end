@@ -84,6 +84,20 @@ class TestGithubOrgClient(unittest.TestCase):
 
         mock_get_json.assert_called_once_with("https://mocked_url.com")
 
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False),
+    ])
+    def test_has_license(self, repo, license_key, expected):
+        '''
+        Test if a repo has a specific license.
+        Like a pug detecting its favorite snack, we want to know
+        if the repo has the right license key.
+        '''
+        client = GithubOrgClient("google")
+        result = client.has_license(repo, license_key)
+        self.assertEqual(result, expected)
+
 
 if __name__ == "__main__":
     unittest.main()
