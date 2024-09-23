@@ -676,3 +676,128 @@ OK
 ```
 
 </details>
+
+### Task 5: Mocking a Property
+
+In this task, we test the `_public_repos_url` property of the `GithubOrgClient` class. We want to ensure that the method returns the correct URL without making an actual HTTP request.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+memoize turns methods into properties. Read up on how to mock a property (see resource).
+
+- Implement the `test_public_repos_url` method to unit-test `GithubOrgClient._public_repos_url`.
+- Use `patch` as a context manager to patch `GithubOrgClient.org` and make it return a known payload.
+- Test that the result of `_public_repos_url` is the expected one based on the mocked payload.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+### Steps:
+
+1. **Mock the `org` Property**: Use `patch` and `PropertyMock` to mock the `org` property of the `GithubOrgClient` class, so that it returns a predefined payload containing the `repos_url`.
+
+2. **Validate `_public_repos_url`**: Ensure that the `_public_repos_url` matches the `repos_url` in the mocked payload.
+
+3. **Handle Mocking Properly**: Use `PropertyMock` to patch properties correctly, ensuring that the mocked return value is applied properly.
+
+### Example Code:
+```python
+#!/usr/bin/env python3
+'''
+Unit tests for the client module.
+Making sure everything runs as smooth as chocolate mousse!
+'''
+
+import unittest
+from unittest.mock import patch, PropertyMock
+from parameterized import parameterized
+from client import GithubOrgClient
+
+
+class TestGithubOrgClient(unittest.TestCase):
+    '''
+    Test cases for the GithubOrgClient class.
+    Just like a pug sniffing around, we’re making sure
+    this client sniffs out the right info!
+    '''
+
+    @parameterized.expand([
+        ("google",),
+        ("abc",),
+    ])
+    @patch('client.get_json')
+    def test_org(self, org_name, mock_get_json):
+        '''
+        Test that GithubOrgClient.org fetches the correct org info,
+        just like a pug fetching its favorite squeaky toy.
+        We’re making sure get_json is called once, no extra sniffs needed!
+        '''
+        mock_get_json.return_value = {"payload": True}
+
+        client = GithubOrgClient(org_name)
+        result = client.org  # Access as property, not a method call
+
+        mock_get_json.assert_called_once_with(
+            f"https://api.github.com/orgs/{org_name}"
+        )
+        self.assertEqual(result, {"payload": True})
+
+    @patch('client.GithubOrgClient.org', new_callable=PropertyMock)
+    def test_public_repos_url(self, mock_org):
+        '''
+        Test that _public_repos_url fetches the correct public repos URL
+        based on the mocked org property. Just like a pug chasing a ball,
+        we expect it to fetch the correct one!
+        '''
+        mock_org.return_value = {
+            "repos_url": "https://api.github.com/orgs/google/repos"
+        }
+
+        client = GithubOrgClient("google")
+        result = client._public_repos_url
+
+        # Check if the _public_repos_url matches the mocked repos_url
+        self.assertEqual(result, "https://api.github.com/orgs/google/repos")
+
+
+if __name__ == "__main__":
+    unittest.main()
+```
+
+### How to Run the Test:
+```bash
+python3 -m unittest test_client.py
+```
+
+### Issues Encountered:
+
+#### Issue 1: `'dict' object is not callable`
+When running the initial test for `test_org`, we received the following error:
+```
+TypeError: 'dict' object is not callable
+```
+This was caused by calling `client.org()` as a method, even though `org` is a property. The fix was to access `client.org` as a property (without parentheses).
+
+#### Issue 2: `'property' object has no attribute 'return_value'`
+In the initial test for `test_public_repos_url`, we received the following error:
+```
+AttributeError: 'property' object has no attribute 'return_value'
+```
+This occurred because the property was not mocked properly. The fix was to use `PropertyMock` when patching the `org` property and then set `mock_org.return_value` to the desired mock data.
+
+### Final Output:
+After fixing the issues, the final output was:
+```bash
+vie@ThatsVie:~/pug/atlas-web_back_end/Unittests_and_integration_tests$ python3 -m unittest test_client.py
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.001s
+
+OK
+```
+
+</details>
+
