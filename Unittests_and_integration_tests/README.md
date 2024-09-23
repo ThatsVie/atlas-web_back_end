@@ -177,6 +177,16 @@ Once installed, the test was rerun successfully using:
 ```bash
 python3 -m unittest test_utils.py
 ```
+
+####  Output:
+```bash
+vie@ThatsVie:~/pug/atlas-web_back_end/Unittests_and_integration_tests$ python3 -m unittest test_utils.py
+.....
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+OK
+```
 </details>
 
 ### Task 1: Parameterize a Unit Test for Handling Exceptions
@@ -260,13 +270,110 @@ python3 -m unittest test_utils.py
 
 ####  Output:
 ```bash
-vie@ThatsVie:~/atlas-web_back_end/Unittests_and_integration_tests$ python3 -m unittest test_utils.py
+vie@ThatsVie:~/pug/atlas-web_back_end/Unittests_and_integration_tests$ python3 -m unittest test_utils.py
 .....
 ----------------------------------------------------------------------
 Ran 5 tests in 0.000s
 
 OK
-vie@ThatsVie:~/atlas-web_back_end/Unittests_and_integration_tests$
+```
+
+</details>
+
+### Task 2: Mock HTTP Calls
+
+In this task, we test the `utils.get_json` function while avoiding actual HTTP requests by using `unittest.mock.patch`.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+Familiarize yourself with the `utils.get_json` function.
+
+Define the `TestGetJson(unittest.TestCase)` class and implement the `TestGetJson.test_get_json` method to test that `utils.get_json` returns the expected result.
+
+We don’t want to make any actual external HTTP calls. Use `unittest.mock.patch` to patch `requests.get`. Make sure it returns a `Mock` object with a `json` method that returns `test_payload` which you parametrize alongside the `test_url` that you will pass to `get_json` with the following inputs:
+
+- `test_url="http://example.com"`, `test_payload={"payload": True}`
+- `test_url="http://holberton.io"`, `test_payload={"payload": False}`
+
+Test that the mocked `get` method was called exactly once (per input) with `test_url` as an argument.
+
+Test that the output of `get_json` is equal to `test_payload`.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+### Steps:
+
+1. **Patch the `requests.get` Method**: Instead of making an actual HTTP call, patch `requests.get` to return a mock response object.
+
+2. **Mock the Response**: Create a mock response object with a `json` method that returns the test payload.
+
+3. **Use Parameterized Inputs**: Test different URLs and payloads by using `@parameterized.expand`.
+
+4. **Test Case Assertions**:
+   - Check that `requests.get` was called exactly once with the correct `test_url`.
+   - Ensure that the return value of `get_json` matches the expected `test_payload`.
+
+#### Example Code:
+```python
+#!/usr/bin/env python3
+'''
+Unit tests for the utils module.
+'''
+
+import unittest
+from unittest.mock import patch, Mock
+from parameterized import parameterized
+from utils import get_json
+
+
+class TestGetJson(unittest.TestCase):
+    '''Test cases for get_json'''
+
+    @parameterized.expand([
+        ("http://example.com", {"payload": True}),
+        ("http://holberton.io", {"payload": False}),
+    ])
+    @patch('utils.requests.get')
+    def test_get_json(self, test_url, test_payload, mock_get):
+        '''
+        Test that get_json returns the expected result
+        and makes a single HTTP call.
+        '''
+        # Mock response object with a json method
+        mock_response = Mock()
+        mock_response.json.return_value = test_payload
+
+        # Set mock to return mock response
+        mock_get.return_value = mock_response
+
+        result = get_json(test_url)
+        self.assertEqual(result, test_payload)
+
+        # Check that requests.get was called once with the correct URL
+        mock_get.assert_called_once_with(test_url)
+
+
+if __name__ == "__main__":
+    unittest.main()
+```
+
+### How to Run the Test:
+```bash
+python3 -m unittest test_utils.py
+```
+
+#### Output:
+```bash
+vie@ThatsVie:~/pug/atlas-web_back_end/Unittests_and_integration_tests$ python3 -m unittest test_utils.py
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.001s
+
+OK
 ```
 
 </details>
