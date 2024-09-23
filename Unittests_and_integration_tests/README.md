@@ -558,3 +558,121 @@ OK
 ```
 
 </details>
+
+### Task 4: Parameterize and Patch as Decorators
+
+In this task, we write tests for the `GithubOrgClient.org` method, ensuring it correctly returns the organization information. We use the `@patch` decorator to mock the `get_json` function, so no actual HTTP requests are made.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+Familiarize yourself with the `client.GithubOrgClient` class.
+
+In a new `test_client.py` file, declare the `TestGithubOrgClient(unittest.TestCase)` class and implement the `test_org` method.
+
+This method should test that `GithubOrgClient.org` returns the correct value.
+
+Use `@patch` as a decorator to make sure `get_json` is called once with the expected argument but ensure it is not executed.
+
+Use `@parameterized.expand` as a decorator to parametrize the test with a couple of org examples to pass to `GithubOrgClient`, in this order:
+- google
+- abc
+
+Of course, no external HTTP calls should be made.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+### Steps:
+
+1. **Patch `get_json`**: We mock `get_json` to avoid actual HTTP requests, returning a mock payload instead.
+2. **Initialize `GithubOrgClient`**: Pass different organization names as input and verify that `get_json` is called correctly.
+3. **Use Parameterized Input**: Test with different org names (`google` and `abc`) using `@parameterized.expand`.
+4. **Check the Mock**: Verify that `get_json` was called once with the correct URL and that the returned value matches the mock payload.
+
+#### Example Code:
+
+```python
+#!/usr/bin/env python3
+'''
+Unit tests for the client module.
+Making sure everything runs as smooth as chocolate mousse!
+'''
+
+import unittest
+from unittest.mock import patch
+from parameterized import parameterized
+from client import GithubOrgClient
+
+
+class TestGithubOrgClient(unittest.TestCase):
+    '''
+    Test cases for the GithubOrgClient class.
+    Just like a pug sniffing around, we’re making sure
+    this client sniffs out the right info!
+    '''
+
+    @parameterized.expand([
+        ("google",),
+        ("abc",),
+    ])
+    @patch('client.get_json')
+    def test_org(self, org_name, mock_get_json):
+        '''
+        Test that GithubOrgClient.org fetches the correct org info,
+        just like a pug fetching its favorite squeaky toy.
+        We’re making sure get_json is called once, no extra sniffs needed!
+        '''
+        # Mock response for get_json
+        mock_get_json.return_value = {"payload": True}
+
+        # Initialize the client
+        client = GithubOrgClient(org_name)
+
+        # Access the org attribute (not as a callable method)
+        result = client.org
+
+        # Ensure get_json was called with the correct URL
+        mock_get_json.assert_called_once_with(
+            f"https://api.github.com/orgs/{org_name}"
+        )
+
+        # Assert the result is what we expect
+        self.assertEqual(result, {"payload": True})
+
+
+if __name__ == "__main__":
+    unittest.main()
+```
+
+### How to Run the Test:
+
+```bash
+python3 -m unittest test_client.py
+```
+
+#### Issue Encountered:
+
+Initially, the test failed with the following error:
+```
+TypeError: 'dict' object is not callable
+```
+This happened because `client.org()` was treated as a method call instead of a property.
+
+#### Solution:
+The error was fixed by removing the parentheses from `client.org`, treating it as a property rather than a callable method. We ensured that `client.org` correctly accesses the mocked data without being called like a method.
+
+#### Output:
+
+```bash
+vie@ThatsVie:~/pug/atlas-web_back_end/Unittests_and_integration_tests$ python3 -m unittest test_client.py
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK
+```
+
+</details>
