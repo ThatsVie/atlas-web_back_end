@@ -75,6 +75,12 @@ This project focuses on implementing various authentication mechanisms for a RES
 
 To view a README.md file for Session Authentication visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/Session_authentication/README.md)
 
+## User Authentication Service
+
+This project implements a user authentication service using Flask, focusing on key functionalities such as user registration, login, session management, and password reset. It covers essential authentication concepts, including hashing passwords, managing user sessions via cookies, and generating secure reset tokens. The project also includes end-to-end testing to ensure the system's reliability and security.
+
+To view a README.md file for User Authentication Service visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/user_authentication_service/README.md)
+
 ## Author
 
 Vie Paula - [GitHub Profile](https://github.com/ThatsVie)
