@@ -5,7 +5,9 @@
 
 <h1 align="center">User Pugthentication Service</h1>
 
+This project implements a user authentication service using Flask, focusing on key functionalities such as user registration, login, session management, and password reset. It covers essential authentication concepts, including hashing passwords, managing user sessions via cookies, and generating secure reset tokens. The project also includes end-to-end testing to ensure the system's reliability and security.
 
+## Background Context
 This project focuses on building a custom user authentication system for a Flask-based web application. While it's common in the industry to use frameworks such as [Flask-User](https://flask-user.readthedocs.io/en/latest/), this project walks through the process of implementing an authentication mechanism from scratch for educational purposes.
 
 ## Resources
