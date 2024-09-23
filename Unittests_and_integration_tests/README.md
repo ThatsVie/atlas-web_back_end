@@ -1,4 +1,9 @@
-# Unittests and Integration Tests
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/e42b6a69-0c9d-45c8-85f1-64f399f1d0b1" alt="smartpuggypuggy" />
+</p>
+
+<h1 align="center">Unittests and Integration Tests</h1>
+
 
 ## Overview
 This project focuses on creating unittests and integration tests to ensure that functions work as expected under different circumstances. You'll learn to use tools like `unittest` and `mock`, and follow best practices for testing, including mocking external dependencies and writing integration tests to validate code paths end-to-end.
