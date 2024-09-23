@@ -317,7 +317,7 @@ Test that the output of `get_json` is equal to `test_payload`.
    - Check that `requests.get` was called exactly once with the correct `test_url`.
    - Ensure that the return value of `get_json` matches the expected `test_payload`.
 
-#### Example Code:
+#### Code:
 ```python
 #!/usr/bin/env python3
 '''
@@ -423,7 +423,7 @@ Use `unittest.mock.patch` to mock `a_method`. Test that when calling `a_property
     - Ensure the result of calling `a_property` is correct.
     - Ensure that `a_method` is only called once using `assert_called_once`.
 
-### Example Code:
+### Code:
 
 ```python
 #!/usr/bin/env python3
@@ -592,7 +592,7 @@ Of course, no external HTTP calls should be made.
 3. **Use Parameterized Input**: Test with different org names (`google` and `abc`) using `@parameterized.expand`.
 4. **Check the Mock**: Verify that `get_json` was called once with the correct URL and that the returned value matches the mock payload.
 
-#### Example Code:
+#### Code:
 
 ```python
 #!/usr/bin/env python3
@@ -703,7 +703,7 @@ memoize turns methods into properties. Read up on how to mock a property (see re
 
 3. **Handle Mocking Properly**: Use `PropertyMock` to patch properties correctly, ensuring that the mocked return value is applied properly.
 
-### Example Code:
+### Code:
 ```python
 #!/usr/bin/env python3
 '''
@@ -801,3 +801,105 @@ OK
 
 </details>
 
+### Task 6: More Patching
+
+In this task, we tested the `GithubOrgClient.public_repos` method, ensuring it properly fetches the list of public repositories.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+Implement `TestGithubOrgClient.test_public_repos` to unit-test `GithubOrgClient.public_repos`.
+
+- Use `@patch` as a decorator to mock `get_json` and make it return a payload of your choice.
+- Use `patch` as a context manager to mock `GithubOrgClient._public_repos_url` and return a value of your choice.
+- Test that the list of repos is what you expect from the chosen payload.
+- Test that the mocked property and the mocked `get_json` were called once.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+### Steps:
+
+1. **Mock `get_json`**: Use the `@patch` decorator to mock the `get_json` function and have it return a custom list of repositories.
+   
+2. **Mock `_public_repos_url`**: Use the `@patch` decorator to mock `GithubOrgClient._public_repos_url` to return a custom URL.
+
+3. **Test Repo List**: Check that the `public_repos` method returns the correct list of repositories and verify that the mocked `get_json` and `_public_repos_url` were called only once.
+
+#### Code:
+```python
+#!/usr/bin/env python3
+'''
+Unit tests for the client module.
+Making sure everything runs as smooth as chocolate mousse!
+'''
+
+import unittest
+from unittest.mock import patch, PropertyMock
+from client import GithubOrgClient
+
+
+class TestGithubOrgClient(unittest.TestCase):
+    '''
+    Test cases for the GithubOrgClient class.
+    Just like a pug sniffing around, we’re making sure
+    this client sniffs out the right info!
+    '''
+
+    @patch('client.get_json')
+    @patch(
+        'client.GithubOrgClient._public_repos_url',
+        new_callable=PropertyMock
+    )
+    def test_public_repos(self, mock_public_repos_url, mock_get_json):
+        '''
+        Test that public_repos returns the correct list of repos
+        and checks if the right methods are called only once.
+        Just like how a pug only needs one sniff to find its favorite spot!
+        '''
+        # Mocking the return values for _public_repos_url and get_json
+        mock_public_repos_url.return_value = "https://mocked_url.com"
+        mock_get_json.return_value = [
+            {"name": "repo_1"},
+            {"name": "repo_2"},
+            {"name": "repo_3"}
+        ]
+
+        # Initialize the client
+        client = GithubOrgClient("google")
+
+        # Call public_repos and capture the result
+        result = client.public_repos()
+
+        # Verify that the result matches the expected list of repo names
+        self.assertEqual(result, ["repo_1", "repo_2", "repo_3"])
+
+        # Check that _public_repos_url was called once
+        mock_public_repos_url.assert_called_once()
+
+        # Check that get_json was called once with the correct URL
+        mock_get_json.assert_called_once_with("https://mocked_url.com")
+
+
+if __name__ == "__main__":
+    unittest.main()
+```
+
+### How to Run the Test:
+```bash
+python3 -m unittest test_client.py
+```
+
+#### Output:
+```bash
+vie@ThatsVie:~/source/atlas-web_back_end/Unittests_and_integration_tests$ python3 -m unittest test_client.py
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.001s
+
+OK
+```
+
+</details>
