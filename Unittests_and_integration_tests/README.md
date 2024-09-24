@@ -968,3 +968,100 @@ OK
 ```
 
 </details>
+
+### Task 8: Integration Test - Fixtures
+
+In this task, we wrote an integration test for the `GithubOrgClient.public_repos` method using payload fixtures. The test patches `requests.get` to mock the responses from the GitHub API.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+We want to test the `GithubOrgClient.public_repos` method in an integration test. That means we will only mock code that sends external requests.
+
+- Create the `TestIntegrationGithubOrgClient(unittest.TestCase)` class.
+- Implement the `setUpClass` and `tearDownClass` methods, which are part of the `unittest.TestCase` API.
+- Use `@parameterized_class` to decorate the class and parameterize it with fixtures found in `fixtures.py`.
+- Patch `requests.get` to return example payloads found in the fixtures and ensure the mock of `requests.get(url).json()` returns the correct values based on the anticipated URL.
+- Implement the `tearDownClass` method to stop the patcher.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+### Steps:
+
+1. **Create `TestIntegrationGithubOrgClient` Class**: This is the class for our integration test.
+   
+2. **Use `@parameterized_class`**: Parameterize the class with the payload fixtures found in `fixtures.py`. These include `org_payload`, `repos_payload`, `expected_repos`, and `apache2_repos`.
+
+3. **Patch `requests.get`**: In the `setUpClass` method, patch `requests.get` and mock the `.json()` method to return the appropriate fixtures.
+
+4. **Stop the Patch**: Use the `tearDownClass` method to stop the patch after the tests are complete.
+
+5. **Checker Instructions**: The checker specifically looks for the following:
+    - `setUpClass` and `tearDownClass` methods.
+    - `@parameterized_class` decorator with the appropriate payloads.
+    - `self.get_patcher` as the patcher for `requests.get`.
+
+### Code Implementation:
+
+```python
+#!/usr/bin/env python3
+'''
+Unit tests for the client module.
+Making sure everything runs as smooth as chocolate mousse!
+'''
+
+import unittest
+from unittest.mock import patch
+from parameterized import parameterized, parameterized_class
+from client import GithubOrgClient
+from fixtures import TEST_PAYLOAD
+
+
+@parameterized_class(
+    ("org_payload", "repos_payload", "expected_repos", "apache2_repos"),
+    TEST_PAYLOAD
+)
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    '''Integration test for GithubOrgClient.'''
+
+    @classmethod
+    def setUpClass(cls):
+        '''Set up the patchers for requests.get'''
+        cls.get_patcher = patch('requests.get')
+        cls.mock_get = cls.get_patcher.start()
+
+        # Set the .json() method to return the org_payload and repos_payload
+        cls.mock_get.return_value.json.side_effect = [
+            cls.org_payload,  # First call returns org_payload
+            cls.repos_payload  # Second call returns repos_payload
+        ]
+
+    @classmethod
+    def tearDownClass(cls):
+        '''Stop the patcher after all tests'''
+        cls.get_patcher.stop()
+```
+
+### How to Run the Test:
+```bash
+python3 -m unittest test_client.py
+```
+
+### Output:
+```bash
+vie@ThatsVie:~/pug/atlas-web_back_end/Unittests_and_integration_tests$ python3 -m unittest test_client.py
+.......
+----------------------------------------------------------------------
+Ran 8 tests in 0.005s
+
+OK
+```
+
+### Issues Encountered
+
+Initially, the task was overcomplicated by extra mock logic that wasn’t needed. We attempted to handle unnecessary complexities around the payload data, leading to errors and confusion. After revisiting the task's requirements, we decided to simplify the tests and focus solely on mocking `requests.get` and checking the correct return values. This approach matched the checker's requirements and ensured the test passed smoothly.
+
+</details>
