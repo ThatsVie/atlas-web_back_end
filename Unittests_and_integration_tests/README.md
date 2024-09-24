@@ -63,15 +63,15 @@ Run your tests with the following command:
 ```bash
 python3 -m unittest path/to/test_file.py
 ```
-####  Output:
+#### Example Output:
 ```bash
-vie@ThatsVie:~/atlas-web_back_end/Unittests_and_integration_tests$ python3 -m unittest test_utils.py
+vie@ThatsVie:~/pug/atlas-web_back_end/Unittests_and_integration_tests$ python3 -m unittest test_utils.py
 .....
 ----------------------------------------------------------------------
 Ran 3 tests in 0.000s
 
 OK
-vie@ThatsVie:~/atlas-web_back_end/Unittests_and_integration_tests$
+vie@ThatsVie:~/pug/atlas-web_back_end/Unittests_and_integration_tests$
 ```
 
 
@@ -1063,5 +1063,104 @@ OK
 ### Issues Encountered
 
 Initially, the task was overcomplicated by extra mock logic that wasn’t needed. We attempted to handle unnecessary complexities around the payload data, leading to errors and confusion. After revisiting the task's requirements, we decided to simplify the tests and focus solely on mocking `requests.get` and checking the correct return values. This approach matched the checker's requirements and ensured the test passed smoothly.
+
+</details>
+
+### Task 9: Integration tests
+
+In this task, we implement integration tests for the `GithubOrgClient.public_repos` method to ensure that it returns the expected results based on fixtures. We also implement a test for `public_repos` with the argument `license="apache-2.0"` to verify that the method correctly filters repositories by license.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+Implement the `test_public_repos` method to test `GithubOrgClient.public_repos`.
+
+Make sure that the method returns the expected results based on the fixtures.
+
+Implement `test_public_repos_with_license` to test the `public_repos` method with the argument `license="apache-2.0"` and ensure the result matches the expected value from the fixtures.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+### Steps:
+
+1. **Define the Integration Test Class**: Use `@parameterized_class` to parameterize the test class with values from the fixtures, such as `org_payload`, `repos_payload`, `expected_repos`, and `apache2_repos`.
+
+2. **Mock `requests.get`**: In the `setUpClass` method, use `patch` to mock the `requests.get` method to simulate API responses for `org` and `repos`.
+
+3. **Implement `test_public_repos`**: Verify that the `public_repos` method returns the expected list of repositories.
+
+4. **Implement `test_public_repos_with_license`**: Add a test case to ensure the `public_repos` method correctly filters repositories based on the `license="apache-2.0"` argument.
+
+#### Code:
+```python
+@parameterized_class([
+    {"org_payload": TEST_PAYLOAD[0][0],
+     "repos_payload": TEST_PAYLOAD[0][1],
+     "expected_repos": TEST_PAYLOAD[0][2],
+     "apache2_repos": TEST_PAYLOAD[0][3]}
+])
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    '''Integration test for GithubOrgClient.'''
+
+    @classmethod
+    def setUpClass(cls):
+        '''Set up the patchers for requests.get'''
+        cls.get_patcher = patch('requests.get')
+        cls.mock_get = cls.get_patcher.start()
+
+        class MockResponse:
+            '''Mock response class to simulate the .json() method.'''
+            def __init__(self, json_data):
+                self.json_data = json_data
+
+            def json(self):
+                return self.json_data
+
+        def mock_get_json(url, *args, **kwargs):
+            '''Side effect for mocking get requests.'''
+            if url == "https://api.github.com/orgs/google":
+                return MockResponse(cls.org_payload)
+            if url == "https://api.github.com/orgs/google/repos":
+                return MockResponse(cls.repos_payload)
+            return MockResponse(None)
+
+        cls.mock_get.side_effect = mock_get_json
+
+    @classmethod
+    def tearDownClass(cls):
+        '''Stop the patcher after all tests'''
+        cls.get_patcher.stop()
+
+    def test_public_repos(self):
+        '''Test the public_repos method'''
+        client = GithubOrgClient("google")
+        self.assertEqual(client.public_repos(), self.expected_repos)
+
+    def test_public_repos_with_license(self):
+        '''Test public_repos method with Apache 2.0 license filtering.'''
+        client = GithubOrgClient("google")
+        self.assertEqual(
+            client.public_repos(license="apache-2.0"),
+            self.apache2_repos
+        )
+```
+
+### How to Run the Test:
+```bash
+python3 -m unittest test_client.py
+```
+
+### Output:
+```bash
+vie@ThatsVie:~/pug/atlas-web_back_end/Unittests_and_integration_tests$ python3 -m unittest test_client.py
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.002s
+
+OK
+```
 
 </details>
