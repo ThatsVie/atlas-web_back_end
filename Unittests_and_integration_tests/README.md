@@ -17,8 +17,45 @@ This project focuses on creating unittests and integration tests to ensure that 
 
 ## Learning Objectives
 
-The difference between unit and integration tests.
-Common testing patterns such as mocking, parametrizations and fixtures
+<details>
+  <summary><strong>1. The Difference Between Unit and Integration Tests</strong></summary>
+
+### Unit Tests:
+Unit tests are designed to test individual units of code (functions or methods) in isolation, ensuring that each part of the code functions as expected independently of others. External dependencies are typically mocked.
+- **Tasks Covered**:
+  - **Task 0-3**: Unit tests for `access_nested_map`, `get_json`, and `memoize` in `utils.py`. These tests focused on specific methods to ensure they worked independently.
+  - **Task 4-7**: Unit tests for `GithubOrgClient` methods like `org`, `public_repos_url`, `public_repos`, and `has_license` tested their behavior in isolation with mock data.
+
+### Integration Tests:
+Integration tests focus on the interaction between different components of the codebase, ensuring that they work together as expected.
+- **Tasks Covered**:
+  - **Task 8-9**: Integration tests for `GithubOrgClient`, testing its methods' interaction with external systems like the GitHub API using mock responses.
+
+</details>
+
+<details>
+  <summary><strong>2. Common Testing Patterns: Mocking, Parametrization, and Fixtures</strong></summary>
+
+### Mocking:
+Mocking replaces real objects with fake ones to isolate the code being tested. This ensures tests are deterministic and don’t rely on external factors.
+- **Tasks Covered**:
+  - **Task 2**: Mocked external HTTP requests in the `get_json` function.
+  - **Task 4-7**: Mocked GitHub API responses for `GithubOrgClient` to test methods without real network calls.
+  - **Task 8-9**: Mocked API responses in integration tests for simulating real-world scenarios.
+
+### Parametrization:
+Parametrization allows tests to run multiple times with different inputs to ensure functions behave correctly across various scenarios.
+- **Tasks Covered**:
+  - **Task 0, 1, 7**: Parametrized tests for `access_nested_map` and `has_license`, testing methods with multiple input values.
+  - **Task 4-6**: Parametrized unit tests for `GithubOrgClient`, testing with different organization names and repository URLs.
+
+### Fixtures:
+Fixtures provide predefined data for tests to ensure consistency and avoid redundant setup code.
+- **Tasks Covered**:
+  - **Task 8-9**: Used fixtures in integration tests for `GithubOrgClient`, simulating API responses and testing behavior across different data structures.
+
+</details>
+
 
   
 
@@ -35,13 +72,16 @@ Common testing patterns such as mocking, parametrizations and fixtures
 
 ### Unit Tests
 Unit tests focus on testing a specific function in isolation, assuming all external components work as expected. Key points:
-- Use **mocking** to avoid actual network or database calls.
-- Test different inputs, including corner cases.
+- **Mocking**: Use mocking to replace dependencies like network calls or databases with simulated objects. For example, in **Task 4**, we mocked the GitHub API using `mock_get_json` to isolate and test `GithubOrgClient.org`.
+- **Test Different Inputs**: Test both typical cases and edge cases. For instance, in **Task 0**, we tested multiple cases for `access_nested_map`, including nested maps that didn’t exist.
+- **Fast Feedback**: Unit tests are lightweight and quick to run, giving immediate feedback on whether a specific part of the code is functioning correctly.
 
 ### Integration Tests
-Integration tests validate that all components work together as expected. Key points:
-- Mock only low-level functions, such as HTTP requests or database I/O.
-- Test interactions between components end-to-end.
+Integration tests validate that components work together as expected. Key points:
+- **Partial Mocking**: Instead of mocking everything, mock only lower-level components like HTTP requests or database calls. For example, in **Task 8-9**, we mocked HTTP requests using `mock_get_json` but tested the full behavior of the `GithubOrgClient.public_repos` method interacting with multiple components.
+- **End-to-End Testing**: Ensure all layers of the application work together, from method calls to API responses. In **Task 9**, we verified how the `public_repos` method behaves when filtering repositories with a specific license, simulating a full interaction with a real API.
+- **Slower but Comprehensive**: Integration tests run slower but are critical for verifying that multiple parts of the application work cohesively.
+
 
 ### Setup
 
@@ -76,9 +116,11 @@ vie@ThatsVie:~/pug/atlas-web_back_end/Unittests_and_integration_tests$
 
 
 ## Project Structure
-- **`utils.py`**: Contains utility functions, such as `access_nested_map`, `get_json`, and `memoize`, which will be tested.
-- **`client.py`**: Implements the `GithubOrgClient` class, which includes logic for interacting with the GitHub API (e.g., retrieving organization information and public repositories).
-- **`fixtures.py`**: Contains predefined test data (fixtures) that will be used for testing purposes, such as mock responses for GitHub API calls.
+- **`utils.py`**: Contains utility functions (`access_nested_map`, `get_json`, `memoize`) that were covered in tasks 0, 1, 2, and 3.
+- **`client.py`**: Implements `GithubOrgClient`, which interacts with the GitHub API to retrieve organization details and public repositories, as covered in tasks 4, 5, and 6.
+- **`fixtures.py`**: Contains the test data used in tasks 8 and 9 for integration tests.
+- **`test_utils.py`**: Includes the unit tests for `utils.py`, as covered in tasks 0-3.
+- **`test_client.py`**: Contains unit tests and integration tests for `GithubOrgClient`, corresponding to tasks 4-9.
 
 
 ## Tasks and Usage
