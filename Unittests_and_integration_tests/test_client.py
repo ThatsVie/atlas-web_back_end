@@ -6,8 +6,9 @@ Making sure everything runs as smooth as chocolate mousse!
 
 import unittest
 from unittest.mock import patch, PropertyMock
-from parameterized import parameterized
+from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
+from fixtures import TEST_PAYLOAD
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -97,6 +98,31 @@ class TestGithubOrgClient(unittest.TestCase):
         client = GithubOrgClient("google")
         result = client.has_license(repo, license_key)
         self.assertEqual(result, expected)
+
+
+@parameterized_class(
+    ("org_payload", "repos_payload", "expected_repos", "apache2_repos"),
+    TEST_PAYLOAD
+)
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    '''Integration test for GithubOrgClient.'''
+
+    @classmethod
+    def setUpClass(cls):
+        '''Set up the patchers for requests.get'''
+        cls.get_patcher = patch('requests.get')
+        cls.mock_get = cls.get_patcher.start()
+
+        # Set the .json() method to return the org_payload and repos_payload
+        cls.mock_get.return_value.json.side_effect = [
+            cls.org_payload,  # First call returns org_payload
+            cls.repos_payload  # Second call returns repos_payload
+        ]
+
+    @classmethod
+    def tearDownClass(cls):
+        '''Stop the patcher after all tests'''
+        cls.get_patcher.stop()
 
 
 if __name__ == "__main__":
