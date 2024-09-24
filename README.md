@@ -81,6 +81,12 @@ This project implements a user authentication service using Flask, focusing on k
 
 To view a README.md file for User Authentication Service visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/user_authentication_service/README.md)
 
+## Unittests and Integration Tests
+
+This project focuses on developing comprehensive unit and integration tests for a Python-based GitHub client using the unittest framework. It covers key testing techniques like mocking, parameterization, and the use of fixtures to simulate API interactions, ensuring that the client behaves correctly in various scenarios. The tests validate both individual functions and the overall integration of components, ensuring reliable and efficient performance.
+
+To view a README.md file for Unittests and Integration Tests visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/Unittests_and_integration_tests/README.md)
+
 ## Author
 
 Vie Paula - [GitHub Profile](https://github.com/ThatsVie)
