@@ -1032,11 +1032,10 @@ if __name__ == "__main__":
 
    The output should display redacted log messages for each user record in the database:
 
-   ```bash
+```bash
 [HOLBERTON] user_data INFO 2024-09-08 12:41:10,638: name=***; email=***; phone=***; ssn=***; password=***; ip=60ed:c396:2ff:244:bbd0:9208:26f2:93ea; last_login=2019-11-14 06:14:24; user_agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36;
 [HOLBERTON] user_data INFO 2024-09-08 12:41:10,638: name=***; email=***; phone=***; ssn=***; password=***; ip=f724:c5d1:a14d:c4c5:bae2:9457:3769:1969; last_login=2019-11-14 06:16:19; user_agent=Mozilla/5.0 (Linux; U; Android 4.1.2; de-de; GT-I9100 Build/JZO54K) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30;
-
-   ```
+```
 
 **Troubleshooting:**
 
