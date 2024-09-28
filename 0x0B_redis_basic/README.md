@@ -174,6 +174,11 @@ print(local_redis.get(key))
    ```bash
    ./0-main.py
    ```
+**Output:**
+```bash
+034c0dea-0bd8-4811-94a8-40c0e5762191
+b'hello'
+```
 
 3. **Explanation of Output**:
    - The first output (`034c0dea-0bd8-4811-94a8-40c0e5762191`) is a randomly generated UUID key, which acts like a unique name for the data in Redis.
@@ -187,6 +192,7 @@ print(local_redis.get(key))
    - **When**: The `store` method is called to save the data, and the `get` method is used to retrieve it.
 
 </details>
+
 
 ## Author
 
