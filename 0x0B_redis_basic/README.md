@@ -2,15 +2,10 @@
 
 ## Resources
 
-<details>
-  <summary>Read or watch</summary>
-
   - [Redis commands](https://redis.io/docs/latest/commands/)
   - [Redis Python client](https://redis-py.readthedocs.io/en/stable/)
   - [How to Use Redis With Python](https://realpython.com/python-redis/)
   - [Redis Crash Course Tutorial](https://www.youtube.com/watch?v=Hbt56gFj998)
-</details>
-
 
 ## Learning Objectives
 
@@ -38,8 +33,7 @@
 
 ## Installation
 
-<details>
-  <summary>Install Redis on Ubuntu 18.04</summary>
+**Install Redis on Ubuntu 18.04**
 
   ```bash
   $ sudo apt-get -y install redis-server
@@ -167,8 +161,7 @@ local_redis = redis.Redis()
 print(local_redis.get(key))
 ```
 
-<details>
-  <summary><strong>Testing and Usage</strong></summary>
+#### Testing and Usage
 
 1. **Run the Redis Server**:
    Before executing the script, ensure that the Redis server is running:
