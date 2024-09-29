@@ -41,7 +41,9 @@
   $ sed -i "s/bind .*/bind 127.0.0.1/g" /etc/redis/redis.conf
   ```
 
-  ### Issue: Permission Denied When Modifying redis.conf
+## Troubleshooting
+
+### Issue: Permission Denied When Modifying redis.conf
 
   When running the `sed` command to modify `/etc/redis/redis.conf`, a "Permission denied" error may occur due to the file being a system configuration file. To resolve this, the command should be run with `sudo`:
 
@@ -57,7 +59,7 @@
   Redis server is stopped by default. When you are starting a container, you should start it with:
 
   ```bash
-  service redis-server start
+  sudo service redis-server start
   ```
 
 </details>
