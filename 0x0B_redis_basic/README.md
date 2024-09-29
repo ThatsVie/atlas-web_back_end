@@ -20,7 +20,6 @@
   - [Task 3: Storing Lists](#task-3-storing-lists)
   - [Task 4: Retrieving Lists](#task-4-retrieving-lists)
   - [Task 5: Implementing an Expiring Web Cache and Tracker](#task-5-implementing-an-expiring-web-cache-and-tracker)
-- [Author](#author)
 
 
 ## Resources
@@ -1366,9 +1365,5 @@ if __name__ == "__main__":
    - **How**: The `cache_with_expiry` decorator handles caching and tracks access counts.
    - **When**: The access count is updated every time `get_page` is called, and the cache lasts for 10 seconds.
 
-</details>
+    </details>
 
-
-## Author
-
-GitHub: [Vie P.](https://github.com/ThatsVie)
