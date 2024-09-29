@@ -1,4 +1,9 @@
-# Redis Basic
+<div align="center">
+    <img src="https://github.com/user-attachments/assets/1f009f71-4307-4c41-b1f5-f10192a9d8b1" alt="RedisBasicBlackPuggy">
+    <p>This project implements a Redis-based caching system using Python. It explores key Redis functionalities such as storing, retrieving, and incrementing data, as well as tracking method call history with input and output logging. By leveraging Redis as an efficient in-memory data store, the project provides a simple yet powerful solution for caching and real-time data management.</p>
+</div>
+
+---
 
 ## Table of Contents
 - [Resources](#resources)
