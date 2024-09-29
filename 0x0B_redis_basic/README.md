@@ -241,19 +241,13 @@ for value, fn in TEST_CASES.items():
 
 ### Steps:
 
-1. **Start Redis Server**:
-   - Before testing or running the script, you need to ensure that Redis is running. Start the Redis server with:
-     ```bash
-     sudo service redis-server start
-     ```
-   - This command ensures Redis is available to store and retrieve data during the test.
 
-2. **Create the `get` Method**:
+1. **Create the `get` Method**:
    - Retrieve data from Redis using the `key`.
    - Apply an optional function (`fn`) to convert the data back to its original format.
    - Ensure Redis behaves normally (returns `None`) if the key does not exist.
 
-3. **Create `get_str` and `get_int`**:
+2. **Create `get_str` and `get_int`**:
    - `get_str`: Converts byte data from Redis into a UTF-8 string.
    - `get_int`: Converts byte data from Redis into an integer.
 
