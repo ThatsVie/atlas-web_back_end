@@ -19,6 +19,7 @@
   - [Task 2: Incrementing Values](#task-2-incrementing-values)
   - [Task 3: Storing Lists](#task-3-storing-lists)
   - [Task 4: Retrieving Lists](#task-4-retrieving-lists)
+  - [Task 5: Implementing an Expiring Web Cache and Tracker](#task-5-implementing-an-expiring-web-cache-and-tracker)
 - [Author](#author)
 
 
@@ -1185,6 +1186,188 @@ Cache.store(*(42,)) -> e5cbdec0-1788-43bf-979a-e236c708f7fa
 - **How**: The inputs and outputs are retrieved, paired with `zip`, and printed in a formatted way.
 
 </details>
+
+### Task 5: Implementing an Expiring Web Cache and Tracker
+
+In this task, we implement a `get_page` function to retrieve the HTML content of a given URL, cache the result in Redis for 10 seconds, and track how many times the URL has been accessed. Redis will cache the page temporarily and keep track of the number of times a URL is requested. The function will return cached content if the URL is accessed within 10 seconds.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Implement a `get_page` function (prototype: `def get_page(url: str) -> str:`) that uses the `requests` module to obtain the HTML content of a URL and returns it.
+- Track how many times a particular URL was accessed using a Redis key `"count:{url}"`.
+- Cache the result with an expiration time of 10 seconds.
+- Bonus: Implement this functionality with decorators.
+
+<details>
+  <summary>Tip</summary>
+  Use `http://slowwly.robertomurray.co.uk` to simulate a slow response and test your caching.
+</details>
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+### Steps:
+
+1. **Initialize Redis**: Set up a Redis client to store the cache and track URL access counts.
+   
+2. **Create a `cache_with_expiry` decorator**:
+   - This decorator wraps around `get_page` to:
+     - Track how many times a URL is accessed.
+     - Cache the result with a 10-second expiration time.
+
+3. **Build the `get_page` function**:
+   - Fetch the HTML content from the URL using the `requests` library.
+   - Redis stores the HTML for 10 seconds to avoid re-fetching.
+
+4. **Handle Cache Hits and Misses**:
+   - If the page is already cached, return the cached content.
+   - If not, fetch the page and store it in Redis with an expiration time.
+
+#### Code:
+
+```python
+#!/usr/bin/env python3
+'''
+This module implements a web cache using Redis and tracks URL access counts.
+Imagine Redis as the last bunker on Earth, hoarding bits of information while
+the world burns. You ask for the same data over and over, and Redis,
+like a weary survivalist, reminds you it already stored that info-temporarily.
+'''
+import redis
+import requests
+from typing import Callable
+from functools import wraps
+
+
+# Initialize Redis client
+r = redis.Redis()
+
+
+def cache_with_expiry(method: Callable) -> Callable:
+    '''
+    Decorator to cache result of a function call in Redis with an expiry time.
+    Think of it as rationing your dwindling resources. You only get to keep
+    that precious web content for 10 seconds, and then it's gone,
+    like fresh water in a drought.
+    '''
+    @wraps(method)
+    def wrapper(url: str) -> str:
+        '''
+        Tracks how many times a URL is accessed and caches the result.
+        It’s like rationing supplies during the apocalypse.
+        Redis reminds you how many times you've come back for the same stale
+        resources, only to serve them cold from the cache,
+        until it’s time to scavenge again.
+        '''
+        access_count_key = f"count:{url}"
+        r.incr(access_count_key)
+
+        # Check if the URL is already cached
+        cached_key = f"cached:{url}"
+        cached_page = r.get(cached_key)
+        if cached_page:
+            return cached_page.decode("utf-8")
+
+        # If not cached, fetch the page and cache it
+        # with an expiration time of 10 seconds
+        page_content = method(url)
+        r.setex(cached_key, 10, page_content)
+        return page_content
+
+    return wrapper
+
+
+@cache_with_expiry
+def get_page(url: str) -> str:
+    '''
+    Fetches the HTML content of a given URL using requests.
+    It's like venturing into a wasteland to gather resources.
+    Redis caches the page for 10 seconds, ensuring you don’t have to risk
+    life and limb to retrieve the same dwindling supplies over and over.
+    '''
+    response = requests.get(url)
+    return response.text
+
+
+if __name__ == "__main__":
+    url = (
+        "http://slowwly.robertomurray.co.uk/delay/5000/url/"
+        "http://www.example.com"
+    )
+
+    # Fetch the page for the first time
+    print(get_page(url))
+
+    # Fetch it again (should be served from cache)
+    print(get_page(url))
+
+    # Check how many times the URL was accessed
+    print(f"URL accessed {r.get(f'count:{url}').decode('utf-8')} times.")
+```
+
+<details>
+  <summary><strong>Testing and Usage</strong></summary>
+
+1. **Install Required Modules**:
+   Before running the script, ensure you have installed `requests` and `redis` using:
+   ```bash
+   pip install requests redis
+   ```
+
+2. **Run the Redis Server**:
+   Before executing the script, make sure the Redis server is running:
+   ```bash
+   sudo service redis-server start
+   ```
+
+3. **Testing**:
+   - Save the code in a file called `web.py`.
+   - Make the file executable:
+     ```bash
+     chmod +x web.py
+     ```
+   - Run the script to fetch the web page:
+     ```bash
+     ./web.py
+     ```
+
+4. **Expected Output**:
+   ```bash
+   <!doctype html>
+   <html data-adblockkey="MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBANDrp2lz7AOmADaN8tA50LsWcjLFyQFcb/P2Txc58oYOeILb3vBw7J6f4pamkAQVSQuqYsKx3YzdUHCvbVZvFUsCAwEAAQ==_kDpBCoRxhm86nXIJPrPM+lbLn+v5cstkT1T1QXvXbhf4kf+IzZzAV+SKctJ5bZVa1HqU+p1A4vbSHR8fhh5gzQ==" lang="en" style="background: #2B2B2B;">
+   <head>
+       <meta charset="utf-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1">
+       <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12P4//8/AAX+Av7czFnnAAAAAElFTkSuQmCC">
+       <link rel="preconnect" href="https://www.google.com" crossorigin>
+   </head>
+   <body>
+   <div id="target" style="opacity: 0"></div>
+   <script>window.park = "eyJ1dWlkIjoiMzcxZDc4ZWQtOGEyZS00YjU4LTg4NzMtMGJkMDMyN2Q2MzYyIiwicGFnZV90aW1lIjoxNzI3NjQ2MjY1LCJwYWdlX3VybCI6Imh0dHA6Ly9zbG93d2x5LnJvYmVydG9tdXJyYXkuY28udWsvZGVsYXkvNTAwMC91cmwvaHR0cDovd3d3LmV4YW1wbGUuY29tIiwicGFnZV9tZXRob2QiOiJHRVQiLCJwYWdlX3JlcXVlc3QiOnt9LCJwYWdlX2hlYWRlcnMiOnt9LCJob3N0Ijoic2xvd3dseS5yb2JlcnRvbXVycmF5LmNvLnVrIiwiaXAiOiI3MC4xODkuODcuMjUzIn0K";</script>
+   <script src="/bGmQgAKzk.js"></script>
+   </body>
+   </html>
+
+   URL accessed 2 times.
+   ```
+
+5. **Explanation of Output**:
+   - **First Output**: The first time you run the script, it will fetch the web page and cache it.
+   - **Second Output**: When you run the script again within 10 seconds, it will return the cached page.
+   - **Access Count**: Redis keeps track of how many times the URL is accessed (whether it’s cached or not).
+
+6. **Why this Output**:
+   - **What**: The HTML content is fetched or served from Redis, and the number of times the URL was accessed is displayed.
+   - **Where**: Redis stores the cached content and the access count.
+   - **Why**: Caching improves efficiency by avoiding redundant requests to the server.
+   - **How**: The `cache_with_expiry` decorator handles caching and tracks access counts.
+   - **When**: The access count is updated every time `get_page` is called, and the cache lasts for 10 seconds.
+
+</details>
+
 
 ## Author
 
