@@ -623,6 +623,236 @@ b'3'
 
 </details>
 
+### Task 3: Storing Lists
+
+In this task, we define a `call_history` decorator to store the history of inputs and outputs for the `store` method. Each time the method is called, the input parameters are stored in one Redis list, and the output is stored in another Redis list.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+Familiarize yourself with Redis commands `RPUSH`, `LPUSH`, `LRANGE`, etc.
+
+In this task, we will define a `call_history` decorator to store the history of inputs and outputs for a particular function.
+
+- Every time the original function is called, we will add its input parameters to one list in Redis, and store its output into another list.
+- In `call_history`, use the decorated function’s qualified name and append `":inputs"` and `":outputs"` to create input and output list keys, respectively.
+- `call_history` has a single parameter named `method` that is a `Callable` and returns a `Callable`.
+- In the new function that the decorator will return, use `RPUSH` to append the input arguments. Remember that Redis can only store strings, bytes, and numbers. Therefore, we can simply use `str(args)` to normalize the input. We can ignore potential `kwargs` for now.
+- Execute the wrapped function to retrieve the output. Store the output using `RPUSH` in the `"...:outputs"` list, then return the output.
+- Decorate `Cache.store` with `call_history`.
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+### Steps:
+
+1. **Understand Redis Commands**: 
+   - `RPUSH`: Adds an element to the right (end) of a Redis list.
+   - `LRANGE`: Returns elements of a list within a specified range.
+
+2. **Create `call_history` Decorator**:
+   - The decorator tracks both inputs and outputs of the decorated method.
+   - Two Redis lists are used: one for inputs (`...:inputs`) and one for outputs (`...:outputs`).
+
+3. **Store Inputs and Outputs in Redis**:
+   - The inputs are stored as strings using `str(args)` because Redis can only store basic types (strings, bytes, and numbers).
+   - The outputs are stored as they are returned by the method.
+
+4. **Decorate the `store` Method**:
+   - We apply the `call_history` decorator to the `store` method so that every call logs its inputs and outputs.
+
+#### Code:
+```python
+#!/usr/bin/env python3
+'''
+This module provides a Cache class that interacts with Redis
+to store and retrieve data. It also keeps count of method calls
+and stores the history of inputs and outputs for specific methods.
+Redis: tracking your life like the nosy neighbor who knows
+everything about you.
+'''
+import redis
+import uuid
+import functools
+from typing import Union, Callable, Optional
+
+
+def count_calls(method: Callable) -> Callable:
+    '''
+    Decorator that counts how many times a method is called using Redis.
+    Think of this as counting how many times you’ve tried to ignore
+    the growing to-do list or how many times your pug has begged for treats.
+    '''
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        key = method.__qualname__
+        self._redis.incr(key)
+        return method(self, *args, **kwargs)
+
+    return wrapper
+
+
+def call_history(method: Callable) -> Callable:
+    '''
+    Decorator to store the history of inputs and outputs for a method.
+    Every time the method is called, the input is logged into one list,
+    and the output into another. Like tracking all your thoughts, but
+    in Redis, where they never fade away.
+    '''
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        inputs_key = method.__qualname__ + ":inputs"
+        outputs_key = method.__qualname__ + ":outputs"
+
+        # Store input arguments as a string in the Redis list
+        self._redis.rpush(inputs_key, str(args))
+
+        # Call the original method and store its output
+        output = method(self, *args, **kwargs)
+        self._redis.rpush(outputs_key, str(output))
+
+        return output
+
+    return wrapper
+
+
+class Cache:
+    '''
+    Cache class for storing and retrieving data in Redis.
+    It now tracks how many times methods are called and stores
+    a history of inputs and outputs. Like keeping a record of
+    every small attempt to make sense of life’s chaos.
+    '''
+
+    def __init__(self):
+        '''
+        Initialize the Redis client and flush the database.
+        Like starting the day fresh with a wiped clean to-do list,
+        only for it to fill back up with tasks.
+        '''
+        self._redis = redis.Redis()
+        self._redis.flushdb()
+
+    @count_calls
+    @call_history
+    def store(self, data: Union[str, bytes, int, float]) -> str:
+        '''
+        Store data in Redis with a unique key, count how many times
+        this method is called, and keep a history of inputs and outputs.
+        Like leaving behind a trail of breadcrumbs (or treats), except Redis
+        is keeping track of every crumb.
+        '''
+        key = str(uuid.uuid4())
+        self._redis.set(key, data)
+        return key
+
+    def get(
+        self, key: str, fn: Optional[Callable] = None
+    ) -> Optional[Union[str, bytes, int, float]]:
+        '''
+        Retrieve data from Redis, possibly transforming it.
+        Like retrieving messages from the universe in byte format
+        and trying to decode them into something meaningful.
+        '''
+        value = self._redis.get(key)
+        if value is None:
+            return None
+        if fn:
+            return fn(value)
+        return value
+
+    def get_str(self, key: str) -> Optional[str]:
+        '''
+        Retrieve a string from Redis.
+        Redis speaks in bytecode, but this translates it back into words.
+        '''
+        return self.get(key, lambda d: d.decode("utf-8"))
+
+    def get_int(self, key: str) -> Optional[int]:
+        '''
+        Retrieve an integer from Redis.
+        Converts the chaos into a number you can count on—hopefully.
+        '''
+        return self.get(key, int)
+```
+
+### How to Run and Test `call_history`
+
+#### 3-main.py (for Task 3):
+```python
+#!/usr/bin/env python3
+"""
+Main file for Task 3
+"""
+Cache = __import__('exercise').Cache
+
+cache = Cache()
+
+s1 = cache.store("first")
+print(s1)
+s2 = cache.store("second")
+print(s2)
+s3 = cache.store("third")
+print(s3)
+
+# Retrieve the history of inputs and outputs
+inputs = cache._redis.lrange(f"{cache.store.__qualname__}:inputs", 0, -1)
+outputs = cache._redis.lrange(f"{cache.store.__qualname__}:outputs", 0, -1)
+
+print(f"inputs: {inputs}")
+print(f"outputs: {outputs}")
+```
+
+### Testing and Usage
+
+1. **Start the Redis Server**:
+   - Before running the script, make sure Redis is running:
+     ```bash
+     sudo service redis-server start
+     ```
+
+2. **Make the test script executable**:
+   - Run the following to make `3-main.py` executable:
+     ```bash
+     chmod +x 3-main.py
+     ```
+
+3. **Run the test script**:
+   - Now you can execute the script using:
+     ```bash
+     ./3-main.py
+     ```
+
+#### Expected Output:
+```bash
+bbd49df7-c4ae-47e6-bd03-7e54f43aaa92
+dfcd2bff-f488-40a5-b9f1-e3081dfd29c3
+8958a41c-bcc0-4c0a-8a64-189d4dd2a9aa
+inputs: [b"('first',)", b"('secont',)", b"('third',)"]
+outputs: [b'bbd49df7-c4ae-47e6-bd03-7e54f43aaa92', b'dfcd2bff-f488-40a5-b9f1-e3081dfd29c3', b'8958a41c-bcc0-4c0a-8a64-189d4dd2a9aa']
+```
+
+### Explanation of Output:
+
+- **Stored UUIDs**: 
+   - The first three lines of the output (`bbd49df7-c4ae-47e6-bd03-7e54f43aaa92`, `dfcd2bff-f488-40a5-b9f1-e3081dfd29c3`, `8958a41c-bcc0-4c0a-8a64-189d4dd2a9aa`) are the UUIDs generated and returned by the `store` method when storing the strings `"first"`, `"second"`, and `"third"` in Redis.
+   
+- **Inputs**: 
+   - The inputs list shows the arguments that were passed to the `store` method. Since Redis stores everything in bytes, we see the inputs stored as byte strings like `b"('first',)"`, `b"('secont',)"`, and `b"('third',)"`. (Note the typo in "second
+
+" was preserved).
+
+- **Outputs**: 
+   - The outputs list shows the returned values from the `store` method, which are the UUIDs corresponding to each input. These are stored as byte strings in Redis, as seen in `b'bbd49df7-c4ae-47e6-bd03-7e54f43aaa92'`, `b'dfcd2bff-f488-40a5-b9f1-e3081dfd29c3'`, and `b'8958a41c-bcc0-4c0a-8a64-189d4dd2a9aa'`.
+
+### Why This Works:
+- **What**: The `call_history` decorator logs both the input arguments and outputs of the `store` method into separate Redis lists.
+- **Where**: Two Redis lists are used—one for inputs (`...:inputs`) and one for outputs (`...:outputs`).
+- **Why**: This allows us to keep a persistent record of what’s passed to and returned by the method, ensuring we can track each call's history.
+- **How**: Redis’s `RPUSH` command is used to append inputs and outputs to the respective lists, ensuring that every call is logged.
+
+</details>
 
 
 

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 '''
 This module provides a Cache class that interacts with Redis
-to store and retrieve data. It also keeps count of method calls.
-Redis is like a cosmic accountant, tracking every call like it’s
-preparing for the next apocalypse or tallying pug snacks.
+to store and retrieve data. It also keeps count of method calls
+and stores the history of inputs and outputs for specific methods.
+Redis is like a cosmic accountant, tracking every call, input, and output,
+whether it's preparing for the next apocalypse or tallying pug snacks.
 '''
 import redis
 import uuid
@@ -26,9 +27,33 @@ def count_calls(method: Callable) -> Callable:
         keeping tabs on how many ice caps we have left or how many times
         your pug asks for dinner.
         '''
-        key = method.__qualname__  # Use the method's qualified name as the key
-        self._redis.incr(key)  # Incrementing count for this method in Redis
+        key = method.__qualname__
+        self._redis.incr(key)
         return method(self, *args, **kwargs)
+
+    return wrapper
+
+
+def call_history(method: Callable) -> Callable:
+    '''
+    Decorator to store the history of inputs and outputs for a method.
+    Every time the method is called, the input is logged into one list,
+    and the output into another. Like keeping track of all your thoughts,
+    but in Redis, and they never fade away.
+    '''
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        inputs_key = method.__qualname__ + ":inputs"
+        outputs_key = method.__qualname__ + ":outputs"
+
+        # Store input arguments as a string in the Redis list
+        self._redis.rpush(inputs_key, str(args))
+
+        # Call the original method and store its output
+        output = method(self, *args, **kwargs)
+        self._redis.rpush(outputs_key, str(output))
+
+        return output
 
     return wrapper
 
@@ -36,9 +61,10 @@ def count_calls(method: Callable) -> Callable:
 class Cache:
     '''
     Cache class for storing and retrieving data in Redis.
-    Now it also tracks how many times its methods are called.
-    Think of it like counting the inevitable whether it’s climate change
-    or how many belly rubs your pug demands.
+    Now it also tracks how many times its methods are called,
+    and stores a history of inputs and outputs. Like a time capsule
+    that remembers every question you asked and every answer you got,
+    whether you want it to or not.
     '''
 
     def __init__(self):
@@ -51,12 +77,13 @@ class Cache:
         self._redis.flushdb()
 
     @count_calls
+    @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
         '''
-        Store data in Redis with a unique key and count how many times
-        this method has been called.
-        Like storing away little pieces of hope, except Redis never
-        forgets how many you've tried to hide.
+        Store data in Redis with a unique key, count how many times
+        this method has been called, and keep a history of inputs and outputs.
+        Like storing away little pieces of hope and also remembering every
+        time you've tried to, in case you need to revisit your optimism later.
         '''
         key = str(uuid.uuid4())
         self._redis.set(key, data)
