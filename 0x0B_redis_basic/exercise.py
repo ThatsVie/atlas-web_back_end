@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 '''
 This module provides a Cache class that interacts with Redis
-to store and retrieve data. Think of it as hiding things in
-Redis, like stashing secrets in a vault that sometimes misplaces
-the key.
+to store and retrieve data.
+It's like a pug hiding its toys in a sea of life's meaningless chaos
+Redis is the pug's secret vault amidst the void.
 '''
 import redis
 import uuid
