@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 '''
 This module provides a Cache class that interacts with Redis
-to store and retrieve data. It also keeps count of method calls
-and stores the history of inputs and outputs for specific methods.
+to store and retrieve data. It also keeps count of method calls,
+stores the history of inputs and outputs, and can replay method call history.
 Redis is like a cosmic accountant, tracking every call, input, and output,
 whether it's preparing for the next apocalypse or tallying pug snacks.
 '''
@@ -58,13 +58,40 @@ def call_history(method: Callable) -> Callable:
     return wrapper
 
 
+def replay(method: Callable):
+    '''
+    Function to display the history of calls made to a particular method.
+    Shows how many times the method was called, and replays the inputs and
+    outputs from previous calls. Like revisiting your embarrassing past, one
+    function call at a time, except now it's logged in Redis.
+    '''
+    redis_instance = method.__self__._redis
+    method_name = method.__qualname__
+    inputs_key = f"{method_name}:inputs"
+    outputs_key = f"{method_name}:outputs"
+
+    # Get the number of times the method was called
+    call_count = redis_instance.get(method_name).decode("utf-8")
+
+    print(f"{method_name} was called {call_count} times:")
+
+    # Get the list of inputs and outputs
+    inputs = redis_instance.lrange(inputs_key, 0, -1)
+    outputs = redis_instance.lrange(outputs_key, 0, -1)
+
+    # Loop through inputs and outputs together
+    for input_data, output_data in zip(inputs, outputs):
+        input_str = input_data.decode("utf-8")
+        output_str = output_data.decode("utf-8")
+        print(f"{method_name}(*{input_str}) -> {output_str}")
+
+
 class Cache:
     '''
     Cache class for storing and retrieving data in Redis.
-    Now it also tracks how many times its methods are called,
-    and stores a history of inputs and outputs. Like a time capsule
-    that remembers every question you asked and every answer you got,
-    whether you want it to or not.
+    It now tracks how many times its methods are called,
+    stores a history of inputs and outputs, and can replay the history
+    of method calls like a detailed audit of every little thing you've done.
     '''
 
     def __init__(self):
@@ -108,15 +135,13 @@ class Cache:
     def get_str(self, key: str) -> Optional[str]:
         '''
         Retrieve a string from Redis.
-        Translates Redis bytespeak into human-readable form, kind of like
-        turning scientific data into something we can understand.
+        Redis speaks in bytecode, but this translates it back into words.
         '''
         return self.get(key, lambda d: d.decode("utf-8"))
 
     def get_int(self, key: str) -> Optional[int]:
         '''
         Retrieve an integer from Redis.
-        Converts byte gibberish into something countable, like measuring
-        the sea level rise except Redis makes it easier to ignore.
+        Converts the chaos into a number you can count on—hopefully.
         '''
         return self.get(key, int)
