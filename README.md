@@ -87,6 +87,12 @@ This project focuses on developing comprehensive unit and integration tests for 
 
 To view a README.md file for Unittests and Integration Tests visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/Unittests_and_integration_tests/README.md)
 
+## Redis Basic
+
+This project implements a Redis-based caching system using Python. It explores key Redis functionalities such as storing, retrieving, and incrementing data, as well as tracking method call history with input and output logging. By leveraging Redis as an efficient in-memory data store, the project provides a simple yet powerful solution for caching and real-time data management.
+
+To view a README.md file for Redis Basic visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/0x0B_redis_basic/README.md)
+
 ## Author
 
 Vie Paula - [GitHub Profile](https://github.com/ThatsVie)
