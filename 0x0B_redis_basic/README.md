@@ -1371,4 +1371,4 @@ if __name__ == "__main__":
 
 ## Author
 
-GitHub: [ThatsVie](https://github.com/ThatsVie)
+GitHub: [Vie P.](https://github.com/ThatsVie)
