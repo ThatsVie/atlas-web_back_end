@@ -1,14 +1,16 @@
-## MySQL Advanced
+<div align="center">
+    <img src="https://github.com/user-attachments/assets/98e2e92e-c592-41ae-9223-be0aa0a6eee3" alt="puginacandystore" />
+    <h1>MySQL Advanced</h1>
+    <p>In this project, we will dive deeper into MySQL by exploring advanced features such as table constraints, indexing, stored procedures, triggers, and views. We will also focus on optimizing queries and ensuring our database structure is well-organized and efficient.</p>
+</div>
 
-In this project, we will dive deeper into MySQL by exploring advanced features such as table constraints, indexing, stored procedures, triggers, and views. We will also focus on optimizing queries and ensuring our database structure is well-organized and efficient. 
-
-### Concepts
+## Concepts
 
 For this project, we expect you to look at this concept:
 
 - [Advanced SQL](https://intranet.atlasschool.com/concepts/877)
 
-### Resources
+## Resources
 
 Read or watch the following resources to better understand the topics covered in this project:
 
@@ -32,7 +34,7 @@ Read or watch the following resources to better understand the topics covered in
 - What are views, and how to implement them in MySQL
 - What are triggers, and how to implement them in MySQL
 
-### Requirements
+## Requirements
 
 
 - All files will be executed on Ubuntu 20.04 LTS using MySQL 8.0
@@ -42,7 +44,7 @@ Read or watch the following resources to better understand the topics covered in
 - A `README.md` file, at the root of the project folder, is mandatory
 - The length of your files will be tested using `wc`
 
-#### Comments Example
+### Comments Example
 
 ```
 -- Get the 3 first students in the Batch ID=3
@@ -50,7 +52,7 @@ Read or watch the following resources to better understand the topics covered in
 SELECT id, name FROM students WHERE batch_id = 3 ORDER BY created_at DESC LIMIT 3;
 ```
 
-#### How to Import an SQL Dump
+### How to Import an SQL Dump
 
 ```bash
 $ echo "CREATE DATABASE hbtn_0d_tvshows;" | mysql -uroot -p
