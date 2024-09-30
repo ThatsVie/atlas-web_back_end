@@ -921,28 +921,6 @@ SELECT * FROM users;
 
 </details>
 
-<details>
-  <summary><strong>Troubleshooting</strong></summary>
-
-#### Issue 1: **Trigger Not Showing Up**
-
-After running the `5-valid_email.sql` script, we noticed that the trigger didn’t seem to be created.
-
-**Solution**: We confirmed the creation of the trigger by using:
-
-```sql
-SHOW TRIGGERS LIKE 'users';
-```
-
-This command displayed the `reset_valid_email` trigger, confirming that it had been created successfully.
-
-#### Issue 2: **No Changes to `valid_email`**
-
-At first, it seemed like the `valid_email` field wasn’t updating as expected after changing the email.
-
-**Solution**: We ran the full set of scripts again (`5-init.sql`, `5-valid_email.sql`, and `5-main.sql`) in the correct order to ensure the trigger was set up before making changes to the data. This resolved the issue, and the `valid_email` field was reset properly.
-
-</details>
 
 <details>
   <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
