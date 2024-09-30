@@ -691,22 +691,35 @@ SELECT * FROM orders;
    cat 4-main.sql | mysql -uroot -p holberton
    ```
 
-   **Expected Output** (before and after inserting orders):
+   **Expected Output**:
+
+   **Before inserting orders**:
    ```
    name        quantity
    apple       10
    pineapple   10
    pear        10
+   ```
 
-   --
-
+   **After inserting orders**:
+   ```
    name        quantity
    apple       6
    pineapple   10
    pear        8
+   item_name   number
+   apple       1
+   apple       3
+   pear        2
    ```
 
    The `quantity` of `apple` decreased by 4 (after subtracting 1 and then 3), and the `quantity` of `pear` decreased by 2.
+
+4. **Run the Scripts in the Correct Order**:
+   Be sure to run the scripts in the following order to ensure the correct execution:
+   - `4-init.sql`: Initializes the tables and data.
+   - `4-store.sql`: Creates the trigger that updates the `items` table.
+   - `4-main.sql`: Tests the trigger by inserting orders and checking if the items are updated.
 
 </details>
 
