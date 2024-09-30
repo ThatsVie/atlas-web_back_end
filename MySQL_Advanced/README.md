@@ -338,3 +338,118 @@ echo 'DELETE FROM users WHERE email="sylvie@dylan.com";' | mysql -uroot -p holbe
 - **When**: The script runs when creating the table or modifying an existing table, and users can be inserted at any time, provided the constraints are followed.
 
 </details>
+
+### Task 2: Best band ever!
+
+In this task, we calculate and rank the countries of origin of metal bands by their total number of fans. The ranking is ordered by the number of fans in descending order.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Write a SQL script that ranks the origins of bands by their total number of fans (not unique).
+- The result should be ordered by the number of fans in descending order.
+- Column names must be `origin` and `nb_fans`.
+- Your script can be executed on any database.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+**Steps to execute:**
+
+1. **Download and extract the table dump**: 
+   Download the `metal_bands.sql.zip` file, extract it, and import the SQL dump into your MySQL database using the following command:
+
+   ```bash
+   cat metal_bands.sql | mysql -uroot -p holberton
+   ```
+
+2. **Write the SQL query**:
+   Create a script (`2-fans.sql`) that ranks the country origins of metal bands by the total number of fans in descending order:
+
+   ```sql
+   -- This query will rank the countries based on the total number of fans, ordered in descending order.
+
+   SELECT origin, SUM(fans) AS nb_fans
+   FROM metal_bands
+   GROUP BY origin
+   ORDER BY nb_fans DESC;
+   ```
+
+3. **Execute the script**:
+   Run the script and redirect the output to a temporary file to view the results:
+
+   ```bash
+   cat 2-fans.sql | mysql -uroot -p holberton > tmp_res; head tmp_res
+   ```
+
+4. **Expected output**:
+   The results should display the country origins and their respective total number of fans, ordered from the highest to the lowest:
+
+   ```bash
+   origin          nb_fans
+   USA             99349
+   Sweden          47169
+   Finland         32878
+   United Kingdom  32518
+   Germany         29486
+   Norway          22405
+   Canada          8874
+   The Netherlands 8819
+   Italy           7178
+   ```
+
+**Explanation of the Output**
+
+- The **USA** has the highest number of fans, followed by **Sweden**, **Finland**, and **United Kingdom**.
+- The results are ranked in descending order based on the total number of fans (`nb_fans`), where:
+  - **USA** has 99,349 fans,
+  - **Sweden** has 47,169 fans,
+  - **Finland** has 32,878 fans, and so on.
+- Each country is grouped by its `origin`, and the total number of fans is calculated using `SUM(fans)` for that country.
+</details>
+
+<details>
+  <summary><strong>Troubleshooting</strong></summary>
+
+#### Issue: **Unknown Column 'nb_fans' in 'field list'**
+
+When attempting to run the original query, we encountered the following error:
+
+```bash
+ERROR 1054 (42S22) at line 3: Unknown column 'nb_fans' in 'field list'
+```
+
+**Cause**: This error occurred because the column name `nb_fans` does not exist in the `metal_bands` table. The actual column name for the number of fans is `fans`.
+
+**Solution**: We inspected the structure of the `metal_bands` table using the following command:
+
+```bash
+echo "DESCRIBE metal_bands;" | mysql -uroot -p holberton
+```
+
+We identified the correct column name for the fans as `fans`, then updated the query to use `SUM(fans)` instead of `SUM(nb_fans)`.
+
+Updated query:
+
+```sql
+SELECT origin, SUM(fans) AS nb_fans
+FROM metal_bands
+GROUP BY origin
+ORDER BY nb_fans DESC;
+```
+
+</details>
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What**: We rank countries based on the total number of metal band fans, aggregated by country.
+- **Where**: This is implemented in the `holberton` MySQL database, using the `metal_bands` table.
+- **Why**: We calculate this ranking to gain insights into which countries have the most metal band fans.
+- **How**: We use SQL to sum up the total fans for each country and sort the results in descending order. The column for fans is `fans`, and we group by the `origin` column.
+- **Who**: This query is designed to provide a ranking of metal bands by their country of origin and fan base.
+- **When**: The query runs after importing the `metal_bands.sql` dump and can be executed at any time to recalculate the ranking.
+
+</details>
