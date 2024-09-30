@@ -933,3 +933,202 @@ SELECT * FROM users;
 - **When**: The trigger executes automatically before any update to the `users` table when an email is changed.
 
 </details>
+
+### Task 6: Add Bonus
+
+In this task, we create a stored procedure called `AddBonus`, which adds a correction score for a student (`user_id`) in a specified project (`project_name`). If the project doesn't already exist, the procedure will create it before adding the score. This procedure ensures that students can receive scores for both existing and new projects seamlessly.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Write a SQL script that creates a stored procedure `AddBonus` that:
+  - Takes 3 inputs: `user_id`, `project_name`, and `score`.
+  - Adds the `score` for the corresponding `user_id` and `project_name`.
+  - If the project doesn't exist, it creates it before adding the correction.
+- The procedure can be executed on any database.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+#### 1. **6-init.sql**: Initialize the database with `users`, `projects`, and `corrections` tables, and seed some initial data.
+
+```sql
+-- Initial setup for users, projects, and corrections tables
+DROP TABLE IF EXISTS corrections;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS projects;
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    average_score FLOAT DEFAULT 0,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS projects (
+    id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS corrections (
+    user_id INT NOT NULL,
+    project_id INT NOT NULL,
+    score INT DEFAULT 0,
+    KEY `user_id` (`user_id`),
+    KEY `project_id` (`project_id`),
+    CONSTRAINT fk_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+    CONSTRAINT fk_project_id FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE
+);
+
+-- Insert sample data
+INSERT INTO users (name) VALUES ("Bob"), ("Jeanne");
+INSERT INTO projects (name) VALUES ("C is fun"), ("Python is cool");
+
+INSERT INTO corrections (user_id, project_id, score) 
+VALUES 
+((SELECT id FROM users WHERE name = 'Bob'), (SELECT id FROM projects WHERE name = 'C is fun'), 80),
+((SELECT id FROM users WHERE name = 'Bob'), (SELECT id FROM projects WHERE name = 'Python is cool'), 96),
+((SELECT id FROM users WHERE name = 'Jeanne'), (SELECT id FROM projects WHERE name = 'C is fun'), 91),
+((SELECT id FROM users WHERE name = 'Jeanne'), (SELECT id FROM projects WHERE name = 'Python is cool'), 73);
+```
+
+- **Role**: This script initializes the tables and inserts some sample data.
+- **How It Works**: 
+  - The `users` table stores user information.
+  - The `projects` table stores project names.
+  - The `corrections` table keeps track of user scores for specific projects.
+
+#### 2. **6-bonus.sql**: Create the `AddBonus` stored procedure.
+
+```sql
+-- This stored procedure adds a correction score for a student user_id in a project project_name
+-- If the project doesn't exist, it creates the project and then adds the score.
+-- Corrections for both existing and new projects can be added
+
+DELIMITER //
+
+CREATE PROCEDURE AddBonus(IN user_id INT, IN project_name VARCHAR(255), IN score INT)
+BEGIN
+    DECLARE project_id INT;
+
+    -- Check if the project exists
+    SELECT id INTO project_id FROM projects WHERE name = project_name;
+
+    -- If project doesn't exist, create it
+    IF project_id IS NULL THEN
+        INSERT INTO projects (name) VALUES (project_name);
+        SET project_id = LAST_INSERT_ID();
+    END IF;
+
+    -- Add the correction for the user in the project
+    INSERT INTO corrections (user_id, project_id, score) VALUES (user_id, project_id, score);
+END //
+
+DELIMITER ;
+```
+
+- **Role**: This script creates the stored procedure `AddBonus`.
+- **How It Works**: 
+  - The procedure first checks if a project with the specified `project_name` exists. 
+  - If the project doesn't exist, it creates a new one.
+  - Then, it adds the correction for the user and project.
+
+#### 3. **6-main.sql**: Test the stored procedure.
+
+```sql
+-- Show and add bonus correction
+SELECT * FROM projects;
+SELECT * FROM corrections;
+
+-- Add new corrections using the AddBonus procedure
+CALL AddBonus((SELECT id FROM users WHERE name = 'Jeanne'), 'Python is cool', 100);
+CALL AddBonus((SELECT id FROM users WHERE name = 'Jeanne'), 'Bonus project', 100);
+CALL AddBonus((SELECT id FROM users WHERE name = 'Bob'), 'Bonus project', 10);
+CALL AddBonus((SELECT id FROM users WHERE name = 'Jeanne'), 'New bonus', 90);
+
+-- Display updated results
+SELECT "--";
+SELECT * FROM projects;
+SELECT * FROM corrections;
+```
+
+- **Role**: This script tests the `AddBonus` procedure by adding corrections to existing and new projects.
+- **How It Works**: 
+  - The script calls the `AddBonus` procedure for different users and projects.
+  - The procedure updates the `projects` and `corrections` tables accordingly.
+
+</details>
+
+<details>
+  <summary><strong>Testing and Usage</strong></summary>
+
+1. **Run the Initialization Script**:
+   Create the initial tables (`users`, `projects`, `corrections`) and insert some sample data:
+
+   ```bash
+   cat 6-init.sql | mysql -uroot -p holberton
+   ```
+
+2. **Create the Stored Procedure**:
+   Run the `6-bonus.sql` script to create the `AddBonus` procedure:
+
+   ```bash
+   cat 6-bonus.sql | mysql -uroot -p holberton
+   ```
+
+3. **Test the Stored Procedure**:
+   Use the `6-main.sql` script to test adding corrections with the `AddBonus` procedure:
+
+   ```bash
+   cat 6-main.sql | mysql -uroot -p holberton
+   ```
+
+   **Expected Output** (after running `6-main.sql`):
+   ```
+   -- Before the procedure is called:
+   id  name
+   1   C is fun
+   2   Python is cool
+
+   user_id project_id  score
+   1       1           80
+   1       2           96
+   2       1           91
+   2       2           73
+
+   --
+
+   -- After the procedure is called:
+   id  name
+   1   C is fun
+   2   Python is cool
+   3   Bonus project
+   4   New bonus
+
+   user_id project_id  score
+   1       1           80
+   1       2           96
+   2       1           91
+   2       2           73
+   2       2           100
+   2       3           100
+   1       3           10
+   2       4           90
+   ```
+
+</details>
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What**: The `AddBonus` stored procedure allows you to add a correction score for a user in a specific project, creating the project if it doesn't exist.
+- **Where**: The procedure is implemented in the MySQL `holberton` database.
+- **Why**: Automating the process of adding corrections and ensuring that projects are created if they don’t already exist simplifies the workflow and ensures data consistency.
+- **How**: The procedure first checks if the project exists and creates it if necessary, then adds the correction score for the user in the project.
+- **Who**: This is designed for students (users) completing various projects, allowing scores to be added to both existing and new projects.
+- **When**: The procedure runs each time a correction is added for a student in a project.
+
+</details>
