@@ -453,3 +453,113 @@ ORDER BY nb_fans DESC;
 - **When**: The query runs after importing the `metal_bands.sql` dump and can be executed at any time to recalculate the ranking.
 
 </details>
+
+### Task 3: Old school band
+
+In this task, we list all bands with "Glam rock" as part of their style, ranked by their longevity (lifespan). We calculate the lifespan using the `formed` and `split` columns.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Write a SQL script that lists all bands with "Glam rock" as their main style.
+- The bands should be ranked by their longevity (lifespan).
+- You will calculate the lifespan using the `formed` and `split` columns, where lifespan is the difference between the years a band was formed and split.
+- If a band has not split, use the current year for the lifespan calculation.
+- Column names must be `band_name` and `lifespan (in years)`.
+- Your script can be executed on any database.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+**Steps to execute:**
+
+1. **Download and extract the table dump**: 
+   Download the `metal_bands.sql.zip` file, extract it, and import the SQL dump into your MySQL database using the following command:
+
+   ```bash
+   cat metal_bands.sql | mysql -uroot -p holberton
+   ```
+
+2. **Write the SQL query**:
+   Create a script (`3-glam_rock.sql`) that lists all bands with "Glam rock" as part of their style and calculates their lifespan:
+
+   ```sql
+   -- List all Glam rock bands ranked by their longevity
+
+   SELECT band_name, 
+          IFNULL(NULLIF(split, 0), YEAR(CURDATE())) - formed AS lifespan
+   FROM metal_bands
+   WHERE style LIKE '%Glam rock%'
+   ORDER BY lifespan DESC;
+   ```
+
+   **Explanation**:
+   - We calculate the lifespan by subtracting the year the band was formed (`formed`) from the year they split (`split`).
+   - If a band has not split (i.e., `split` is `NULL` or `0`), we use the current year (`YEAR(CURDATE())`).
+   - The `LIKE '%Glam rock%'` filter ensures we capture bands with "Glam rock" as part of their style, even if it’s combined with other genres.
+
+3. **Execute the script**:
+   Run the script to display all Glam rock bands, ranked by their longevity:
+
+   ```bash
+   cat 3-glam_rock.sql | mysql -uroot -p holberton
+   ```
+
+4. **Expected output**:
+   The output should list the bands in descending order of their lifespan (in years):
+
+   ```bash
+   band_name            lifespan
+   Alice Cooper         60
+   Marilyn Manson       35
+   Mötley Crüe          34
+   The 69 Eyes          34
+   Hardcore Superstar   27
+   Hanoi Rocks          0
+   Nasty Idols          0
+   ```
+
+</details>
+
+<details>
+  <summary><strong>Troubleshooting</strong></summary>
+
+#### Issue 1: **Missing Bands with 'Glam rock'**
+
+Initially, we only received a limited number of results because some bands had "Glam rock" combined with other genres (e.g., "Glam rock,Gothic rock"). 
+
+**Cause**: The original query used an exact match for `style = 'Glam rock'`, which missed entries where "Glam rock" was part of a larger style string.
+
+**Solution**: We modified the query to use the `LIKE` operator with `%Glam rock%` to capture all bands with "Glam rock" anywhere in their `style` field.
+
+Updated query:
+
+```sql
+SELECT band_name, 
+       IFNULL(NULLIF(split, 0), YEAR(CURDATE())) - formed AS lifespan
+FROM metal_bands
+WHERE style LIKE '%Glam rock%'
+ORDER BY lifespan DESC;
+```
+
+#### Issue 2: **Handling `split = 0`**
+
+Some bands had a `split` value of `0`, which led to incorrect lifespan calculations. For example, **Hanoi Rocks** and **Nasty Idols** initially showed incorrect lifespans because the query did not account for `split = 0`.
+
+**Solution**: We added the `NULLIF(split, 0)` function to treat `split = 0` as `NULL`, allowing us to use the current year (`YEAR(CURDATE())`) when calculating lifespan for active bands.
+
+</details>
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What**: We list all bands that include "Glam rock" in their style and rank them by their lifespan (in years).
+- **Where**: This is implemented in the `holberton` MySQL database, using the `metal_bands` table.
+- **Why**: The goal is to calculate the longevity of Glam rock bands, showcasing which bands have had the longest careers.
+- **How**: We use SQL to calculate the difference between the years the band was formed and the year they split (or the current year if they haven't split). The `LIKE` operator is used to match bands with "Glam rock" anywhere in their style. We handle `split = 0` by treating it as if the band hasn't split.
+- **Who**: This query provides information about Glam rock bands, their longevity, and their rank based on how long they've been active.
+- **When**: The query runs after importing the `metal_bands.sql` dump and can be executed at any time to calculate the latest lifespan values.
+
+</details>
