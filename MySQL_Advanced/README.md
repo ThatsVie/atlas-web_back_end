@@ -325,7 +325,7 @@ ERROR 1062 (23000) at line 1: Duplicate entry 'bob@dylan.com' for key 'users.ema
 echo 'DELETE FROM users WHERE email="bob@dylan.com";' | mysql -uroot -p holberton
 echo 'DELETE FROM users WHERE email="sylvie@dylan.com";' | mysql -uroot -p holberton
 ```
-
+</details>
 
 <details>
   <summary><strong>Explanation: Who, What, Where, When, Why, How </strong></summary>
