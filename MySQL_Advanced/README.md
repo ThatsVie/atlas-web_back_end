@@ -757,3 +757,201 @@ After creating the trigger, the `items` table still wasn’t updating after inse
 - **When**: The trigger is executed automatically after each `INSERT` operation on the `orders` table, ensuring that the `items` table is always up to date.
 
 </details>
+
+### Task 5: Email validation to sent
+
+In this task, we created a trigger that resets the `valid_email` attribute in the `users` table only when the email has been changed. This is useful for triggering email revalidation workflows whenever a user's email is updated.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Write a SQL script that creates a trigger to reset the `valid_email` attribute when the email has been updated.
+- The `valid_email` attribute should only be reset if the email is changed, not when other attributes (e.g., `name`) are updated.
+- The trigger should automatically handle email validation logic within the database itself.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+#### 1. **5-init.sql**: Set up the `users` table and insert initial data
+
+```sql
+-- Initial setup for users table
+
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT NOT NULL AUTO_INCREMENT,
+    email VARCHAR(255) NOT NULL,
+    name VARCHAR(255),
+    valid_email BOOLEAN NOT NULL DEFAULT 0,
+    PRIMARY KEY (id)
+);
+
+-- Insert sample users
+INSERT INTO users (email, name) VALUES ("bob@dylan.com", "Bob");
+INSERT INTO users (email, name, valid_email) VALUES ("sylvie@dylan.com", "Sylvie", 1);
+INSERT INTO users (email, name, valid_email) VALUES ("jeanne@dylan.com", "Jeanne", 1);
+```
+
+- **Role**: This script sets up the initial `users` table and inserts a few rows for testing.
+- **How It Works**:
+  - The `users` table has three fields: `email`, `name`, and `valid_email`.
+  - The `valid_email` field is a boolean that starts as `0` (invalid) by default but can be set to `1` to indicate a validated email.
+
+#### 2. **5-valid_email.sql**: Create the trigger that resets `valid_email` when the email is updated
+
+```sql
+DELIMITER //
+
+CREATE TRIGGER reset_valid_email BEFORE UPDATE ON users
+FOR EACH ROW
+BEGIN
+    IF NEW.email != OLD.email THEN
+        SET NEW.valid_email = 0;
+    END IF;
+END //
+
+DELIMITER ;
+```
+
+- **Role**: This script creates a trigger that resets `valid_email` to `0` only if the email has been changed.
+- **How It Works**:
+  - The `BEFORE UPDATE` trigger checks if the new email (`NEW.email`) is different from the old one (`OLD.email`).
+  - If the email has changed, the trigger sets `NEW.valid_email` to `0`, which will reset the validation status.
+
+#### 3. **5-main.sql**: Test the trigger by updating users’ emails and other attributes
+
+```sql
+-- Show users and update (or not) email
+SELECT * FROM users;
+
+-- Update valid_email for Bob without changing the email
+UPDATE users SET valid_email = 1 WHERE email = "bob@dylan.com";
+
+-- Update Sylvie’s email, which should reset valid_email
+UPDATE users SET email = "sylvie+new@dylan.com" WHERE email = "sylvie@dylan.com";
+
+-- Update Jeanne’s name (but not her email), so valid_email should stay the same
+UPDATE users SET name = "Jannis" WHERE email = "jeanne@dylan.com";
+
+-- Display updated results
+SELECT "--";
+SELECT * FROM users;
+
+-- Another update for Bob’s email without changing the actual email
+UPDATE users SET email = "bob@dylan.com" WHERE email = "bob@dylan.com";
+
+-- Final output
+SELECT "--";
+SELECT * FROM users;
+```
+
+- **Role**: This script tests the `reset_valid_email` trigger by making changes to the `users` table.
+- **How It Works**:
+  - The initial query shows the current data in the `users` table.
+  - We update Bob’s `valid_email` field without changing his email, which should not trigger the `valid_email` reset.
+  - Sylvie's email is updated, so her `valid_email` should reset to `0`.
+  - Jeanne’s name is updated, but since her email stays the same, her `valid_email` should not change.
+
+</details>
+
+<details>
+  <summary><strong>Testing and Usage</strong></summary>
+
+1. **Run the Initialization Script**:
+   First, create the `users` table and insert initial data by running the `5-init.sql` script:
+
+   ```bash
+   cat 5-init.sql | mysql -uroot -p holberton
+   ```
+
+   Verify the table contents with:
+
+   ```bash
+   echo "SELECT * FROM users;" | mysql -uroot -p holberton
+   ```
+
+   **Expected Output**:
+   ```
+   id      email               name    valid_email
+   1       bob@dylan.com       Bob     0
+   2       sylvie@dylan.com    Sylvie  1
+   3       jeanne@dylan.com    Jeanne  1
+   ```
+
+2. **Create the Trigger**:
+   Run the `5-valid_email.sql` script to create the `reset_valid_email` trigger:
+
+   ```bash
+   cat 5-valid_email.sql | mysql -uroot -p holberton
+   ```
+
+3. **Test the Trigger**:
+   Run the `5-main.sql` script to verify if the trigger behaves as expected:
+
+   ```bash
+   cat 5-main.sql | mysql -uroot -p holberton
+   ```
+
+   **Expected Output** (before and after updates):
+   ```
+   id      email               name    valid_email
+   1       bob@dylan.com       Bob     0
+   2       sylvie@dylan.com    Sylvie  1
+   3       jeanne@dylan.com    Jeanne  1
+
+   --
+
+   id      email               name    valid_email
+   1       bob@dylan.com       Bob     1
+   2       sylvie+new@dylan.com    Sylvie  0
+   3       jeanne@dylan.com    Jannis  1
+
+   --
+
+   id      email               name    valid_email
+   1       bob@dylan.com       Bob     1
+   2       sylvie+new@dylan.com    Sylvie  0
+   3       jeanne@dylan.com    Jannis  1
+   ```
+
+   The `valid_email` field was reset for Sylvie when her email changed, and it remained unchanged for Bob and Jeanne as their emails did not change.
+
+</details>
+
+<details>
+  <summary><strong>Troubleshooting</strong></summary>
+
+#### Issue 1: **Trigger Not Showing Up**
+
+After running the `5-valid_email.sql` script, we noticed that the trigger didn’t seem to be created.
+
+**Solution**: We confirmed the creation of the trigger by using:
+
+```sql
+SHOW TRIGGERS LIKE 'users';
+```
+
+This command displayed the `reset_valid_email` trigger, confirming that it had been created successfully.
+
+#### Issue 2: **No Changes to `valid_email`**
+
+At first, it seemed like the `valid_email` field wasn’t updating as expected after changing the email.
+
+**Solution**: We ran the full set of scripts again (`5-init.sql`, `5-valid_email.sql`, and `5-main.sql`) in the correct order to ensure the trigger was set up before making changes to the data. This resolved the issue, and the `valid_email` field was reset properly.
+
+</details>
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What**: We created a trigger to reset the `valid_email` field whenever the email is updated in the `users` table.
+- **Where**: This functionality is implemented in the MySQL `holberton` database.
+- **Why**: The `valid_email` field ensures that emails are validated. When an email is changed, we want the system to require revalidation, so resetting `valid_email` ensures that the email has to be validated again.
+- **How**: The `BEFORE UPDATE` trigger checks if the email is changed, and if so, it resets the `valid_email` field to `0`.
+- **Who**: This script applies to all users in the `users` table, ensuring email validation is handled seamlessly.
+- **When**: The trigger executes automatically before any update to the `users` table when an email is changed.
+
+</details>
