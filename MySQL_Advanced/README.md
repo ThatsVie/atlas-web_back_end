@@ -563,3 +563,184 @@ Some bands had a `split` value of `0`, which led to incorrect lifespan calculati
 - **When**: The query runs after importing the `metal_bands.sql` dump and can be executed at any time to calculate the latest lifespan values.
 
 </details>
+
+### Task 4: Buy buy buy
+
+In this task, we create a trigger that automatically decreases the quantity of an item in the `items` table whenever a new order is added to the `orders` table. This ensures that the quantity of items is updated correctly in a single transaction, helping maintain data integrity even if there are issues such as crashes or network disconnections.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Write a SQL script that creates a trigger to decrease the quantity of an item after adding a new order.
+- Quantity in the table `items` can be negative.
+- Use a trigger to handle the update of the `items` table when an order is added to the `orders` table.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+#### 1. **4-init.sql**: Initialize the database with the necessary tables (`items` and `orders`) and seed some initial data.
+
+```sql
+-- Initial setup for items and orders tables
+DROP TABLE IF EXISTS items;
+DROP TABLE IF EXISTS orders;
+
+CREATE TABLE IF NOT EXISTS items (
+    name VARCHAR(255) NOT NULL,
+    quantity INT NOT NULL DEFAULT 10
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+    item_name VARCHAR(255) NOT NULL,
+    number INT NOT NULL
+);
+
+-- Insert sample items
+INSERT INTO items (name) VALUES ('apple'), ('pineapple'), ('pear');
+```
+
+- **Role**: This script sets up the initial tables and inserts sample data into the `items` table.
+- **How It Works**: 
+  - The `items` table has two fields: `name` and `quantity`. Each item starts with a quantity of 10.
+  - The `orders` table will be used to record new orders placed for items.
+
+#### 2. **4-store.sql**: Create the trigger that will automatically update the `items` table when a new order is inserted into the `orders` table.
+
+```sql
+DELIMITER //
+
+CREATE TRIGGER update_quantity AFTER INSERT ON orders
+FOR EACH ROW
+BEGIN
+    UPDATE items
+    SET quantity = quantity - NEW.number
+    WHERE name = NEW.item_name;
+END //
+
+DELIMITER ;
+```
+
+- **Role**: This script creates a trigger called `update_quantity`, which decreases the `quantity` in the `items` table after a new row is inserted into the `orders` table.
+- **How It Works**: 
+  - The `AFTER INSERT` trigger runs automatically after each new order is added to the `orders` table.
+  - The `NEW.item_name` and `NEW.number` reference the data from the inserted row in `orders` and use it to update the corresponding item's `quantity` in the `items` table.
+
+#### 3. **4-main.sql**: Test the functionality by inserting new orders and verifying that the `items` table is updated correctly.
+
+```sql
+-- Show and add orders
+SELECT * FROM items;
+SELECT * FROM orders;
+
+-- Insert new orders
+INSERT INTO orders (item_name, number) VALUES ('apple', 1);
+INSERT INTO orders (item_name, number) VALUES ('apple', 3);
+INSERT INTO orders (item_name, number) VALUES ('pear', 2);
+
+-- Display updated results
+SELECT "--";
+SELECT * FROM items;
+SELECT * FROM orders;
+```
+
+- **Role**: This script inserts new orders into the `orders` table and checks if the trigger correctly updated the `quantity` in the `items` table.
+- **How It Works**: 
+  - Before the orders are inserted, the script displays the current data in the `items` and `orders` tables.
+  - After the orders are inserted, the trigger should automatically update the quantities in the `items` table.
+  - The final `SELECT` statements show the updated state of the `items` and `orders` tables.
+
+</details>
+
+<details>
+  <summary><strong>Testing and Usage</strong></summary>
+
+1. **Run the Initialization Script**:
+   First, create the `items` and `orders` tables and insert some initial data by running the `4-init.sql` script:
+
+   ```bash
+   cat 4-init.sql | mysql -uroot -p holberton
+   ```
+
+   You can check that the tables were created and populated with the following command:
+
+   ```bash
+   echo "SELECT * FROM items;" | mysql -uroot -p holberton
+   ```
+
+   **Expected Output**:
+   ```
+   name        quantity
+   apple       10
+   pineapple   10
+   pear        10
+   ```
+
+2. **Create the Trigger**:
+   Run the `4-store.sql` script to create the `update_quantity` trigger:
+
+   ```bash
+   cat 4-store.sql | mysql -uroot -p holberton
+   ```
+
+3. **Insert Orders and Verify Trigger**:
+   Run the `4-main.sql` script to insert new orders and check if the `items` table is updated correctly:
+
+   ```bash
+   cat 4-main.sql | mysql -uroot -p holberton
+   ```
+
+   **Expected Output** (before and after inserting orders):
+   ```
+   name        quantity
+   apple       10
+   pineapple   10
+   pear        10
+
+   --
+
+   name        quantity
+   apple       6
+   pineapple   10
+   pear        8
+   ```
+
+   The `quantity` of `apple` decreased by 4 (after subtracting 1 and then 3), and the `quantity` of `pear` decreased by 2.
+
+</details>
+
+<details>
+  <summary><strong>Troubleshooting</strong></summary>
+
+#### Issue 1: **Trigger Not Working**
+
+At first, we noticed that after inserting orders, the `items` table wasn’t updated as expected. This was because the trigger hadn’t been created successfully.
+
+**Solution**: We re-ran the `4-store.sql` script to create the trigger and verified its existence using the following MySQL command:
+
+```sql
+SHOW TRIGGERS LIKE 'orders';
+```
+
+This confirmed that the `update_quantity` trigger was now in place.
+
+#### Issue 2: **No Changes to the Items Table**
+
+After creating the trigger, the `items` table still wasn’t updating after inserting new orders.
+
+**Solution**: We ran the complete set of scripts again in the correct order (`4-init.sql`, `4-store.sql`, and `4-main.sql`), which resolved the issue. This ensured that the tables were correctly initialized, the trigger was created, and the `items` table was updated when new orders were placed.
+
+</details>
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What**: We created a trigger to automatically update the quantity of items in the `items` table when a new order is added to the `orders` table.
+- **Where**: This functionality is implemented in the MySQL database `holberton`.
+- **Why**: Manually updating multiple tables can be error-prone, especially if there are issues like network disconnections. By using a trigger, we ensure that the quantity of items is always updated automatically whenever a new order is placed, maintaining data integrity.
+- **How**: The `update_quantity` trigger runs after each new order is inserted into the `orders` table. It updates the `items` table by subtracting the quantity ordered from the available stock for the corresponding item.
+- **Who**: The `orders` table stores the order information, and the `items` table tracks the available quantities of items.
+- **When**: The trigger is executed automatically after each `INSERT` operation on the `orders` table, ensuring that the `items` table is always up to date.
+
+</details>
