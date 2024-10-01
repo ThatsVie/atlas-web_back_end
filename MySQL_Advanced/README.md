@@ -2219,15 +2219,16 @@ SELECT * FROM users;
 
 </details>
 
-### Task 13: Average Weighted Score for All
+### Task 13: Average Weighted Score for All Users
 
-In this task, we create a stored procedure `ComputeAverageWeightedScoreForUsers` that calculates and stores the average weighted score for all users. The weighted average is calculated by taking into account both the score for each project and the weight assigned to the project, for every user in the `users` table.
+In this task, we created a stored procedure `ComputeAverageWeightedScoreForUsers` that computes and stores the average weighted score for all users. The procedure calculates the weighted average score for each user by multiplying each project's score with its weight and then dividing the total weighted score by the total weight of the projects.
 
 <details>
   <summary><strong>Curriculum Instruction</strong></summary>
 
-- Write a SQL script that creates a stored procedure `ComputeAverageWeightedScoreForUsers` to calculate the average weighted score for all students.
+- Write a SQL script that creates a stored procedure `ComputeAverageWeightedScoreForUsers` to compute and store the average weighted score for all students.
 - The procedure does not take any input.
+- The weighted average score is calculated by multiplying the project score with its weight and dividing the total weighted score by the total weight.
 
 </details>
 
@@ -2270,7 +2271,6 @@ CREATE TABLE IF NOT EXISTS corrections (
 INSERT INTO users (name) VALUES ("Bob");
 INSERT INTO users (name) VALUES ("Jeanne");
 
--- Insert sample projects with weights
 INSERT INTO projects (name, weight) VALUES ("C is fun", 1);
 INSERT INTO projects (name, weight) VALUES ("Python is cool", 2);
 
@@ -2287,43 +2287,62 @@ INSERT INTO corrections (user_id, project_id, score) VALUES (2, 2, 73);
 #### 2. **101-average_weighted_score.sql**: Create the stored procedure `ComputeAverageWeightedScoreForUsers`.
 
 ```sql
--- This procedure computes the average weighted score for all users.
--- For each user, the procedure calculates the average weighted score by multiplying each project's score with its weight,
--- summing the results, and dividing by the total weight of the projects.
--- It updates the average_score field in the users table for each user.
-
 DELIMITER //
 
 CREATE PROCEDURE ComputeAverageWeightedScoreForUsers()
 BEGIN
+    DECLARE total_weighted_score FLOAT;
+    DECLARE total_weight INT;
+    DECLARE user_id INT;
+
+    -- Cursor to iterate over all users
     DECLARE done INT DEFAULT 0;
-    DECLARE current_user_id INT;
     DECLARE cur CURSOR FOR SELECT id FROM users;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
+    -- Open the cursor
     OPEN cur;
 
-    -- Loop through each user to calculate and update their average weighted score
+    -- Loop through each user
     read_loop: LOOP
-        FETCH cur INTO current_user_id;
+        FETCH cur INTO user_id;
         IF done THEN
             LEAVE read_loop;
         END IF;
 
-        -- Calculate the total weighted score and total weight for each user
-        CALL ComputeAverageWeightedScoreForUser(current_user_id);
+        -- Calculate the total weighted score for the current user
+        SELECT SUM(c.score * p.weight) INTO total_weighted_score
+        FROM corrections c
+        JOIN projects p ON c.project_id = p.id
+        WHERE c.user_id = user_id;
+
+        -- Calculate the total weight for the current user
+        SELECT SUM(p.weight) INTO total_weight
+        FROM corrections c
+        JOIN projects p ON c.project_id = p.id
+        WHERE c.user_id = user_id;
+
+        -- Update the user's average_score based on the weighted average
+        IF total_weight > 0 THEN
+            UPDATE users
+            SET average_score = total_weighted_score / total_weight
+            WHERE id = user_id;
+        END IF;
+
     END LOOP;
 
+    -- Close the cursor
     CLOSE cur;
 END //
 
 DELIMITER ;
 ```
 
-- **Role**: This procedure iterates over all users, calculating the average weighted score for each user and updating their `average_score` field in the `users` table.
+- **Role**: This procedure computes the average weighted score for all users and updates their `average_score` field in the `users` table.
 - **How It Works**:
   - The procedure uses a cursor to loop through each user in the `users` table.
-  - For each user, the `ComputeAverageWeightedScoreForUser` procedure is called to calculate their weighted average score.
+  - For each user, it calculates the total weighted score (by multiplying project scores with their weights) and the total weight.
+  - It then computes the average weighted score by dividing the total weighted score by the total weight, updating the `average_score` for each user.
 
 #### 3. **101-main.sql**: Test the procedure by calculating the average weighted score for all users and verifying the result.
 
@@ -2333,15 +2352,14 @@ SELECT * FROM users;
 SELECT * FROM projects;
 SELECT * FROM corrections;
 
--- Calculate the average weighted score for all users
 CALL ComputeAverageWeightedScoreForUsers();
 
--- Display the updated average weighted scores
+-- Display the updated average weighted score for all users
 SELECT "--";
 SELECT * FROM users;
 ```
 
-- **Role**: This script tests the functionality of the stored procedure by calculating and displaying the weighted average scores for all users.
+- **Role**: This script tests the functionality of the stored procedure by calculating and displaying the average weighted score for all users.
 
 </details>
 
@@ -2370,7 +2388,7 @@ SELECT * FROM users;
    2       Jeanne  0
 
    id      name    weight
-   1       C is fun        1
+   1       C is fun    1
    2       Python is cool  2
 
    user_id project_id      score
@@ -2388,13 +2406,13 @@ SELECT * FROM users;
    ```
 
 3. **Compute Average Weighted Score for All Users**:
-   Run the `101-main.sql` script to calculate the weighted average scores for all users and verify the update:
+   Run the `101-main.sql` script to calculate the average weighted score for all users and verify the update:
 
    ```bash
    cat 101-main.sql | mysql -uroot -p holberton
    ```
 
-   **Expected Output** (before and after calculating the weighted average):
+   **Expected Output** (before and after calculating the average):
    ```
    id      name    average_score
    1       Bob     0
@@ -2416,13 +2434,81 @@ SELECT * FROM users;
 </details>
 
 <details>
+  <summary><strong>Troubleshooting</strong></summary>
+
+#### Issue: **Incorrect Results in the Checker for Multiple Cases**
+
+We initially used a version of the procedure that only updated a single user's weighted average at a time. When the task required calculating the weighted average for multiple users, the checker failed due to incorrect results for cases with different numbers of projects and weights.
+
+**Solution**: We modified the procedure to use a cursor that iterates over all users in the `users` table. For each user, the procedure now calculates their average weighted score by summing their project scores and weights and updates their `average_score` accordingly.
+
+**Updated Code**:
+```sql
+DELIMITER //
+
+CREATE PROCEDURE ComputeAverageWeightedScoreForUsers()
+BEGIN
+    DECLARE total_weighted_score FLOAT;
+    DECLARE total_weight INT;
+    DECLARE user_id INT;
+
+    -- Cursor to iterate over all users
+    DECLARE done INT DEFAULT 0;
+    DECLARE cur CURSOR FOR SELECT id FROM users;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    -- Open the cursor
+    OPEN cur;
+
+    -- Loop through each user
+    read_loop: LOOP
+        FETCH cur INTO user_id;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        -- Calculate the total weighted score for the current user
+        SELECT SUM(c.score * p.weight) INTO total_weighted_score
+        FROM corrections c
+        JOIN projects p ON c.project_id = p.id
+        WHERE c.user_id = user_id;
+
+        -- Calculate the total weight for the current user
+        SELECT SUM
+
+(p.weight) INTO total_weight
+        FROM corrections c
+        JOIN projects p ON c.project_id = p.id
+        WHERE c.user_id = user_id;
+
+        -- Update the user's average_score based on the weighted average
+        IF total_weight > 0 THEN
+            UPDATE users
+            SET average_score = total_weighted_score / total_weight
+            WHERE id = user_id;
+        END IF;
+
+    END LOOP;
+
+    -- Close the cursor
+    CLOSE cur;
+END //
+
+DELIMITER ;
+```
+
+This approach ensured the correct average weighted score for all users and cleared the checker.
+
+</details>
+
+<details>
   <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
 
-- **What**: We created a stored procedure that calculates and updates the average weighted score for all users.
+- **What**: We created a stored procedure that calculates and updates the average weighted score for all users based on their scores and project weights.
 - **Where**: This functionality is implemented in the MySQL database `holberton`.
-- **Why**: It automates the calculation of average weighted scores for all users, ensuring data accuracy across all users.
-- **How**: The procedure loops through each user in the `users` table, calculates their weighted average score using their project scores and project weights, and updates their `average_score` field.
-- **Who**: The procedure does not take any input, as it calculates the weighted average for every user.
-- **When**: The procedure is executed whenever you need to compute or update all users' weighted average scores.
+- **Why**: By calculating the weighted average score, we ensure that projects with higher weights (indicating importance) have a greater impact on the overall score.
+- **How**: The procedure calculates the weighted average score for each user by summing the product of project scores and their weights, then dividing by the total weight of the projects.
+- **Who**: The procedure updates the `average_score` field for each user in the `users` table.
+- **When**: The procedure is executed whenever you need to compute or update the average weighted score for all users.
 
 </details>
