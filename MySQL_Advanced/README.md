@@ -1354,3 +1354,215 @@ This resolved the issue, and the procedure now correctly updates the `average_sc
 - **When**: The procedure is executed whenever you need to compute or update a user's average score.
 
 </details>
+
+
+### Task 8: Optimize Simple Search
+
+In this task, we optimize a search query on a large dataset by creating an index on the first letter of the `name` column in the `names` table. This improves the performance of queries filtering by the first letter of the name, particularly for queries like `WHERE name LIKE 'a%'`.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Write a SQL script that creates an index on the table `names` for the first letter of the `name` column.
+- This index should target only the first letter of each name, improving search performance for queries that search based on the first letter.
+- Context: An index, when used appropriately, can significantly improve the performance of search queries.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+#### 1. **names.sql**: Import the large dataset
+
+First, we need to import the provided `names.sql` dump into the MySQL database. This file contains a large dataset of names.
+
+```bash
+cat names.sql | mysql -uroot -p holberton
+```
+
+You can verify that the data was successfully loaded by counting the number of rows in the `names` table:
+
+```bash
+mysql -uroot -p holberton -e "SELECT COUNT(*) FROM names;"
+```
+
+**Expected Output**:
+```
++----------+
+| COUNT(*) |
++----------+
+|  7894483 |
++----------+
+```
+
+#### 2. **Test search performance before adding the index**
+
+In the MySQL prompt, run a query to count names starting with the letter 'a'. This will allow you to see the performance before adding the index:
+
+```sql
+SELECT COUNT(name) FROM names WHERE name LIKE 'a%';
+```
+
+**Expected Output** (This may take some time to execute):
+```
++-------------+
+| COUNT(name) |
++-------------+
+|      302936 |
++-------------+
+```
+
+**Time Taken**: Before indexing, the query could take around 2.8 seconds.
+
+#### 3. **8-index_my_names.sql**: Create the index on the first letter of the `name` column
+
+After testing the initial search performance, create an index that targets only the first letter of the `name` column to optimize the search query.
+
+```bash
+cat 8-index_my_names.sql | mysql -uroot -p holberton
+```
+
+The `8-index_my_names.sql` file should contain the following code:
+
+```sql
+-- In the vast sea of names, searching through every single one can feel like navigating without a map.
+-- This index acts as our compass, pointing directly to names starting with the same letter.
+-- By indexing only the first letter of the name column, we can swiftly narrow down the search,
+-- making sure that queries no longer have to traverse the entire ocean of names.
+-- It's like charting a course through the stars, efficient, quick, and focused on the first sign.
+CREATE INDEX idx_name_first ON names (name(1));
+```
+
+#### 4. **Verify that the index was created**
+
+After creating the index, verify its existence by running the following command in the MySQL prompt:
+
+```sql
+SHOW INDEX FROM names;
+```
+
+**Expected Output**:
+```
++-------+------------+----------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table | Non_unique | Key_name       | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++-------+------------+----------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| names |          1 | idx_name_first |            1 | name        | A         |          24 |        1 |   NULL | YES  | BTREE      |         |               |
++-------+------------+----------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+```
+
+#### 5. **Test the search performance after adding the index**
+
+Now that the index is in place, run the same query again to count the names starting with 'a' and observe the improvement in search time:
+
+```sql
+SELECT COUNT(name) FROM names WHERE name LIKE 'a%';
+```
+
+**Expected Output**:
+```
++-------------+
+| COUNT(name) |
++-------------+
+|      302936 |
++-------------+
+```
+
+**Time Taken**: The query should now execute much faster (in about 0.87 seconds, as opposed to the original 2.80 seconds).
+
+#### 6. **Exit the MySQL prompt**
+
+After completing the necessary steps, exit the MySQL shell:
+
+```sql
+exit;
+```
+
+</details>
+
+<details>
+  <summary><strong>Testing and Usage</strong></summary>
+
+1. **Import the Dataset**:
+   Import the `names.sql` file into the database to create the `names` table:
+
+   ```bash
+   cat names.sql | mysql -uroot -p holberton
+   ```
+
+   Verify the import by checking the number of rows in the `names` table:
+
+   ```bash
+   echo "SELECT COUNT(*) FROM names;" | mysql -uroot -p holberton
+   ```
+
+2. **Test Performance Without Index**:
+   Before creating the index, run the search query to check how long it takes:
+
+   ```bash
+   mysql -uroot -p holberton -e "SELECT COUNT(name) FROM names WHERE name LIKE 'a%';"
+   ```
+
+   **Expected Output**:
+   ```
+   +-------------+
+   | COUNT(name) |
+   +-------------+
+   |      302936 |
+   +-------------+
+   ```
+
+   **Time Taken**: Approximately 2.8 seconds.
+
+3. **Create the Index**:
+   Run the `8-index_my_names.sql` script to create the index on the first letter of the `name` column:
+
+   ```bash
+   cat 8-index_my_names.sql | mysql -uroot -p holberton
+   ```
+
+4. **Test Performance with Index**:
+   After creating the index, re-run the query to check for improved performance:
+
+   ```bash
+   mysql -uroot -p holberton -e "SELECT COUNT(name) FROM names WHERE name LIKE 'a%';"
+   ```
+
+   **Expected Output**:
+   ```
+   +-------------+
+   | COUNT(name) |
+   +-------------+
+   |      302936 |
+   +-------------+
+   ```
+
+   **Time Taken**: Approximately 0.87 seconds.
+
+</details>
+
+<details>
+  <summary><strong>Troubleshooting</strong></summary>
+
+#### Issue 1: **Running SQL commands in bash instead of MySQL**
+
+- **Problem**: If you mistakenly run SQL commands like `CREATE INDEX` in the bash shell instead of the MySQL shell, you'll encounter errors like `bash: syntax error near unexpected token '('`.
+- **Solution**: Make sure you're inside the MySQL interactive shell (`mysql -uroot -p holberton`) before running any SQL commands.
+
+#### Issue 2: **Slow query performance due to large dataset**
+
+- **Problem**: The dataset in `names.sql` is large, and searches for names using the `LIKE 'a%'` query are slow.
+- **Solution**: By creating an index on the first letter of the `name` column, we optimize this search, reducing the query time significantly.
+
+</details>
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What**: We created an index on the first letter of the `name` column in the `names` table to optimize search performance.
+- **Where**: This optimization is implemented in the `names` table in the MySQL database `holberton`.
+- **Why**: When searching large datasets, creating an index on commonly filtered columns can dramatically speed up query performance, making the process of finding specific data faster and more efficient.
+- **How**: We created an index on the first letter of the `name` column using the `CREATE INDEX` statement, reducing the need for a full table scan during queries.
+- **Who**: The `names` table stores the data, and the index improves the performance of queries run against this table.
+- **When**: The index is created before performing search queries that filter by the first letter of the name, allowing for much faster query execution.
+
+</details>
