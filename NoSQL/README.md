@@ -123,3 +123,96 @@ This opened the MongoDB shell, confirming the installation was successful.
 
 
 ## Tasks and Usage
+
+### Task 0: List all databases
+
+In this task, we write a script that lists all the databases in MongoDB using the `show dbs` command.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Write a script that lists all databases in MongoDB.
+
+**Example Output**:
+```bash
+MongoDB shell version v3.6.3
+connecting to: mongodb://127.0.0.1:27017
+admin        0.000GB
+config       0.000GB
+local        0.000GB
+logs         0.005GB
+bye
+```
+
+</details>
+
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+1. **Create the Script**:  
+   Inside the `NoSQL` directory, create a new file `0-list_databases` with the following code:
+
+   ```bash
+   // Script to list all databases in MongoDB
+   show dbs
+   ```
+
+2. **Running the Script**:  
+   Run the script by executing the following command:
+
+   ```bash
+   mongo < 0-list_databases
+   ```
+
+3. **Expected Output**:  
+   After running the script, MongoDB will return a list of all available databases along with their sizes:
+
+   ```bash
+   MongoDB shell version v4.4.29
+   connecting to: mongodb://127.0.0.1:27017
+   admin        0.000GB
+   config       0.000GB
+   local        0.000GB
+   logs         0.005GB
+   bye
+   ```
+
+</details>
+
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What**: This task involves writing a MongoDB shell script to list all databases available on the MongoDB server.
+- **Where**: The script is executed within the MongoDB shell via the terminal.
+- **Why**: It helps the user get a quick overview of all available databases and their sizes.
+- **How**: We use the `show dbs` command in MongoDB to list databases.
+- **Who**: Anyone connected to the MongoDB server can run this script.
+- **When**: This script can be executed anytime MongoDB is running and connected.
+
+</details>
+
+
+
+<details>
+  <summary><strong>Testing and Usage</strong></summary>
+
+1. **Ensure MongoDB is Running**:  
+   Before running the script, make sure the MongoDB service is running:
+   
+   ```bash
+   sudo systemctl start mongod
+   ```
+
+2. **Run the Script**:  
+   Run the script using:
+   
+   ```bash
+   mongo < 0-list_databases
+   ```
+
+3. **Check the Output**:  
+   The script will output all databases and their sizes.
+
+</details>
