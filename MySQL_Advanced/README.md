@@ -1566,3 +1566,119 @@ exit;
 - **When**: The index is created before performing search queries that filter by the first letter of the name, allowing for much faster query execution.
 
 </details>
+
+### Task 9: Optimize Search and Score
+
+In this task, we create a composite index on the table `names` that indexes both the first letter of the `name` and the `score` column. This allows us to optimize search queries that filter by both the first letter of the name and the score.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Write a SQL script that creates an index `idx_name_first_score` on the table `names` based on the first letter of the `name` and the `score`.
+- The goal is to optimize search queries that filter by both `name` (starting with a specific letter) and `score`.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+#### 1. **9-index_name_score.sql**: Create a composite index on the first letter of `name` and the `score`.
+
+```sql
+-- In a world full of names and numbers, searching through millions can be daunting.
+-- This composite index is like a dual-filter: first, we narrow down by the initial letter,
+-- and then, like a second lens, we refine the search by score.
+-- By indexing both the first letter of the name and the score, we optimize our query,
+-- allowing us to glide swiftly through the data and arrive at the desired results faster.
+-- It's like zooming in with a high-powered telescope: focused and precise, no time wasted!
+CREATE INDEX idx_name_first_score ON names (name(1), score);
+
+
+
+```
+
+- **Role**: This script creates a composite index on the `names` table, indexing both the first letter of `name` and the `score`.
+- **How It Works**:
+  - The index optimizes queries that filter based on both `name` (starting with a specific letter) and `score`.
+  - It ensures that searches that involve filtering by both the first letter of the name and score run more efficiently.
+
+</details>
+
+<details>
+  <summary><strong>Testing and Usage</strong></summary>
+
+1. **Import the Database**:
+   First, you need to import the table dump `names.sql`. This populates the `names` table with a large dataset:
+
+   ```bash
+   cat names.sql | mysql -uroot -p holberton
+   ```
+
+   After importing, you can verify the data by checking the table contents:
+
+   ```bash
+   mysql -uroot -p holberton
+   ```
+
+   Then, run:
+
+   ```sql
+   SELECT COUNT(*) FROM names;
+   ```
+
+   **Expected Output**:
+   ```
+   COUNT(*)
+   7894483
+   ```
+
+2. **Create the Composite Index**:
+   Run the `9-index_name_score.sql` script to create the index on the first letter of `name` and `score`:
+
+   ```bash
+   cat 9-index_name_score.sql | mysql -uroot -p holberton
+   ```
+
+3. **Verify the Index**:
+   You can verify that the index has been created using the following MySQL command:
+
+   ```sql
+   SHOW INDEX FROM names;
+   ```
+
+   **Expected Output**:
+   ```
+   Table   Non_unique   Key_name             Seq_in_index   Column_name   Collation   Cardinality   Sub_part   Index_type
+   names   1            idx_name_first_score 1              name          A           25            1          BTREE
+   names   1            idx_name_first_score 2              score         A           3901          NULL       BTREE
+   ```
+
+4. **Test the Search Performance**:
+   Now test a search query before and after creating the index:
+
+   ```sql
+   SELECT COUNT(name) FROM names WHERE name LIKE 'a%' AND score < 80;
+   ```
+
+   **Before Creating the Index**:
+   - The query took around **2.97 seconds** to run without the index.
+
+   **After Creating the Index**:
+   - The query runs much faster, reducing the time to around **0.36 seconds**.
+
+   This demonstrates the significant performance improvement after creating the composite index.
+
+</details>
+
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What**: We created a composite index that optimizes queries filtering by both the first letter of the `name` and the `score`.
+- **Where**: This functionality is implemented in the MySQL database `holberton`, on the `names` table.
+- **Why**: Queries that filter by both name (starting with a letter) and score can be slow on large datasets. Creating this index drastically improves performance.
+- **How**: The index optimizes the query by allowing MySQL to look up names by the first letter and score simultaneously, rather than searching the entire table.
+- **Who**: The `names` table stores the `name` and `score` data, which is indexed by this composite index.
+- **When**: The composite index is used every time a query searches for names starting with a specific letter and a specific score range.
+
+</details>
