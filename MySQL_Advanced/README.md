@@ -1682,3 +1682,146 @@ CREATE INDEX idx_name_first_score ON names (name(1), score);
 - **When**: The composite index is used every time a query searches for names starting with a specific letter and a specific score range.
 
 </details>
+
+
+
+### Task 10: Safe Divide
+
+In this task, we create a function `SafeDiv` that safely divides two numbers, returning 0 if the divisor (`b`) is 0. This prevents any potential division-by-zero errors, which would result in `NULL` values in MySQL.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Write a SQL script that creates a function `SafeDiv` to divide two numbers safely.
+- The function should take two arguments:
+  - `a`: an integer (numerator).
+  - `b`: an integer (denominator).
+- If `b == 0`, the function should return 0. Otherwise, it should return `a / b`.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+#### 1. **10-init.sql**: Initialize the database with the necessary `numbers` table and insert sample data.
+
+```sql
+-- Initial setup for numbers table with sample data
+DROP TABLE IF EXISTS numbers;
+
+CREATE TABLE IF NOT EXISTS numbers (
+    a INT DEFAULT 0,
+    b INT DEFAULT 0
+);
+
+-- Insert sample data
+INSERT INTO numbers (a, b) VALUES (10, 2), (4, 5), (2, 3), (6, 3), (7, 0), (6, 8);
+```
+
+- **Role**: This script sets up the initial table with pairs of numbers (`a`, `b`) to test the `SafeDiv` function.
+
+#### 2. **10-div.sql**: Create the `SafeDiv` function.
+
+```sql
+-- This function safely divides two numbers, returning 0 if the second number (b) is 0.
+-- We use DETERMINISTIC because, given the same inputs (a and b), the result will always be the same.
+-- MySQL can optimize this function knowing that the output does not change for the same input.
+
+DELIMITER //
+
+CREATE FUNCTION SafeDiv(a INT, b INT) RETURNS FLOAT
+DETERMINISTIC -- The result is predictable and will always return the same output for the same inputs
+BEGIN
+    -- If the second number is 0, return 0 to avoid division by zero error
+    IF b = 0 THEN
+        RETURN 0;
+    ELSE
+        RETURN a / b;
+    END IF;
+END //
+
+DELIMITER ;
+```
+
+- **Role**: This function safely divides two numbers and returns 0 if the denominator is 0. We declare it as `DETERMINISTIC` because for the same inputs, the result will always be the same.
+- **How It Works**:
+  - The function checks if `b` is 0. If true, it returns 0 to prevent division by zero.
+  - Otherwise, it performs the division and returns the result.
+
+#### 3. **10-main.sql**: Test the function by selecting the results of `SafeDiv` on the `numbers` table.
+
+```sql
+-- Show the results of the SafeDiv function on the numbers table
+SELECT SafeDiv(a, b) FROM numbers;
+```
+
+- **Role**: This script tests the `SafeDiv` function by applying it to the values in the `numbers` table.
+
+</details>
+
+<details>
+  <summary><strong>Testing and Usage</strong></summary>
+
+1. **Run the Initialization Script**:
+   Set up the `numbers` table and insert sample data by running the `10-init.sql` script:
+
+   ```bash
+   cat 10-init.sql | mysql -uroot -p holberton
+   ```
+
+   Verify the data has been inserted:
+
+   ```bash
+   echo "SELECT * FROM numbers;" | mysql -uroot -p holberton
+   ```
+
+   **Expected Output**:
+   ```
+   a       b
+   10      2
+   4       5
+   2       3
+   6       3
+   7       0
+   6       8
+   ```
+
+2. **Create the Function**:
+   Run the `10-div.sql` script to create the `SafeDiv` function:
+
+   ```bash
+   cat 10-div.sql | mysql -uroot -p holberton
+   ```
+
+3. **Test SafeDiv Function**:
+   Run the following query to test the function on the `numbers` table:
+
+   ```bash
+   echo "SELECT SafeDiv(a, b) FROM numbers;" | mysql -uroot -p holberton
+   ```
+
+   **Expected Output**:
+   ```
+   SafeDiv(a, b)
+   5
+   0.8
+   0.666667
+   2
+   0
+   0.75
+   ```
+
+</details>
+
+ 
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What**: We created a function to safely divide two numbers, returning 0 if the divisor is 0.
+- **Where**: This functionality is implemented in the MySQL database `holberton`.
+- **Why**: Division by zero leads to `NULL` results, which can cause issues in queries and calculations.
+- **How**: The function checks whether the divisor is 0 and returns 0 if so; otherwise, it performs the division and returns the result.
+- **Who**: The function takes two arguments (`a` and `b`), which represent the numerator and the denominator.
+- **When**: The function is executed whenever you need to divide two numbers safely.
+
+</details>
