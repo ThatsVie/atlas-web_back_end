@@ -216,3 +216,89 @@ bye
    The script will output all databases and their sizes.
 
 </details>
+
+### Task 1: Create or Use the Database
+
+This task creates or switches to the database named `my_db` in MongoDB. If the database does not exist, it will be created.
+
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Write a script that creates or uses the database my_db:
+**Example Output**:
+```bash
+MongoDB shell version v3.6.3
+connecting to: mongodb://127.0.0.1:27017
+switched to db my_db
+bye
+```
+
+</details>
+
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+1. **Create the Script**:  
+   In the `NoSQL` directory, create the file `1-use_or_create_database` with the following content:
+
+   ```bash
+   // Script to create or use the database my_db
+   use my_db
+   ```
+
+2. **Run the Script**:  
+   Run the script with the following command:
+
+   ```bash
+   mongo < 1-use_or_create_database
+   ```
+
+3. **Expected Output**:  
+   MongoDB will either switch to the `my_db` database or create it if it doesn't exist:
+
+   ```bash
+   MongoDB shell version v4.4.29
+   connecting to: mongodb://127.0.0.1:27017
+   switched to db my_db
+   bye
+   ```
+
+</details>
+
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What**: The task involves creating or switching to the database `my_db`.
+- **Where**: It’s executed within the MongoDB shell.
+- **Why**: The `use` command allows you to create or switch to a specific database, and if the database doesn’t exist, MongoDB creates it automatically.
+- **How**: By running `use my_db`, MongoDB either switches to the database or creates it if it's not present.
+- **Who**: Any user with access to the MongoDB instance can run this script.
+- **When**: This script is used whenever the database `my_db` is needed or if you want to create it.
+
+</details>
+
+
+<details>
+  <summary><strong>Testing and Usage</strong></summary>
+
+1. **Ensure MongoDB is Running**:  
+   Ensure MongoDB is running before executing the script:
+   
+   ```bash
+   sudo systemctl start mongod
+   ```
+
+2. **Run the Script**:  
+   Run the script using:
+   
+   ```bash
+   mongo < 1-use_or_create_database
+   ```
+
+3. **Check the Output**:  
+   MongoDB will switch to `my_db` or create it if it doesn’t exist.
+
+</details>
