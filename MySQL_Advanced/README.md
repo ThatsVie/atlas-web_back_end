@@ -2003,3 +2003,426 @@ SHOW CREATE TABLE students;
 - **When**: The view will be updated dynamically whenever the students' scores or meeting dates change.
 
 </details>
+
+### Task 12: Average Weighted Score
+
+In this task, we create a stored procedure `ComputeAverageWeightedScoreForUser` that calculates and stores the average weighted score for a given user. The weighted average is calculated by taking into account both the score for each project and the weight assigned to the project.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Write a SQL script that creates a stored procedure `ComputeAverageWeightedScoreForUser` to calculate the average weighted score for a student.
+- The procedure takes one input:
+  - `user_id`: the `id` value from the `users` table, which is linked to an existing user.
+- The weighted average is calculated by multiplying each project's score by its weight, summing the results, and dividing by the total weight.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+#### 1. **100-init.sql**: Initialize the database with necessary tables (`users`, `projects`, `corrections`) and insert sample data.
+
+```sql
+-- Initial setup for users, projects, and corrections tables
+DROP TABLE IF EXISTS corrections;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS projects;
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    average_score FLOAT DEFAULT 0,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS projects (
+    id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    weight INT DEFAULT 1,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS corrections (
+    user_id INT NOT NULL,
+    project_id INT NOT NULL,
+    score FLOAT DEFAULT 0,
+    KEY `user_id` (`user_id`),
+    KEY `project_id` (`project_id`),
+    CONSTRAINT fk_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+    CONSTRAINT fk_project_id FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE
+);
+
+-- Insert sample users and projects
+INSERT INTO users (name) VALUES ("Bob");
+INSERT INTO users (name) VALUES ("Jeanne");
+
+-- Insert sample projects with weights
+INSERT INTO projects (name, weight) VALUES ("C is fun", 1);
+INSERT INTO projects (name, weight) VALUES ("Python is cool", 2);
+
+-- Insert corrections (scores) for users
+INSERT INTO corrections (user_id, project_id, score) VALUES (1, 1, 80);
+INSERT INTO corrections (user_id, project_id, score) VALUES (1, 2, 96);
+
+INSERT INTO corrections (user_id, project_id, score) VALUES (2, 1, 91);
+INSERT INTO corrections (user_id, project_id, score) VALUES (2, 2, 73);
+```
+
+- **Role**: This script sets up the initial tables and inserts sample data for testing the `ComputeAverageWeightedScoreForUser` procedure.
+
+#### 2. **100-average_weighted_score.sql**: Create the stored procedure `ComputeAverageWeightedScoreForUser`.
+
+```sql
+-- This procedure computes the average weighted score for a given user (input_user_id).
+-- The average weighted score is calculated by multiplying each project's score with its weight, 
+-- summing the results, and dividing by the total weight of the projects.
+-- It updates the average_score field in the users table with the weighted average for the user.
+
+DELIMITER //
+
+CREATE PROCEDURE ComputeAverageWeightedScoreForUser(IN input_user_id INT)
+BEGIN
+    DECLARE total_weighted_score FLOAT;
+    DECLARE total_weight INT;
+
+    -- Calculate the total weighted score for the given user
+    SELECT SUM(c.score * p.weight) INTO total_weighted_score
+    FROM corrections c
+    JOIN projects p ON c.project_id = p.id
+    WHERE c.user_id = input_user_id;
+
+    -- Calculate the total weight for the user's projects
+    SELECT SUM(p.weight) INTO total_weight
+    FROM corrections c
+    JOIN projects p ON c.project_id = p.id
+    WHERE c.user_id = input_user_id;
+
+    -- Update the user's average_score based on the weighted average
+    IF total_weight > 0 THEN
+        UPDATE users
+        SET average_score = total_weighted_score / total_weight
+        WHERE id = input_user_id;
+    END IF;
+END //
+
+DELIMITER ;
+```
+
+- **Role**: This procedure calculates the average weighted score for a user based on their scores in the `corrections` table and the weight of each project in the `projects` table.
+- **How It Works**:
+  - The procedure takes `input_user_id` as input, multiplies each project's score with its weight, sums them up, and divides by the total weight of the projects. The result is then used to update the user's `average_score` in the `users` table.
+
+#### 3. **100-main.sql**: Test the procedure by calculating the average weighted score for a user and verifying the result.
+
+```sql
+-- Show and compute average weighted score for a user
+SELECT * FROM users;
+SELECT * FROM projects;
+SELECT * FROM corrections;
+
+-- Calculate the average weighted score for Jeanne
+CALL ComputeAverageWeightedScoreForUser((SELECT id FROM users WHERE name = "Jeanne"));
+
+-- Display the updated average weighted score
+SELECT "--";
+SELECT * FROM users;
+```
+
+- **Role**: This script tests the functionality of the stored procedure by calculating and displaying the weighted average score for a specific user (in this case, Jeanne).
+
+</details>
+
+<details>
+  <summary><strong>Testing and Usage</strong></summary>
+
+1. **Run the Initialization Script**:
+   Create the `users`, `projects`, and `corrections` tables and insert some initial data by running the `100-init.sql` script:
+
+   ```bash
+   cat 100-init.sql | mysql -uroot -p holberton
+   ```
+
+   Verify that the data has been inserted:
+
+   ```bash
+   echo "SELECT * FROM users;" | mysql -uroot -p holberton
+   echo "SELECT * FROM projects;" | mysql -uroot -p holberton
+   echo "SELECT * FROM corrections;" | mysql -uroot -p holberton
+   ```
+
+   **Expected Output**:
+   ```
+   id      name    average_score
+   1       Bob     0
+   2       Jeanne  0
+
+   id      name    weight
+   1       C is fun        1
+   2       Python is cool  2
+
+   user_id project_id      score
+   1       1       80
+   1       2       96
+   2       1       91
+   2       2       73
+   ```
+
+2. **Create the Stored Procedure**:
+   Run the `100-average_weighted_score.sql` script to create the `ComputeAverageWeightedScoreForUser` procedure:
+
+   ```bash
+   cat 100-average_weighted_score.sql | mysql -uroot -p holberton
+   ```
+
+3. **Compute Average Weighted Score**:
+   Run the `100-main.sql` script to calculate the weighted average score for a user and verify the update:
+
+   ```bash
+   cat 100-main.sql | mysql -uroot -p holberton
+   ```
+
+   **Expected Output** (before and after calculating the weighted average):
+   ```
+   id      name    average_score
+   1       Bob     0
+   2       Jeanne  0
+
+   user_id project_id      score
+   1       1       80
+   1       2       96
+   2       1       91
+   2       2       73
+
+   --
+
+   id      name    average_score
+   1       Bob     0
+   2       Jeanne  79
+   ```
+
+   The weighted average score for Jeanne is calculated as:
+   - (91 * 1 + 73 * 2) / (1 + 2) = (91 + 146) / 3 = 237 / 3 = 79
+
+</details>
+
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What**: We created a stored procedure that calculates and updates the average weighted score for a user based on their project scores and the weight of each project.
+- **Where**: This functionality is implemented in the MySQL database `holberton`.
+- **Why**: Weighted scores provide a more accurate representation of a user's performance by considering the relative importance (weight) of each project.
+- **How**: The procedure calculates the weighted average by multiplying each score with the project’s weight, summing the results, and dividing by the total weight of the projects.
+- **Who**: The procedure takes `input_user_id` as input and computes the weighted average score for that user.
+- **When**: The procedure is executed whenever you need to compute or update a user's weighted average score.
+
+</details>
+
+### Task 13: Average Weighted Score for All
+
+In this task, we create a stored procedure `ComputeAverageWeightedScoreForUsers` that calculates and stores the average weighted score for all users. The weighted average is calculated by taking into account both the score for each project and the weight assigned to the project, for every user in the `users` table.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Write a SQL script that creates a stored procedure `ComputeAverageWeightedScoreForUsers` to calculate the average weighted score for all students.
+- The procedure does not take any input.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+#### 1. **101-init.sql**: Initialize the database with necessary tables (`users`, `projects`, `corrections`) and insert sample data.
+
+```sql
+-- Initial setup for users, projects, and corrections tables
+DROP TABLE IF EXISTS corrections;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS projects;
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    average_score FLOAT DEFAULT 0,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS projects (
+    id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    weight INT DEFAULT 1,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS corrections (
+    user_id INT NOT NULL,
+    project_id INT NOT NULL,
+    score FLOAT DEFAULT 0,
+    KEY `user_id` (`user_id`),
+    KEY `project_id` (`project_id`),
+    CONSTRAINT fk_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+    CONSTRAINT fk_project_id FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE
+);
+
+-- Insert sample users and projects
+INSERT INTO users (name) VALUES ("Bob");
+INSERT INTO users (name) VALUES ("Jeanne");
+
+-- Insert sample projects with weights
+INSERT INTO projects (name, weight) VALUES ("C is fun", 1);
+INSERT INTO projects (name, weight) VALUES ("Python is cool", 2);
+
+-- Insert corrections (scores) for users
+INSERT INTO corrections (user_id, project_id, score) VALUES (1, 1, 80);
+INSERT INTO corrections (user_id, project_id, score) VALUES (1, 2, 96);
+
+INSERT INTO corrections (user_id, project_id, score) VALUES (2, 1, 91);
+INSERT INTO corrections (user_id, project_id, score) VALUES (2, 2, 73);
+```
+
+- **Role**: This script sets up the initial tables and inserts sample data for testing the `ComputeAverageWeightedScoreForUsers` procedure.
+
+#### 2. **101-average_weighted_score.sql**: Create the stored procedure `ComputeAverageWeightedScoreForUsers`.
+
+```sql
+-- This procedure computes the average weighted score for all users.
+-- For each user, the procedure calculates the average weighted score by multiplying each project's score with its weight,
+-- summing the results, and dividing by the total weight of the projects.
+-- It updates the average_score field in the users table for each user.
+
+DELIMITER //
+
+CREATE PROCEDURE ComputeAverageWeightedScoreForUsers()
+BEGIN
+    DECLARE done INT DEFAULT 0;
+    DECLARE current_user_id INT;
+    DECLARE cur CURSOR FOR SELECT id FROM users;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    OPEN cur;
+
+    -- Loop through each user to calculate and update their average weighted score
+    read_loop: LOOP
+        FETCH cur INTO current_user_id;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        -- Calculate the total weighted score and total weight for each user
+        CALL ComputeAverageWeightedScoreForUser(current_user_id);
+    END LOOP;
+
+    CLOSE cur;
+END //
+
+DELIMITER ;
+```
+
+- **Role**: This procedure iterates over all users, calculating the average weighted score for each user and updating their `average_score` field in the `users` table.
+- **How It Works**:
+  - The procedure uses a cursor to loop through each user in the `users` table.
+  - For each user, the `ComputeAverageWeightedScoreForUser` procedure is called to calculate their weighted average score.
+
+#### 3. **101-main.sql**: Test the procedure by calculating the average weighted score for all users and verifying the result.
+
+```sql
+-- Show and compute average weighted score for all users
+SELECT * FROM users;
+SELECT * FROM projects;
+SELECT * FROM corrections;
+
+-- Calculate the average weighted score for all users
+CALL ComputeAverageWeightedScoreForUsers();
+
+-- Display the updated average weighted scores
+SELECT "--";
+SELECT * FROM users;
+```
+
+- **Role**: This script tests the functionality of the stored procedure by calculating and displaying the weighted average scores for all users.
+
+</details>
+
+<details>
+  <summary><strong>Testing and Usage</strong></summary>
+
+1. **Run the Initialization Script**:
+   Create the `users`, `projects`, and `corrections` tables and insert some initial data by running the `101-init.sql` script:
+
+   ```bash
+   cat 101-init.sql | mysql -uroot -p holberton
+   ```
+
+   Verify that the data has been inserted:
+
+   ```bash
+   echo "SELECT * FROM users;" | mysql -uroot -p holberton
+   echo "SELECT * FROM projects;" | mysql -uroot -p holberton
+   echo "SELECT * FROM corrections;" | mysql -uroot -p holberton
+   ```
+
+   **Expected Output**:
+   ```
+   id      name    average_score
+   1       Bob     0
+   2       Jeanne  0
+
+   id      name    weight
+   1       C is fun        1
+   2       Python is cool  2
+
+   user_id project_id      score
+   1       1       80
+   1       2       96
+   2       1       91
+   2       2       73
+   ```
+
+2. **Create the Stored Procedure**:
+   Run the `101-average_weighted_score.sql` script to create the `ComputeAverageWeightedScoreForUsers` procedure:
+
+   ```bash
+   cat 101-average_weighted_score.sql | mysql -uroot -p holberton
+   ```
+
+3. **Compute Average Weighted Score for All Users**:
+   Run the `101-main.sql` script to calculate the weighted average scores for all users and verify the update:
+
+   ```bash
+   cat 101-main.sql | mysql -uroot -p holberton
+   ```
+
+   **Expected Output** (before and after calculating the weighted average):
+   ```
+   id      name    average_score
+   1       Bob     0
+   2       Jeanne  0
+
+   user_id project_id      score
+   1       1       80
+   1       2       96
+   2       1       91
+   2       2       73
+
+   --
+
+   id      name    average_score
+   1       Bob     90.6667
+   2       Jeanne  79
+   ```
+
+</details>
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What**: We created a stored procedure that calculates and updates the average weighted score for all users.
+- **Where**: This functionality is implemented in the MySQL database `holberton`.
+- **Why**: It automates the calculation of average weighted scores for all users, ensuring data accuracy across all users.
+- **How**: The procedure loops through each user in the `users` table, calculates their weighted average score using their project scores and project weights, and updates their `average_score` field.
+- **Who**: The procedure does not take any input, as it calculates the weighted average for every user.
+- **When**: The procedure is executed whenever you need to compute or update all users' weighted average scores.
+
+</details>
