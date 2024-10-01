@@ -1,7 +1,7 @@
 <div align="center">
     <img src="https://github.com/user-attachments/assets/98e2e92e-c592-41ae-9223-be0aa0a6eee3" alt="puginacandystore" />
     <h1>MySQL Advanced</h1>
-    <p>In this project, we will dive deeper into MySQL by exploring advanced features such as table constraints, indexing, stored procedures, triggers, and views. We will also focus on optimizing queries and ensuring our database structure is well-organized and efficient.</p>
+    <p>This project focuses on advanced MySQL concepts, including creating tables with constraints, optimizing queries using indexes, and working with stored procedures, functions, views, and triggers. The project aims to deepen understanding of efficient database management and data manipulation. It also explores techniques for improving performance and ensuring data integrity across a variety of real-world scenarios, such as calculating weighted averages and implementing safe operations with custom SQL functions.</p>
 </div>
 
 ## Concepts
@@ -151,7 +151,8 @@ END;
 
 
 ## Requirements
-
+<details>
+  <summary>Click to expand</summary>
 
 - All files will be executed on Ubuntu 20.04 LTS using MySQL 8.0
 - All SQL queries must have a comment just before (i.e., syntax explanations above each query)
@@ -160,15 +161,23 @@ END;
 - A `README.md` file, at the root of the project folder, is mandatory
 - The length of your files will be tested using `wc`
 
-### Comments Example
+</details>
 
-```
+## Comments Example
+<details>
+  <summary>Click to expand</summary>
+
+```sql
 -- Get the 3 first students in the Batch ID=3
 -- Because Batch 3 is obviously the best!
 SELECT id, name FROM students WHERE batch_id = 3 ORDER BY created_at DESC LIMIT 3;
 ```
 
-### How to Import an SQL Dump
+</details>
+
+## How to Import an SQL Dump
+<details>
+  <summary>Click to expand</summary>
 
 ```bash
 $ echo "CREATE DATABASE hbtn_0d_tvshows;" | mysql -uroot -p
@@ -187,6 +196,9 @@ id  name
 7   Suspense
 8   Thriller
 ```
+
+</details>
+
 
 ## Tasks and Usage
 
