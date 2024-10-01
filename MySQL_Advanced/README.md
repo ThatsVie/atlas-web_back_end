@@ -1825,3 +1825,181 @@ SELECT SafeDiv(a, b) FROM numbers;
 - **When**: The function is executed whenever you need to divide two numbers safely.
 
 </details>
+
+### Task 11: No Table for a Meeting
+
+In this task, we create a SQL view `need_meeting` that lists students who need a meeting based on two criteria:
+1. Their score is strictly under 80.
+2. They have either no `last_meeting` date or their last meeting was more than a month ago.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Write a SQL script that creates a view `need_meeting` listing students who need a meeting.
+- The criteria for being listed are:
+  1. Their `score` is below 80.
+  2. Their `last_meeting` date is either `NULL` or more than one month old.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+#### 1. **11-init.sql**: Set up the students table and insert initial data.
+
+```sql
+-- Initial setup for the students table
+DROP TABLE IF EXISTS students;
+
+CREATE TABLE IF NOT EXISTS students (
+    name VARCHAR(255) NOT NULL,
+    score INT DEFAULT 0,
+    last_meeting DATE NULL
+);
+
+-- Insert sample students
+INSERT INTO students (name, score) VALUES ('Bob', 80);
+INSERT INTO students (name, score) VALUES ('Sylvia', 120);
+INSERT INTO students (name, score) VALUES ('Jean', 60);
+INSERT INTO students (name, score) VALUES ('Steeve', 50);
+INSERT INTO students (name, score) VALUES ('Camilia', 80);
+INSERT INTO students (name, score) VALUES ('Alexa', 130);
+```
+
+- **Role**: This script creates the `students` table and populates it with sample student data, including `name`, `score`, and `last_meeting` date.
+
+#### 2. **11-need_meeting.sql**: Create the `need_meeting` view.
+
+```sql
+-- Create the view need_meeting to identify students who need a meeting
+CREATE VIEW need_meeting AS
+SELECT name
+FROM students
+WHERE score < 80
+AND (last_meeting IS NULL OR last_meeting < ADDDATE(CURDATE(), INTERVAL -1 MONTH));
+```
+
+- **Role**: This view selects students whose `score` is under 80 and either have no `last_meeting` date or had a meeting more than a month ago.
+- **How It Works**: The `WHERE` clause filters students based on the score and the time since their last meeting. If the `last_meeting` is `NULL` or more than a month old, the student will be included in the `need_meeting` view.
+
+#### 3. **11-main.sql**: Test the view to ensure it works as expected.
+
+```sql
+-- Test the need_meeting view
+SELECT * FROM need_meeting;
+
+-- Adjust the score of Bob to fall below 80
+UPDATE students SET score = 40 WHERE name = 'Bob';
+SELECT * FROM need_meeting;
+
+-- Adjust Steeve's score to 80, so he should be excluded
+UPDATE students SET score = 80 WHERE name = 'Steeve';
+SELECT * FROM need_meeting;
+
+-- Update Jean's last meeting date to today, so he should be excluded
+UPDATE students SET last_meeting = CURDATE() WHERE name = 'Jean';
+SELECT * FROM need_meeting;
+
+-- Set Jean's last meeting to more than 1 month ago, so he should be included again
+UPDATE students SET last_meeting = ADDDATE(CURDATE(), INTERVAL -2 MONTH) WHERE name = 'Jean';
+SELECT * FROM need_meeting;
+
+-- Show the view's definition
+SHOW CREATE VIEW need_meeting;
+
+-- Show the students table structure
+SHOW CREATE TABLE students;
+```
+
+- **Role**: This script tests the `need_meeting` view by selecting data, modifying student scores, and adjusting `last_meeting` dates to verify the correct functionality of the view.
+
+</details>
+
+<details>
+  <summary><strong>Testing and Usage</strong></summary>
+
+1. **Run the Initialization Script**:
+   First, create the `students` table and insert the initial data by running the `11-init.sql` script:
+
+   ```bash
+   cat 11-init.sql | mysql -uroot -p holberton
+   ```
+
+   Verify the data:
+
+   ```bash
+   echo "SELECT * FROM students;" | mysql -uroot -p holberton
+   ```
+
+   **Expected Output**:
+   ```
+   name    score   last_meeting
+   Bob     80      NULL
+   Sylvia  120     NULL
+   Jean    60      NULL
+   Steeve  50      NULL
+   Camilia 80      NULL
+   Alexa   130     NULL
+   ```
+
+2. **Create the View**:
+   Run the `11-need_meeting.sql` script to create the view:
+
+   ```bash
+   cat 11-need_meeting.sql | mysql -uroot -p holberton
+   ```
+
+3. **Test the View**:
+   Run the `11-main.sql` script to test the view:
+
+   ```bash
+   cat 11-main.sql | mysql -uroot -p holberton
+   ```
+
+   **Expected Output**:
+   The view will return the list of students meeting the criteria at different stages:
+   ```
+   name
+   Jean
+   Steeve
+
+   --
+
+   name
+   Bob
+   Jean
+   Steeve
+
+   --
+
+   name
+   Bob
+   Jean
+
+   --
+
+   name
+   Bob
+   ```
+
+4. **Verify View and Table Definitions**:
+   The view and table definitions can be viewed using:
+
+   ```bash
+   SHOW CREATE VIEW need_meeting;
+   SHOW CREATE TABLE students;
+   ```
+
+</details>
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What**: We created a view to list students who need a meeting based on their scores and last meeting dates.
+- **Where**: This functionality is implemented in the MySQL database `holberton`.
+- **Why**: Regular meetings help keep students on track, especially those with lower scores or those who haven't met with their instructors recently.
+- **How**: The `need_meeting` view filters students whose scores are below 80 and either have no recent meeting or no meeting at all.
+- **Who**: The `students` table holds data on each student's name, score, and the date of their last meeting.
+- **When**: The view will be updated dynamically whenever the students' scores or meeting dates change.
+
+</details>
