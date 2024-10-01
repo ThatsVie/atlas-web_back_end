@@ -302,3 +302,101 @@ bye
    MongoDB will switch to `my_db` or create it if it doesn’t exist.
 
 </details>
+
+
+### Task 2: Insert Document
+
+**Description**:  
+This task involves writing a script that inserts a document into the `school` collection. The document must have one attribute `name` with the value `"Holberton school"`. The database name will be passed as an option when running the script.
+
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Write a script that inserts a document into the collection `school`.
+- The document must contain an attribute `name` with the value `"Holberton school"`.
+- The database name will be passed as an option to the MongoDB command.
+
+**Example Output**:
+```bash
+MongoDB shell version v3.6.3
+connecting to: mongodb://127.0.0.1:27017/my_db
+WriteResult({ "nInserted" : 1 })
+bye
+```
+
+</details>
+
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+1. **Create the Script**:  
+   Inside the `NoSQL` directory, create a new file `2-insert` with the following content:
+
+   ```bash
+   // Script to insert a document into the collection "school"
+   db.school.insert({
+       name: "Holberton school"
+   })
+   ```
+
+2. **Run the Script**:  
+   To execute the script and insert the document into the `school` collection, run:
+
+   ```bash
+   mongo my_db < 2-insert
+   ```
+
+3. **Expected Output**:  
+   You should see the following output confirming the insertion of the document:
+
+   ```bash
+   MongoDB shell version v4.4.29
+   connecting to: mongodb://127.0.0.1:27017/my_db
+   WriteResult({ "nInserted" : 1 })
+   bye
+   ```
+
+</details>
+
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What**: This task involves inserting a document into the `school` collection with an attribute `name` set to `"Holberton school"`.
+- **Where**: The script is executed in the MongoDB shell via the terminal.
+- **Why**: Inserting a document into a collection is a fundamental operation in MongoDB to store data.
+- **How**: The `db.school.insert()` command inserts a document into the `school` collection. If the collection does not exist, MongoDB creates it.
+- **Who**: Any user with access to the MongoDB server can run this script.
+- **When**: This script can be executed anytime MongoDB is running and connected to the local server.
+
+</details>
+
+
+<details>
+  <summary><strong>Testing and Usage</strong></summary>
+
+1. **Ensure MongoDB is Running**:  
+   Make sure MongoDB is running by checking the service status or starting it with:
+   
+   ```bash
+   sudo systemctl start mongod
+   ```
+
+2. **Run the Script**:  
+   Run the script using:
+   
+   ```bash
+   mongo my_db < 2-insert
+   ```
+
+3. **Verify the Insertion**:  
+   To verify the insertion, you can run the following command in the MongoDB shell to see if the document was inserted:
+   
+   ```bash
+   mongo my_db
+   db.school.find()
+   ```
+
+</details>
