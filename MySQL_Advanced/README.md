@@ -26,13 +26,129 @@ Read or watch the following resources to better understand the topics covered in
 - [CREATE INDEX Statement](https://dev.mysql.com/doc/refman/5.7/en/create-index.html)
 - [CREATE VIEW Statement](https://dev.mysql.com/doc/refman/5.7/en/create-view.html)
 
-### Learning Objectives
 
-- How to create tables with constraints
-- How to optimize queries by adding indexes
-- What are stored procedures and functions, and how to implement them in MySQL
-- What are views, and how to implement them in MySQL
-- What are triggers, and how to implement them in MySQL
+
+## Learning Objectives
+
+<details>
+  <summary><strong>How to create tables with constraints</strong></summary>
+  
+Creating tables with constraints ensures data integrity by enforcing rules on the data that can be inserted into the table. Constraints include `PRIMARY KEY`, `FOREIGN KEY`, `NOT NULL`, `UNIQUE`, `CHECK`, and `DEFAULT`. 
+
+**Tasks that cover this topic:**
+
+- **Task 5: Email validation** — Constraints used in `users` table creation to ensure the email is valid and uniqueness is maintained.
+- **Task 6: Add bonus** — `FOREIGN KEY` constraints are added in the `corrections` table to link `user_id` and `project_id` to the `users` and `projects` tables respectively.
+- **Task 12: Average weighted score** — Demonstrates how to create tables with constraints and use them when calculating weighted averages for users.
+  
+**Example**:
+```sql
+CREATE TABLE IF NOT EXISTS users (
+    id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS corrections (
+    user_id INT NOT NULL,
+    project_id INT NOT NULL,
+    score INT DEFAULT 0,
+    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+```
+
+</details>
+
+<details>
+  <summary><strong>How to optimize queries by adding indexes</strong></summary>
+
+Adding indexes helps optimize query performance by allowing faster lookups, which is crucial when working with large datasets. Indexes can be added to one or more columns, and they allow for quicker sorting and filtering of data.
+
+**Tasks that cover this topic:**
+
+- **Task 8: Optimize simple search** — Adds an index `idx_name_first` to optimize searches based on the first letter of names.
+- **Task 9: Optimize search and score** — Adds a composite index `idx_name_first_score` on both name and score to further optimize search queries.
+  
+**Example**:
+```sql
+CREATE INDEX idx_name_first ON names (name(1));
+CREATE INDEX idx_name_first_score ON names (name(1), score);
+```
+
+</details>
+
+<details>
+  <summary><strong>What are stored procedures and functions, and how to implement them in MySQL</strong></summary>
+
+Stored procedures and functions are reusable pieces of code that execute SQL statements. Functions return values, while stored procedures can perform operations without necessarily returning a value. They help modularize code, improve reusability, and encapsulate business logic in the database.
+
+**Tasks that cover this topic:**
+
+- **Task 10: Safe divide** — Implements a function `SafeDiv` to safely divide two numbers, returning 0 if the divisor is 0.
+- **Task 12: Average weighted score** — Implements a stored procedure to calculate the average weighted score for a specific user.
+- **Task 13: Average weighted score for all** — Implements a stored procedure that calculates the average weighted score for all users.
+  
+**Example**:
+```sql
+CREATE PROCEDURE ComputeAverageWeightedScoreForUser(IN input_user_id INT)
+BEGIN
+    -- procedure logic
+END;
+
+CREATE FUNCTION SafeDiv(a INT, b INT) RETURNS FLOAT
+BEGIN
+    IF b = 0 THEN
+        RETURN 0;
+    ELSE
+        RETURN a / b;
+    END IF;
+END;
+```
+
+</details>
+
+<details>
+  <summary><strong>What are views, and how to implement them in MySQL</strong></summary>
+
+A view in MySQL is a virtual table created based on the result of a `SELECT` query. Views provide an abstracted way to query data, and they can simplify complex queries. Views can also enforce security by exposing only specific columns or rows to users.
+
+**Tasks that cover this topic:**
+
+- **Task 11: No table for a meeting** — Implements a view `need_meeting` to list students who need a meeting based on their scores and the date of their last meeting.
+
+**Example**:
+```sql
+CREATE VIEW need_meeting AS
+SELECT name
+FROM students
+WHERE score < 80
+AND (last_meeting IS NULL OR last_meeting < ADDDATE(CURDATE(), INTERVAL -1 MONTH));
+```
+
+</details>
+
+<details>
+  <summary><strong>What are triggers, and how to implement them in MySQL</strong></summary>
+
+A trigger in MySQL is a set of SQL statements that automatically execute (or "trigger") when a specified event occurs in the database, such as an `INSERT`, `UPDATE`, or `DELETE`. Triggers help automate actions like auditing changes or enforcing business rules.
+
+**Tasks that cover this topic:**
+
+- **Task 5: Email validation** — Implements a trigger `reset_valid_email` to reset the `valid_email` field when the email address is changed.
+  
+**Example**:
+```sql
+CREATE TRIGGER reset_valid_email BEFORE UPDATE ON users
+FOR EACH ROW
+BEGIN
+    IF NEW.email != OLD.email THEN
+        SET NEW.valid_email = 0;
+    END IF;
+END;
+```
+
+</details>
+
 
 ## Requirements
 
