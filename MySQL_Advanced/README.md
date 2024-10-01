@@ -1133,23 +1133,24 @@ SELECT * FROM corrections;
 
 </details>
 
-### Task 7: Average score
+### Task 7: Average Score
 
-In this task, we create a stored procedure `ComputeAverageScoreForUser` that computes and stores the average score for a student. The average score will be stored in the `average_score` field of the `users` table and is calculated based on the student's scores in the `corrections` table. This procedure ensures that the average score is updated efficiently.
+In this task, we create a stored procedure `ComputeAverageScoreForUser` that calculates and stores the average score for a given user. The procedure takes a `user_id` as input and updates the corresponding user's `average_score` in the `users` table.
 
 <details>
   <summary><strong>Curriculum Instruction</strong></summary>
 
-- Write a SQL script that creates a stored procedure `ComputeAverageScoreForUser` to compute and store the average score for a student.
-- The procedure takes one input: `user_id` (a `users.id` value, linked to an existing user).
-- The average score can be a decimal value.
+- Write a SQL script that creates a stored procedure `ComputeAverageScoreForUser` to calculate the average score for a student.
+- The procedure takes one input:
+  - `user_id`: the `id` value from the `users` table, which is linked to an existing user.
+- The `average_score` can be a decimal.
 
 </details>
 
 <details>
   <summary><strong>Steps and Code Implementation</strong></summary>
 
-#### 1. **7-init.sql**: Initialize the database with the necessary tables (`users`, `projects`, and `corrections`) and seed the initial data.
+#### 1. **7-init.sql**: Initialize the database with necessary tables (`users`, `projects`, `corrections`) and insert sample data.
 
 ```sql
 -- Initial setup for users, projects, and corrections tables
@@ -1187,70 +1188,60 @@ INSERT INTO users (name) VALUES ("Jeanne");
 INSERT INTO projects (name) VALUES ("C is fun");
 INSERT INTO projects (name) VALUES ("Python is cool");
 
--- Insert sample corrections
+-- Insert corrections (scores) for users
 INSERT INTO corrections (user_id, project_id, score) VALUES (1, 1, 80);
 INSERT INTO corrections (user_id, project_id, score) VALUES (1, 2, 96);
+
 INSERT INTO corrections (user_id, project_id, score) VALUES (2, 1, 91);
 INSERT INTO corrections (user_id, project_id, score) VALUES (2, 2, 73);
 ```
 
-- **Role**: This script sets up the initial tables for users, projects, and corrections, and inserts some sample data.
-- **How It Works**: 
-  - `users`: Stores the user's name and their average score.
-  - `projects`: Stores project information.
-  - `corrections`: Stores the user's project scores.
-  - The sample data includes two users, two projects, and their corresponding scores.
+- **Role**: This script sets up the initial tables and inserts sample data for testing the `ComputeAverageScoreForUser` procedure.
 
-#### 2. **7-average_score.sql**: Create the `ComputeAverageScoreForUser` stored procedure that calculates the average score for a given user and updates the `average_score` field in the `users` table.
+#### 2. **7-average_score.sql**: Create the stored procedure `ComputeAverageScoreForUser`.
 
 ```sql
--- This stored procedure calculates the average score for a given user_id.
--- It updates the average_score field in the users table based on the user's scores in the corrections table.
-
 DELIMITER //
 
-CREATE PROCEDURE ComputeAverageScoreForUser(IN user_id INT)
+CREATE PROCEDURE ComputeAverageScoreForUser(IN input_user_id INT)
 BEGIN
     DECLARE avg_score FLOAT;
 
-    -- Calculate the average score of the user
+    -- Calculate the average score for the given user
     SELECT AVG(score) INTO avg_score
     FROM corrections
-    WHERE corrections.user_id = user_id;
+    WHERE user_id = input_user_id;
 
-    -- Update the average score of the user
+    -- Update the user's average_score field
     UPDATE users
     SET average_score = avg_score
-    WHERE id = user_id;
+    WHERE id = input_user_id;
 END //
 
 DELIMITER ;
 ```
 
-- **Role**: This stored procedure computes the average score for a specific `user_id` and updates the `average_score` field in the `users` table.
-- **How It Works**: 
-  - The procedure uses the `AVG()` function to calculate the average score from the `corrections` table for the provided `user_id`.
-  - Once calculated, the result is stored in the `average_score` field in the `users` table.
+- **Role**: This procedure calculates the average score for a user based on their scores in the `corrections` table and updates the `average_score` field in the `users` table.
+- **How It Works**:
+  - The procedure takes `input_user_id` as input, calculates the average score from the `corrections` table for that user, and updates their `average_score` in the `users` table.
+  - If a user has multiple corrections (scores), the procedure will average them, allowing for decimal values in the `average_score`.
 
-#### 3. **7-main.sql**: Test the functionality of the `ComputeAverageScoreForUser` stored procedure by computing and updating the average score for a user.
+#### 3. **7-main.sql**: Test the procedure by calculating the average score for a user and verifying the result.
 
 ```sql
--- Show and compute average score
+-- Show and compute average score for a user
 SELECT * FROM users;
 SELECT * FROM corrections;
 
--- Compute the average score for Jeanne
+-- Calculate the average score for Jeanne
 CALL ComputeAverageScoreForUser((SELECT id FROM users WHERE name = "Jeanne"));
 
--- Display updated results
+-- Display the updated average score
 SELECT "--";
 SELECT * FROM users;
 ```
 
-- **Role**: This script runs the procedure to compute Jeanne’s average score and updates the `average_score` in the `users` table.
-- **How It Works**: 
-  - Before calling the procedure, the script shows the current state of the `users` and `corrections` tables.
-  - After the procedure is called for Jeanne, it updates her `average_score` field, and the final `SELECT` statement shows the updated state of the `users` table.
+- **Role**: This script tests the functionality of the stored procedure by calculating and displaying the average score for a specific user (in this case, Jeanne).
 
 </details>
 
@@ -1258,69 +1249,108 @@ SELECT * FROM users;
   <summary><strong>Testing and Usage</strong></summary>
 
 1. **Run the Initialization Script**:
-   First, create the `users`, `projects`, and `corrections` tables and insert some initial data by running the `7-init.sql` script:
+   Create the `users`, `projects`, and `corrections` tables and insert some initial data by running the `7-init.sql` script:
 
    ```bash
    cat 7-init.sql | mysql -uroot -p holberton
    ```
 
-   You can check that the tables were created and populated with the following command:
+   Verify that the data has been inserted:
 
    ```bash
    echo "SELECT * FROM users;" | mysql -uroot -p holberton
+   echo "SELECT * FROM corrections;" | mysql -uroot -p holberton
    ```
 
    **Expected Output**:
    ```
-   id  name    average_score
-   1   Bob     0
-   2   Jeanne  0
+   id      name    average_score
+   1       Bob     0
+   2       Jeanne  0
+
+   user_id project_id      score
+   1       1       80
+   1       2       96
+   2       1       91
+   2       2       73
    ```
 
-2. **Create the Procedure**:
+2. **Create the Stored Procedure**:
    Run the `7-average_score.sql` script to create the `ComputeAverageScoreForUser` procedure:
 
    ```bash
    cat 7-average_score.sql | mysql -uroot -p holberton
    ```
 
-3. **Compute the Average Score**:
-   Run the `7-main.sql` script to compute and update Jeanne's average score:
+3. **Compute Average Score**:
+   Run the `7-main.sql` script to calculate the average score for a user and verify the update:
 
    ```bash
    cat 7-main.sql | mysql -uroot -p holberton
    ```
 
-   **Expected Output** (before and after computing the average score):
+   **Expected Output** (before and after calculating the average):
    ```
-   id  name    average_score
-   1   Bob     0
-   2   Jeanne  0
-   user_id project_id  score
-   1   1   80
-   1   2   96
-   2   1   91
-   2   2   73
+   id      name    average_score
+   1       Bob     0
+   2       Jeanne  0
+
+   user_id project_id      score
+   1       1       80
+   1       2       96
+   2       1       91
+   2       2       73
 
    --
 
-   id  name    average_score
-   1   Bob     0
-   2   Jeanne  82.0
+   id      name    average_score
+   1       Bob     0
+   2       Jeanne  82
    ```
 
-   The `average_score` for Jeanne is updated to `82.0` after computing her average score from the `corrections` table.
+   The average score for Jeanne is calculated as `(91 + 73) / 2 = 82`.
+
+</details>
+
+<details>
+  <summary><strong>Troubleshooting</strong></summary>
+
+#### Issue: **Average Score Not Updating**
+
+At first, we encountered an issue where the average score was not being updated in the `users` table. This was due to an ambiguity between the input parameter `user_id` and the column `user_id` in the `corrections` table.
+
+**Solution**: We renamed the input parameter from `user_id` to `input_user_id` to avoid confusion and ensure the correct column was referenced in the SQL query.
+
+**Updated Code**:
+```sql
+CREATE PROCEDURE ComputeAverageScoreForUser(IN input_user_id INT)
+BEGIN
+    DECLARE avg_score FLOAT;
+
+    -- Calculate the average score for the given user
+    SELECT AVG(score) INTO avg_score
+    FROM corrections
+    WHERE user_id = input_user_id;
+
+    -- Update the user's average_score field
+    UPDATE users
+    SET average_score = avg_score
+    WHERE id = input_user_id;
+END;
+```
+
+This resolved the issue, and the procedure now correctly updates the `average_score` for each user.
 
 </details>
 
 <details>
   <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
 
-- **What**: We created a stored procedure `ComputeAverageScoreForUser` that computes and stores a student's average score in the `users` table based on their scores in the `corrections` table.
-- **Where**: This procedure is implemented in the MySQL database `holberton`.
-- **Why**: Manually calculating and updating average scores can be error-prone and inefficient. Automating this process with a stored procedure ensures the average score is always accurate and updated whenever needed.
-- **How**: The procedure calculates the average score using the `AVG()` function and updates the `users` table for the specified `user_id`.
-- **Who**: The procedure is meant to compute the average score for any user with corrections in the `corrections` table.
-- **When**: The stored procedure can be executed at any time to recompute the average score for a user based on their scores.
+- **What**: We created a stored procedure that calculates and updates the average score for a user based on their corrections.
+- **Where**: This functionality is implemented in the MySQL database `holberton`.
+- **Why**: Automatically calculating and updating average scores reduces manual data processing and ensures accuracy.
+- **How**: The procedure calculates the average score by averaging the user's corrections in the `corrections` table, then updates the user's `average_score` field in the `users` table.
+- **Who**: The procedure takes `input_user_id` as input and computes the average score for that user.
+- **When**: The procedure is executed whenever you need to compute or update a user's average score.
 
 </details>
