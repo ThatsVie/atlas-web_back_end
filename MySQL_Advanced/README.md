@@ -4,6 +4,30 @@
     <p>This project focuses on advanced MySQL concepts, including creating tables with constraints, optimizing queries using indexes, and working with stored procedures, functions, views, and triggers. The project aims to deepen understanding of efficient database management and data manipulation. It also explores techniques for improving performance and ensuring data integrity across a variety of real-world scenarios, such as calculating weighted averages and implementing safe operations with custom SQL functions.</p>
 </div>
 
+## Table of Contents
+
+- [Concepts](#concepts)
+- [Resources](#resources)
+- [Learning Objectives](#learning-objectives)
+- [Requirements](#requirements)
+  - [Comments Example](#comments-example)
+  - [How to Import an SQL Dump](#how-to-import-an-sql-dump)
+- [Tasks and Usage](#tasks-and-usage)
+  - [Task 0: We are all unique!](#task-0-we-are-all-unique)
+  - [Task 1: In and not out](#task-1-in-and-not-out)
+  - [Task 2: Best band ever!](#task-2-best-band-ever)
+  - [Task 3: Old school band](#task-3-old-school-band)
+  - [Task 4: Buy buy buy](#task-4-buy-buy-buy)
+  - [Task 5: Email validation to sent](#task-5-email-validation-to-sent)
+  - [Task 6: Add Bonus](#task-6-add-bonus)
+  - [Task 7: Average Score](#task-7-average-score)
+  - [Task 8: Optimize Simple Search](#task-8-optimize-simple-search)
+  - [Task 9: Optimize Search and Score](#task-9-optimize-search-and-score)
+  - [Task 10: Safe Divide](#task-10-safe-divide)
+  - [Task 11: No Table for a Meeting](#task-11-no-table-for-a-meeting)
+  - [Task 12: Average Weighted Score](#task-12-average-weighted-score)
+  - [Task 13: Average Weighted Score for All Users](#task-13-average-weighted-score-for-all-users)
+
 ## Concepts
 
 For this project, we expect you to look at this concept:
