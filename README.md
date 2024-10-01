@@ -93,6 +93,12 @@ This project implements a Redis-based caching system using Python. It explores k
 
 To view a README.md file for Redis Basic visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/0x0B_redis_basic/README.md)
 
+## MySQL Advanced
+
+This project focuses on advanced MySQL concepts, including creating tables with constraints, optimizing queries using indexes, and working with stored procedures, functions, views, and triggers. The project aims to deepen understanding of efficient database management and data manipulation. It also explores techniques for improving performance and ensuring data integrity across a variety of real-world scenarios, such as calculating weighted averages and implementing safe operations with custom SQL functions.
+
+To view a README.md file for MySQL Advanced visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/MySQL_Advanced/README.md)
+
 ## Author
 
 Vie Paula - [GitHub Profile](https://github.com/ThatsVie)
