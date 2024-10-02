@@ -3,6 +3,27 @@
     <p>This project demonstrates the use of MongoDB, a NoSQL database, to perform essential CRUD operations via both the MongoDB shell and Python's pymongo library. It includes scripts for inserting, updating, querying, and analyzing documents in MongoDB collections, such as processing and analyzing Nginx logs. The project showcases practical techniques for integrating Python with MongoDB to manage data efficiently and perform advanced queries.</p>
 </div>
 
+## Table of Contents
+
+- [Resources](#resources)
+- [Learning Objectives](#learning-objectives)
+- [Requirements](#requirements)
+- [Step-by-Step Walkthrough: Installing MongoDB 4.4 on Ubuntu 20.04 (What Worked for Me)](#step-by-step-walkthrough-installing-mongodb-44-on-ubuntu-2004-what-worked-for-me)
+- [Tasks and Usage](#tasks-and-usage)
+  - [Task 0: List all databases](#task-0-list-all-databases)
+  - [Task 1: Create or Use the Database](#task-1-create-or-use-the-database)
+  - [Task 2: Insert Document](#task-2-insert-document)
+  - [Task 3: All Documents](#task-3-all-documents)
+  - [Task 4: All Matches](#task-4-all-matches)
+  - [Task 5: Count Documents](#task-5-count-documents)
+  - [Task 6: Update Document](#task-6-update-document)
+  - [Task 7: Delete by Match](#task-7-delete-by-match)
+  - [Task 8: List All Documents in Python](#task-8-list-all-documents-in-python)
+  - [Task 9: Insert a Document in Python](#task-9-insert-a-document-in-python)
+  - [Task 10: Change School Topics in Python](#task-10-change-school-topics-in-python)
+  - [Task 11: Where can I learn Python?](#task-11-where-can-i-learn-python)
+  - [Task 12: Log Stats](#task-12-log-stats)
+
 
 ## Resources
 
