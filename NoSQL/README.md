@@ -1,6 +1,8 @@
-# NoSQL
+<div align="center">
+    <img src="https://github.com/user-attachments/assets/5d3681e0-7f0e-4767-be0b-8b9c3f7a8308" alt="NOSQLPuggy" />
+    <p>This project demonstrates the use of MongoDB, a NoSQL database, to perform essential CRUD operations via both the MongoDB shell and Python's pymongo library. It includes scripts for inserting, updating, querying, and analyzing documents in MongoDB collections, such as processing and analyzing Nginx logs. The project showcases practical techniques for integrating Python with MongoDB to manage data efficiently and perform advanced queries.</p>
+</div>
 
-This project demonstrates the use of MongoDB, a NoSQL database, to perform essential CRUD operations via both the MongoDB shell and Python's pymongo library. It includes scripts for inserting, updating, querying, and analyzing documents in MongoDB collections, such as processing and analyzing Nginx logs. The project showcases practical techniques for integrating Python with MongoDB to manage data efficiently and perform advanced queries.
 
 ## Resources
 
