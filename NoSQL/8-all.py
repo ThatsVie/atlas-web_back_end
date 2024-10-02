@@ -5,6 +5,7 @@ list_all connects to a MongoDB collection and retrieves all documents.
 If no documents are found, it returns an empty list.
 '''
 
+
 def list_all(mongo_collection):
     '''
     List all documents in a MongoDB collection.
