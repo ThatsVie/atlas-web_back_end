@@ -1494,41 +1494,41 @@ Methods:
    
    ```python
    #!/usr/bin/env python3
-   '''
-   This script provides some statistics about Nginx logs stored in MongoDB.
-   It displays the total number of logs, the counts of each HTTP method, and
-   the count of status checks.
-   '''
+  '''
+  This script provides statistics from the Nginx logs stored in MongoDB.
+  It displays the total number of logs, the count of each HTTP method,
+  and how many times GET requests were made to /status.
+  '''
 
-   from pymongo import MongoClient
+  from pymongo import MongoClient
 
-   def log_stats():
-       '''
-       Connect to MongoDB, retrieve statistics on Nginx logs, and print them.
-       '''
-       client = MongoClient('mongodb://127.0.0.1:27017')
-       db = client.logs
-       collection = db.nginx
 
-       total_logs = collection.count_documents({})
-       get_count = collection.count_documents({"method": "GET"})
-       post_count = collection.count_documents({"method": "POST"})
-       put_count = collection.count_documents({"method": "PUT"})
-       patch_count = collection.count_documents({"method": "PATCH"})
-       delete_count = collection.count_documents({"method": "DELETE"})
-       status_check = collection.count_documents({"method": "GET", "path": "/status"})
+  def log_stats():
+    ''' Prints Nginx logs statistics from MongoDB. '''
+    client = MongoClient('mongodb://127.0.0.1:27017')
+    db = client.logs
+    collection = db.nginx
 
-       print(f"{total_logs} logs")
-       print("Methods:")
-       print(f"\tmethod GET: {get_count}")
-       print(f"\tmethod POST: {post_count}")
-       print(f"\tmethod PUT: {put_count}")
-       print(f"\tmethod PATCH: {patch_count}")
-       print(f"\tmethod DELETE: {delete_count}")
-       print(f"{status_check} status check")
+    # Get the total number of logs
+    total_logs = collection.count_documents({})
+    print(f"{total_logs} logs")
 
-   if __name__ == "__main__":
-       log_stats()
+    # Count documents for each HTTP method
+    methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
+    print("Methods:")
+    for method in methods:
+        count = collection.count_documents({"method": method})
+        print(f"\tmethod {method}: {count}")
+
+    # Count the number of GET requests to /status
+    status_check = collection.count_documents({"method":
+                                              "GET", "path": "/status"})
+    print(f"{status_check} status check")
+
+
+if __name__ == "__main__":
+    log_stats()
+
    ```
 
 4. **Run the Script**:  
