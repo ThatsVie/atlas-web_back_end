@@ -1447,7 +1447,7 @@ def schools_by_topic(mongo_collection, topic):
 
 ### Task 12: Log Stats
 
-This task involves writing a Python script that provides statistics on Nginx logs stored in MongoDB, displaying the total count of logs, counts of HTTP methods used, and the number of status checks.
+This task involves writing a Python script that provides statistics on Nginx logs stored in MongoDB. The script will display the total count of logs, counts of HTTP methods used, and the number of status checks.
 
 <details>
   <summary><strong>Curriculum Instruction</strong></summary>
@@ -1494,41 +1494,37 @@ Methods:
    
    ```python
    #!/usr/bin/env python3
-  '''
-  This script provides statistics from the Nginx logs stored in MongoDB.
-  It displays the total number of logs, the count of each HTTP method,
-  and how many times GET requests were made to /status.
-  '''
+   '''
+   This script provides statistics from the Nginx logs stored in MongoDB.
+   It displays the total number of logs, the count of each HTTP method,
+   and how many times GET requests were made to /status.
+   '''
 
-  from pymongo import MongoClient
+   from pymongo import MongoClient
 
+   def log_stats():
+       ''' Prints Nginx logs statistics from MongoDB. '''
+       client = MongoClient('mongodb://127.0.0.1:27017')
+       db = client.logs
+       collection = db.nginx
 
-  def log_stats():
-    ''' Prints Nginx logs statistics from MongoDB. '''
-    client = MongoClient('mongodb://127.0.0.1:27017')
-    db = client.logs
-    collection = db.nginx
+       # Get the total number of logs
+       total_logs = collection.count_documents({})
+       print(f"{total_logs} logs")
 
-    # Get the total number of logs
-    total_logs = collection.count_documents({})
-    print(f"{total_logs} logs")
+       # Count documents for each HTTP method
+       methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
+       print("Methods:")
+       for method in methods:
+           count = collection.count_documents({"method": method})
+           print(f"\tmethod {method}: {count}")
 
-    # Count documents for each HTTP method
-    methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
-    print("Methods:")
-    for method in methods:
-        count = collection.count_documents({"method": method})
-        print(f"\tmethod {method}: {count}")
+       # Count the number of GET requests to /status
+       status_check = collection.count_documents({"method": "GET", "path": "/status"})
+       print(f"{status_check} status check")
 
-    # Count the number of GET requests to /status
-    status_check = collection.count_documents({"method":
-                                              "GET", "path": "/status"})
-    print(f"{status_check} status check")
-
-
-if __name__ == "__main__":
-    log_stats()
-
+   if __name__ == "__main__":
+       log_stats()
    ```
 
 4. **Run the Script**:  
@@ -1555,8 +1551,8 @@ if __name__ == "__main__":
   <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
 
 - **What**: This task involves writing a Python script that analyzes Nginx logs stored in MongoDB and displays statistics.
-- **Where**: The Python script is executed locally and connects to a MongoDB instance that contains Nginx log data.
-- **Why**: The script provides insights into the types of HTTP requests made and how often status checks occur, which is useful for log analysis.
+- **Where**: The Python script is executed locally and connects to a MongoDB instance containing Nginx log data.
+- **Why**: The script provides insights into the types of HTTP requests made and how often status checks occur, useful for log analysis.
 - **How**: The script uses `pymongo` to connect to MongoDB, queries the `nginx` collection for counts of logs and specific methods, and outputs the results to the console.
 - **Who**: This script can be used by developers, system administrators, or anyone responsible for analyzing server logs.
 - **When**: The script can be executed anytime the logs are available in MongoDB.
