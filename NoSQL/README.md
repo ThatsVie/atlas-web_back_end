@@ -306,7 +306,6 @@ bye
 
 ### Task 2: Insert Document
 
-**Description**:  
 This task involves writing a script that inserts a document into the `school` collection. The document must have one attribute `name` with the value `"Holberton school"`. The database name will be passed as an option when running the script.
 
 
