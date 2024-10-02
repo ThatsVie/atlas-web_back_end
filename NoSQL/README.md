@@ -1107,6 +1107,7 @@ def list_all(mongo_collection):
   The function was also validated to work by inserting additional documents, ensuring it outputs all relevant entries from the MongoDB collection.
 
 </details>
+
 ### Task 9: Insert a Document in Python
 
 This task involves writing a Python function that inserts a new document into a MongoDB collection based on keyword arguments (`kwargs`). The function should return the `_id` of the newly inserted document.
