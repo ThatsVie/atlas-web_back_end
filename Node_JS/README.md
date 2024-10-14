@@ -1,8 +1,12 @@
-# Node Express
 
-## Project Overview
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/10921ea3-3667-4cd0-99af-62c6fa45e229" alt="blackpuggyspotlight">
 
-This project is focused on building a web server using Node.js and Express.js, following modern JavaScript practices. The project also involves setting up a development environment with tools like ESLint, Babel, and Nodemon to enhance development speed and code quality.
+  <h1>Node Express</h1>
+
+  <p>This project is focused on building a web server using Node.js and Express.js, following modern JavaScript practices. The project also involves setting up a development environment with tools like ESLint, Babel, and Nodemon to enhance development speed and code quality.</p>
+</div>
+
 
 ## Resources
 
