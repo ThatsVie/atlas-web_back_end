@@ -4,7 +4,7 @@
 
   <h1>Node Express</h1>
 
-  <p>This project is focused on building a web server using Node.js and Express.js, following modern JavaScript practices. The project also involves setting up a development environment with tools like ESLint, Babel, and Nodemon to enhance development speed and code quality.</p>
+  <p>This project focuses on building HTTP servers using both Node.js and the Express framework. Starting with basic server creation using Node’s HTTP module, the project evolves into handling complex routing and asynchronous file reading. We structured the project by organizing code into controllers, routes, and utility functions, using Babel for ES6 compatibility and Nodemon for faster development. The final product is a robust, modular Express server capable of handling requests for student data from a CSV file.</p>
 </div>
 
 
