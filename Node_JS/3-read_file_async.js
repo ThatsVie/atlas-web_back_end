@@ -9,8 +9,7 @@ function countStudents(path) {
       // Remove empty lines and the header
       const students = lines.filter((line, index) => line.trim() !== '' && index > 0);
 
-      console.log(`Number of students: ${students.length}`);
-
+      let result = `Number of students: ${students.length}\n`;
       const fields = {};
 
       // Process each student line
@@ -23,10 +22,14 @@ function countStudents(path) {
         fields[field].push(firstname);
       });
 
-      // Log the number of students in each field and their names
+      // Prepare the output for each field
       for (const [field, names] of Object.entries(fields)) {
-        console.log(`Number of students in ${field}: ${names.length}. List: ${names.join(', ')}`);
+        result += `Number of students in ${field}: ${names.length}. List: ${names.join(', ')}\n`;
       }
+
+      // Return the formatted result as a string
+      console.log(result.trim());
+      return result.trim();
     })
     .catch(() => {
       throw new Error('Cannot load the database');
