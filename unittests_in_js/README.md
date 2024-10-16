@@ -32,6 +32,7 @@ At the end of this project, you will be able to:
 
 ## Tasks and Usage
 
+
 ### Task 0: Basic Test with Mocha and Node Assertion Library
 
 This task involves creating a function that rounds two numbers and returns their sum, then writing test cases using Mocha and the Node.js `assert` library.
@@ -120,6 +121,10 @@ This task involves creating a function that rounds two numbers and returns their
      it('should return 6 when a = 1.5 and b = 3.7', () => {
        assert.strictEqual(calculateNumber(1.5, 3.7), 6);
      });
+
+     it('should round only the second number when necessary', () => {
+       assert.strictEqual(calculateNumber(2, 3.2), 5); // b = 3.2 rounds to 3, 2 + 3 = 5
+     });
    });
    ```
 
@@ -134,13 +139,20 @@ This task involves creating a function that rounds two numbers and returns their
    **Expected Output:**
 
    ```bash
-   calculateNumber
-     ✔ should return 4 when a = 1 and b = 3
-     ✔ should return 5 when a = 1 and b = 3.7
-     ✔ should return 5 when a = 1.2 and b = 3.7
-     ✔ should return 6 when a = 1.5 and b = 3.7
+   > unittests_in_js@1.0.0 test
+> mocha 0-calcul.test.js
 
-   4 passing (6ms)
+
+
+  calculateNumber
+    ✔ return 4 when a = 1 and b = 3
+    ✔ return 5 when a = 1 and b = 3.7
+    ✔ return 5 when a = 1.2 and b = 3.7
+    ✔ return 6 when a = 1.5 and b = 3.7
+    ✔ round only the second number when necessary
+
+
+  5 passing (3ms)
    ```
 
 </details>
@@ -156,3 +168,19 @@ This task involves creating a function that rounds two numbers and returns their
 - **When:** The tests are run every time the test command (`npm test 0-calcul.test.js`) is executed, ensuring that the function behaves correctly in various cases.
 
 </details>
+
+<details>
+  <summary><strong>Troubleshooting</strong></summary>
+
+- **Issue:** Tests were passing, but the checker indicated that the test suite was missing a specific test case for rounding only the second number.
+  
+  - **Solution:** Added a test case to check that when only the second number (`b`) is rounded, the function still behaves as expected. This test case specifically rounds the second number and verifies the result:
+
+    ```javascript
+    it('should round only the second number when necessary', () => {
+      assert.strictEqual(calculateNumber(2, 3.2), 5); // b = 3.2 rounds to 3, 2 + 3 = 5
+    });
+    ```
+
+</details>
+
