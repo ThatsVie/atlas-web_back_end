@@ -1,0 +1,14 @@
+{
+    "name": "unittests_in_js",
+    "version": "1.0.0",
+    "description": "Unit tests with Mocha, Chai, and Sinon",
+    "main": "0-calcul.js",
+    "scripts": {
+        "test": "mocha"
+    },
+    "devDependencies": {
+        "chai": "^5.1.1",
+        "mocha": "^10.7.3",
+        "sinon": "^19.0.2"
+    }
+}
