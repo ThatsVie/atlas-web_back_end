@@ -182,3 +182,111 @@ This task involves creating a function that rounds two numbers and returns their
 
 </details>
 
+### Task 1: Combining Descriptions
+
+This task involves upgrading the `calculateNumber` function from Task 0 by adding a `type` argument, which specifies whether the operation is `SUM`, `SUBTRACT`, or `DIVIDE`.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Create a new file named `1-calcul.js` and modify the previous function:
+  - Add a new argument `type` which can be `SUM`, `SUBTRACT`, or `DIVIDE`.
+  - For `SUM`, round the two numbers and add them.
+  - For `SUBTRACT`, round the two numbers and subtract the second from the first.
+  - For `DIVIDE`, round the two numbers and divide the first by the second. If the second number is `0` (after rounding), return the string `"Error"`.
+  
+- Create a file `1-calcul.test.js` with test cases that verify each operation, including edge cases.
+
+- You should be able to run the test suite using `npm test 1-calcul.test.js`, and all tests should pass without any warnings or errors.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+1. **Create `1-calcul.js`:**
+
+   Modify the `calculateNumber` function to handle `SUM`, `SUBTRACT`, and `DIVIDE`:
+
+   ```javascript
+   function calculateNumber(type, a, b) {
+     const roundedA = Math.round(a);
+     const roundedB = Math.round(b);
+
+     if (type === 'SUM') {
+       return roundedA + roundedB;
+     } else if (type === 'SUBTRACT') {
+       return roundedA - roundedB;
+     } else if (type === 'DIVIDE') {
+       if (roundedB === 0) {
+         return 'Error';
+       }
+       return roundedA / roundedB;
+     }
+   }
+
+   module.exports = calculateNumber;
+   ```
+
+2. **Create `1-calcul.test.js`:**
+
+   Write test cases to verify the behavior of `calculateNumber` for `SUM`, `SUBTRACT`, `DIVIDE`, and edge cases like division by zero:
+
+   ```javascript
+   const assert = require('assert');
+   const calculateNumber = require('./1-calcul');
+
+   describe('calculateNumber', () => {
+     it('return 6 when type is SUM and a = 1.4, b = 4.5', () => {
+       assert.strictEqual(calculateNumber('SUM', 1.4, 4.5), 6);
+     });
+
+     it('return -4 when type is SUBTRACT and a = 1.4, b = 4.5', () => {
+       assert.strictEqual(calculateNumber('SUBTRACT', 1.4, 4.5), -4);
+     });
+
+     it('return 0.2 when type is DIVIDE and a = 1.4, b = 4.5', () => {
+       assert.strictEqual(calculateNumber('DIVIDE', 1.4, 4.5), 0.2);
+     });
+
+     it('return "Error" when type is DIVIDE and b = 0', () => {
+       assert.strictEqual(calculateNumber('DIVIDE', 1.4, 0), 'Error');
+     });
+   });
+   ```
+
+3. **Run the Test:**
+
+   Run the test suite using the following command:
+
+   ```bash
+   npm test 1-calcul.test.js
+   ```
+
+   **Expected Output:**
+
+   ```bash
+   calculateNumber
+     ✔ return 6 when type is SUM and a = 1.4, b = 4.5
+     ✔ return -4 when type is SUBTRACT and a = 1.4, b = 4.5
+     ✔ return 0.2 when type is DIVIDE and a = 1.4, b = 4.5
+     ✔ return "Error" when type is DIVIDE and b = 0
+
+   4 passing (3ms)
+   ```
+
+</details>
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What:** This task enhances the `calculateNumber` function to perform different operations (`SUM`, `SUBTRACT`, or `DIVIDE`) based on the `type` argument. We also wrote test cases to ensure each operation behaves as expected.
+- **Where:** The function is written in `1-calcul.js`, and the test cases are in `1-calcul.test.js`.
+- **Why:** This task demonstrates how to extend the functionality of an existing function and test for different behaviors and edge cases.
+- **How:** The numbers are rounded using `Math.round()`, and then the appropriate operation is performed based on the `type` argument. The test cases use `assert.strictEqual()` to verify the correct outputs.
+- **Who:** This task is relevant for anyone learning how to write and test more complex JavaScript functions.
+- **When:** The tests can be run at any time using the command `npm test 1-calcul.test.js`.
+
+</details>
+
+
