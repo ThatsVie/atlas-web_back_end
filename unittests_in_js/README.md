@@ -20,7 +20,7 @@ At the end of this project, you will be able to:
 - [Sinon](https://sinonjs.org/#get-started)
 - [Express - Routing](https://expressjs.com/en/guide/routing.html)
 - [Request](https://www.npmjs.com/package/request)
-- [Testing NodeJS Apps with Mocha, Chai, and SinonJS](https://www.digitalocean.com/community)
+- [Testing NodeJS Apps with Mocha, Chai, and SinonJS](https://stackoverflow.com/questions/43878090/how-to-test-nodejs-fs-using-mocha-chai-sinon)
 
 ## Requirements
 - **Node Version:** Node 20.x.x
@@ -289,4 +289,135 @@ This task involves upgrading the `calculateNumber` function from Task 0 by addin
 
 </details>
 
+### Task 2: Basic Test Using Chai Assertion Library
 
+This task involves copying the `calculateNumber` function from Task 1 and rewriting the test suite using Chai’s `expect` assertion style, which is more behavior-driven and easier to read.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Copy the file `1-calcul.js` into a new file named `2-calcul_chai.js`.
+- Copy the file `1-calcul.test.js` into a new file named `2-calcul_chai.test.js`.
+- Rewrite the test suite using Chai’s `expect` style to improve readability.
+- The tests should behave exactly as they did in Task 1 but with the Chai assertion library.
+- Run the test suite using `npm test 2-calcul_chai.test.js`, and ensure all tests pass without any warnings.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+1. **Copy and Modify the Files:**
+
+   - Copy `1-calcul.js` to `2-calcul_chai.js` and `1-calcul.test.js` to `2-calcul_chai.test.js`.
+   - Modify `2-calcul_chai.test.js` to use Chai’s `expect` style.
+
+2. **Install Chai:**
+
+   First, install Chai using npm:
+
+   ```bash
+   npm install chai --save-dev
+   ```
+
+3. **Update `2-calcul_chai.js`:**
+
+   No changes are required for the `calculateNumber` function, but here's a reminder of how it looks:
+
+   ```javascript
+   function calculateNumber(type, a, b) {
+     const roundedA = Math.round(a);
+     const roundedB = Math.round(b);
+
+     if (type === 'SUM') {
+       return roundedA + roundedB;
+     } else if (type === 'SUBTRACT') {
+       return roundedA - roundedB;
+     } else if (type === 'DIVIDE') {
+       if (roundedB === 0) {
+         return 'Error';
+       }
+       return roundedA / roundedB;
+     }
+   }
+
+   module.exports = calculateNumber;
+   ```
+
+4. **Rewrite `2-calcul_chai.test.js`:**
+
+   The test file now uses Chai’s `expect` for assertions:
+
+   ```javascript
+   const { expect } = require('chai');
+   const calculateNumber = require('./2-calcul_chai');
+
+   describe('calculateNumber with Chai', () => {
+     it('returns 6 when type is SUM and a = 1.4, b = 4.5', () => {
+       expect(calculateNumber('SUM', 1.4, 4.5)).to.equal(6);
+     });
+
+     it('returns -4 when type is SUBTRACT and a = 1.4, b = 4.5', () => {
+       expect(calculateNumber('SUBTRACT', 1.4, 4.5)).to.equal(-4);
+     });
+
+     it('returns 0.2 when type is DIVIDE and a = 1.4, b = 4.5', () => {
+       expect(calculateNumber('DIVIDE', 1.4, 4.5)).to.equal(0.2);
+     });
+
+     it('returns "Error" when type is DIVIDE and b = 0', () => {
+       expect(calculateNumber('DIVIDE', 1.4, 0)).to.equal('Error');
+     });
+   });
+   ```
+
+5. **Run the Test:**
+
+   To run the test suite, use:
+
+   ```bash
+   npm test 2-calcul_chai.test.js
+   ```
+
+   **Expected Output:**
+
+   ```bash
+   calculateNumber with Chai
+     ✔ returns 6 when type is SUM and a = 1.4, b = 4.5
+     ✔ returns -4 when type is SUBTRACT and a = 1.4, b = 4.5
+     ✔ returns 0.2 when type is DIVIDE and a = 1.4, b = 4.5
+     ✔ returns "Error" when type is DIVIDE and b = 0
+
+   4 passing (6ms)
+   ```
+
+</details>
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What:** This task involves writing unit tests using the Chai assertion library for behavior-driven development.
+- **Where:** The function `calculateNumber` is copied into `2-calcul_chai.js`, and the tests are rewritten using Chai’s `expect` style in `2-calcul_chai.test.js`.
+- **Why:** Chai’s syntax offers better readability and ease of understanding, which improves maintainability of the test suite.
+- **How:** The `expect` method from Chai is used to perform assertions. The test suite covers `SUM`, `SUBTRACT`, `DIVIDE`, and handles edge cases like division by zero.
+- **Who:** This task is useful for developers who want to write more maintainable and readable tests.
+- **When:** Run the tests using `npm test 2-calcul_chai.test.js`.
+
+</details>
+
+<details>
+  <summary><strong>Troubleshooting</strong></summary>
+
+- **Issue:** After installing the latest version of Chai, we encountered the error: `Error [ERR_REQUIRE_ESM]: require() of ES Module chai.js`.
+  
+  - **Solution:** This error occurred because newer versions of Chai use ES Modules (ESM), and our project was using CommonJS. To fix this, we downgraded Chai to version `4.3.6`, which still supports CommonJS.
+
+    To install the correct version:
+    
+    ```bash
+    npm install chai@4.3.6 --save-dev
+    ```
+
+- **Additional Note:** Ensure that your test files use `require()` for both `chai` and `calculateNumber`. This allows you to continue using CommonJS without switching to ESM.
+
+</details>
