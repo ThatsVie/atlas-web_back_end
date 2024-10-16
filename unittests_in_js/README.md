@@ -13,7 +13,6 @@ At the end of this project, you will be able to:
 - Write unit tests for asynchronous functions.
 - Write integration tests with a small Node server.
 
-*(We'll expand this section with answers once we've completed all tasks.)*
 
 ## Resources
 - [Mocha Documentation](https://mochajs.org/)
@@ -80,8 +79,10 @@ This task involves creating a function that rounds two numbers and returns their
    Add the test script to your `package.json` file:
 
    ```json
-   "scripts": {
-     "test": "mocha"
+   {
+     "scripts": {
+       "test": "mocha"
+     }
    }
    ```
 
@@ -139,20 +140,17 @@ This task involves creating a function that rounds two numbers and returns their
    **Expected Output:**
 
    ```bash
-   > unittests_in_js@1.0.0 test
-> mocha 0-calcul.test.js
+    unittests_in_js@1.0.0 test
+    mocha 0-calcul.test.js
 
+    calculateNumber
+      ✔ return 4 when a = 1 and b = 3
+      ✔ return 5 when a = 1 and b = 3.7
+      ✔ return 5 when a = 1.2 and b = 3.7
+      ✔ return 6 when a = 1.5 and b = 3.7
+      ✔ round only the second number when necessary
 
-
-  calculateNumber
-    ✔ return 4 when a = 1 and b = 3
-    ✔ return 5 when a = 1 and b = 3.7
-    ✔ return 5 when a = 1.2 and b = 3.7
-    ✔ return 6 when a = 1.5 and b = 3.7
-    ✔ round only the second number when necessary
-
-
-  5 passing (3ms)
+    5 passing (3ms)
    ```
 
 </details>
