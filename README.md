@@ -99,6 +99,24 @@ This project focuses on advanced MySQL concepts, including creating tables with 
 
 To view a README.md file for MySQL Advanced visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/MySQL_Advanced/README.md)
 
+## NoSQL
+
+This project demonstrates the use of MongoDB, a NoSQL database, to perform essential CRUD operations via both the MongoDB shell and Python's pymongo library. It includes scripts for inserting, updating, querying, and analyzing documents in MongoDB collections, such as processing and analyzing Nginx logs. The project showcases practical techniques for integrating Python with MongoDB to manage data efficiently and perform advanced queries.
+
+To view a README.md file for NoSQL visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/NoSQL/README.md)
+
+## Node Express
+
+This project focuses on building HTTP servers using both Node.js and the Express framework. Starting with basic server creation using Node’s HTTP module, the project evolves into handling complex routing and asynchronous file reading. We structured the project by organizing code into controllers, routes, and utility functions, using Babel for ES6 compatibility and Nodemon for faster development. The final product is a robust, modular Express server capable of handling requests for student data from a CSV file.
+
+To view a README.md file for Node Express visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/Node_JS/README.md)
+
+## Unittests in JS
+
+This project focuses on unit and integration testing in Node.js using Mocha, Chai, and Sinon. It covers testing various endpoints of an Express API, including GET and POST requests, while validating response status codes, messages, and deep equality of objects. The project also introduces testing techniques like spies, stubs, and hooks to ensure reliable and efficient test coverage for server functionality.
+
+To vie a README.md file for Unittests in JS visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/unittests_in_js/README.md)
+
 ## Author
 
 Vie Paula - [GitHub Profile](https://github.com/ThatsVie)
