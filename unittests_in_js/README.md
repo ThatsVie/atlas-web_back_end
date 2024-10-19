@@ -1,17 +1,137 @@
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/569d07df-06c9-4ca2-afa0-4896363330a7" alt="pugsclassroom"/>
+</p>
+
+<div align="center">
+
 # Unittests in JS
 
-## Project Overview
-This project focuses on writing and running unit tests for JavaScript applications using Mocha, Chai, and Sinon. You'll learn how to create test suites, use assertion libraries, and implement spies, stubs, and hooks. By the end of this project, you'll be able to confidently test Node.js apps with both synchronous and asynchronous code.
+This project focuses on unit and integration testing in Node.js using Mocha, Chai, and Sinon. It covers testing various endpoints of an Express API, including GET and POST requests, while validating response status codes, messages, and deep equality of objects. The project also introduces testing techniques like spies, stubs, and hooks to ensure reliable and efficient test coverage for server functionality.
+
+</div>
+
 
 ## Learning Objectives
-At the end of this project, you will be able to:
-- Use Mocha to write a test suite.
-- Implement different assertion libraries (Node or Chai).
-- Present long test suites.
-- Understand and apply spies and stubs.
-- Use hooks effectively.
-- Write unit tests for asynchronous functions.
-- Write integration tests with a small Node server.
+<details>
+  <summary><strong>How to use Mocha to write a test suite</strong></summary>
+  
+  Mocha is used to write test suites in **Task 0 (Basic Test with Mocha)** and in every subsequent task. We set up `mocha` in our `package.json` and use `describe()` to group related tests and `it()` to write individual test cases.
+
+  Example from Task 0:
+  ```javascript
+  describe('calculateNumber', () => {
+    it('returns 4 when a = 1 and b = 3', () => {
+      assert.strictEqual(calculateNumber(1, 3), 4);
+    });
+  });
+  ```
+</details>
+
+<details>
+  <summary><strong>How to use different assertion libraries (Node or Chai)</strong></summary>
+  
+  In **Task 0**, we use the Node `assert` library to test functions. From **Task 2 onward**, we begin using the Chai assertion library, which provides a more expressive syntax using `expect()` and `should()`.
+  
+  Example from Task 2:
+  ```javascript
+  const { expect } = require('chai');
+  expect(calculateNumber('SUM', 1.4, 4.5)).to.equal(6);
+  ```
+</details>
+
+<details>
+  <summary><strong>How to present long test suites</strong></summary>
+  
+  Mocha's `describe()` and `it()` allow us to structure tests clearly, even for long test suites. Grouping tests in **Task 0** through **Task 10** ensures that the suite remains easy to read and maintain. 
+  In **Task 9 (Regex Integration Testing)**, we see longer suites with multiple endpoints and different sets of tests for each.
+
+  Example of grouping:
+  ```javascript
+  describe('Index page', () => {
+    it('should return status code 200', (done) => {
+      request('http://localhost:7865/', (error, response) => {
+        expect(response.statusCode).to.equal(200);
+        done();
+      });
+    });
+  });
+  ```
+</details>
+
+<details>
+  <summary><strong>When and how to use spies</strong></summary>
+  
+  Spies are introduced in **Task 3 (Spies)**. We use Sinon to create a spy to wrap the `calculateNumber` function. Spies allow us to check if a function was called, with what arguments, and how many times.
+
+  Example from Task 3:
+  ```javascript
+  const spy = sinon.spy(Utils, 'calculateNumber');
+  expect(spy.calledOnceWithExactly('SUM', 100, 20)).to.be.true;
+  ```
+</details>
+
+<details>
+  <summary><strong>When and how to use stubs</strong></summary>
+  
+  Stubs are introduced in **Task 4 (Stubs)**. A stub replaces a function and allows us to control its behavior (e.g., making it return a specific value). This is useful for testing functions that depend on external data or expensive operations.
+
+  Example from Task 4:
+  ```javascript
+  const stub = sinon.stub(Utils, 'calculateNumber').returns(10);
+  expect(stub.calledOnceWithExactly('SUM', 100, 20)).to.be.true;
+  ```
+</details>
+
+<details>
+  <summary><strong>What are hooks and when to use them</strong></summary>
+  
+  Hooks, such as `beforeEach()` and `afterEach()`, are introduced in **Task 5 (Hooks)**. Hooks allow us to set up conditions before running tests or clean up after each test.
+
+  Example from Task 5:
+  ```javascript
+  beforeEach(() => {
+    spy = sinon.spy(console, 'log');
+  });
+
+  afterEach(() => {
+    spy.restore();
+  });
+  ```
+</details>
+
+<details>
+  <summary><strong>Unit testing with Async functions</strong></summary>
+  
+  **Task 6 (Async Tests with Done)** covers unit testing with asynchronous functions. We learn to use Mocha’s `done()` callback to test functions that return promises or perform async operations.
+
+  Example from Task 6:
+  ```javascript
+  it('returns a resolved promise with correct data', (done) => {
+    getPaymentTokenFromAPI(true).then((response) => {
+      expect(response.data).to.equal('Successful response from the API');
+      done();
+    });
+  });
+  ```
+</details>
+
+<details>
+  <summary><strong>How to write integration tests with a small node server</strong></summary>
+  
+  **Task 8 (Basic Integration Testing)** and **Task 9 (Regex Integration Testing)** focus on writing integration tests for a small Node.js server using Express. We test server responses, status codes, and routes using `request()` and `expect()` for deep equality checks.
+
+  Example from Task 9:
+  ```javascript
+  it('should return 200 and correct message when :id is a number', (done) => {
+    request('http://localhost:7865/cart/12', (error, response, body) => {
+      expect(response.statusCode).to.equal(200);
+      expect(body).to.equal('Payment methods for cart 12');
+      done();
+    });
+  });
+  ```
+</details>
+
 
 
 ## Resources
