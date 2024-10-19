@@ -1,6 +1,5 @@
 const request = require('request');
 const { expect } = require('chai');
-const app = require('./api');
 
 describe('Index page', () => {
   it('should return status code 200', (done) => {
