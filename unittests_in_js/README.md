@@ -939,3 +939,495 @@ This task involves skipping a failing test in a test suite without removing or c
 - **When:** Run the tests using `npm test 7-skip.test.js` to verify the behavior.
 
 </details>
+
+
+### Task 8: Basic Integration Testing
+
+In this task, we set up a basic Express API and wrote integration tests to ensure the API is working as expected. We used Mocha and Chai for the tests, and the `request` module to make HTTP requests during the test.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Create a folder `8-api` at the root of your project directory.
+- Inside this folder:
+  - Create a `package.json` file with the appropriate dependencies.
+  - Create an `api.js` file to implement a basic Express server that listens on port `7865`.
+  - Create an `api.test.js` file to test the API using Mocha and Chai.
+- The test should:
+  - Verify the status code and the returned message for the `/` route.
+  
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+1. **Create the `package.json` file:**
+
+   Inside the `8-api` folder, create a `package.json` file with the following content:
+
+   ```json
+   {
+     "name": "8-api",
+     "version": "1.0.0",
+     "scripts": {
+       "test": "./node_modules/mocha/bin/mocha"
+     },
+     "dependencies": {
+       "express": "^4.17.1"
+     },
+     "devDependencies": {
+       "chai": "^4.2.0",
+       "mocha": "^6.2.2",
+       "request": "^2.88.0"
+     }
+   }
+   ```
+
+   Run `npm install` to install the necessary dependencies:
+
+   ```bash
+   npm install
+   ```
+
+2. **Create the `api.js` file:**
+
+   Write the following code in `api.js` to create a basic Express server:
+
+   ```javascript
+   const express = require('express');
+   const app = express();
+
+   app.get('/', (req, res) => {
+     res.send('Welcome to the payment system');
+   });
+
+   if (require.main === module) {
+     app.listen(7865, () => {
+       console.log('API available on localhost port 7865');
+     });
+   }
+
+   module.exports = app;
+   ```
+
+3. **Create the `api.test.js` file:**
+
+   Write the test cases in `api.test.js`:
+
+   ```javascript
+   const request = require('request');
+   const { expect } = require('chai');
+
+   describe('Index page', () => {
+     it('should return status code 200', (done) => {
+       request('http://localhost:7865/', (error, response, body) => {
+         expect(response.statusCode).to.equal(200);
+         done();
+       });
+     });
+
+     it('should return the correct message', (done) => {
+       request('http://localhost:7865/', (error, response, body) => {
+         expect(body).to.equal('Welcome to the payment system');
+         done();
+       });
+     });
+   });
+   ```
+
+4. **Start the Server (Terminal 1):**
+
+   To run the server, open **Terminal 1**, navigate to the `8-api` folder, and run:
+
+   ```bash
+   node api.js
+   ```
+
+   You should see the following output:
+
+   ```bash
+   API available on localhost port 7865
+   ```
+
+5. **Run the Tests (Terminal 2):**
+
+   In **Terminal 2**, navigate to the `8-api` folder and run the test suite:
+
+   ```bash
+   npm test api.test.js
+   ```
+
+   **Expected output:**
+
+   ```bash
+   Index page
+     ✓ should return status code 200
+     ✓ should return the correct message
+
+   2 passing (24ms)
+   ```
+
+6. **Verify in the Browser:**
+
+   After starting the server, open your browser and visit [http://localhost:7865/](http://localhost:7865/). You should see:
+
+   ```text
+   Welcome to the payment system
+   ```
+
+</details>
+
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What:** This task involves setting up a basic Express server that responds to a `GET` request on the `/` route and writing integration tests to ensure the server behaves correctly.
+- **Where:** The API is defined in `api.js`, and the tests are located in `api.test.js`. The API listens on port `7865`.
+- **Why:** This task demonstrates how to create a simple API and how to perform integration testing to ensure the API is functioning as expected.
+- **How:** The server is set up using Express, and the tests use the `request` module to make HTTP requests and the `chai` library for assertions.
+- **Who:** This task is important for developers working on backend APIs to ensure their endpoints function correctly through automated tests.
+- **When:** The server can be run anytime by executing `node api.js`, and the tests can be run by executing `npm test api.test.js` from the command line.
+
+</details>
+
+
+### Task 9: Regex Integration Testing
+
+In this task, you will extend the previous integration tests by adding a new endpoint `/cart/:id` with route validation and additional tests for handling both valid and invalid `:id` values.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+1. **Modify `api.js`:**
+   - Add a new endpoint `GET /cart/:id`.
+   - Ensure that `:id` is validated to be a number using a regular expression in the route definition.
+   - If `:id` is a number, return the message: `Payment methods for cart :id`.
+   - If `:id` is not a number, return a 404 status code.
+
+2. **Modify `api.test.js`:**
+   - Add a new test suite for the `/cart/:id` route.
+   - Test cases:
+     - Check that the correct status code (`200`) and message are returned when `:id` is a number.
+     - Check that a `404` status code is returned when `:id` is not a number.
+
+3. **Usage:**
+   - Start the server on port 7865 and test the new `/cart/:id` endpoint.
+   - Ensure that all tests pass without any warnings.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+1. **Step 1: Create `9-api` folder**
+
+   First, create the `9-api` folder by copying the `8-api` project:
+   
+   ```bash
+   cp -r 8-api 9-api
+   ```
+
+
+2. **Update `api.js`:**
+
+   Modify the `api.js` file to handle the new `/cart/:id` route with regex validation:
+
+   ```javascript
+   const express = require('express');
+   const app = express();
+
+   app.get('/', (req, res) => {
+     res.send('Welcome to the payment system');
+   });
+
+   // Add the new route with regex validation for cart ID
+   app.get('/cart/:id(\\d+)', (req, res) => {
+     const id = req.params.id;
+     res.send(`Payment methods for cart ${id}`);
+   });
+
+   // Start the server on port 7865
+   app.listen(7865, () => {
+     console.log('API available on localhost port 7865');
+   });
+
+   module.exports = app;
+   ```
+
+3. **Update `api.test.js`:**
+
+   Modify the `api.test.js` file to add tests for the `/cart/:id` endpoint:
+
+   ```javascript
+   const request = require('request');
+   const { expect } = require('chai');
+
+   describe('Index page', () => {
+     it('should return status code 200', (done) => {
+       request('http://localhost:7865/', (error, response, body) => {
+         expect(response.statusCode).to.equal(200);
+         done();
+       });
+     });
+
+     it('should return the correct message', (done) => {
+       request('http://localhost:7865/', (error, response, body) => {
+         expect(body).to.equal('Welcome to the payment system');
+         done();
+       });
+     });
+   });
+
+   describe('Cart page', () => {
+     it('should return 200 and correct message when :id is a number', (done) => {
+       request('http://localhost:7865/cart/12', (error, response, body) => {
+         expect(response.statusCode).to.equal(200);
+         expect(body).to.equal('Payment methods for cart 12');
+         done();
+       });
+     });
+
+     it('should return 404 when :id is not a number', (done) => {
+       request('http://localhost:7865/cart/hello', (error, response, body) => {
+         expect(response.statusCode).to.equal(404);
+         done();
+       });
+     });
+   });
+   ```
+
+4. **Run the Test Suite:**
+
+   In **Terminal 1**, start the server:
+
+   ```bash
+   node api.js
+   ```
+
+   In **Terminal 2**, run the tests:
+
+   ```bash
+   npm test api.test.js
+   ```
+
+   **Expected Output:**
+
+   ```bash
+   Index page
+     ✔ should return status code 200
+     ✔ should return the correct message
+
+   Cart page
+     ✔ should return 200 and correct message when :id is a number
+     ✔ should return 404 when :id is not a number
+
+   4 passing (25ms)
+   ```
+
+</details>
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What:** This task involves extending the integration tests to include a new `/cart/:id` endpoint with proper validation for `:id` using regex. We then created test cases to verify the behavior for both valid and invalid `:id` values.
+- **Where:** The changes were made in the `api.js` and `api.test.js` files within the `9-api/` folder.
+- **Why:** This task helps ensure that the `/cart/:id` endpoint properly validates input and returns the correct response for valid and invalid cases.
+- **How:** We used regular expressions to validate that `:id` is a number and wrote tests to cover both valid and invalid cases.
+- **Who:** This is important for developers working on API integrations and validating route parameters to prevent unexpected behavior in the application.
+- **When:** These tests are executed whenever we run `npm test api.test.js` to verify the API behavior.
+
+</details>
+
+
+### Task 10: Deep Equality & Post Integration Testing
+
+This task involves adding two new endpoints to your API and writing integration tests for them: `GET /available_payments` and `POST /login`.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- **Modify the file `api.js`:**
+  - Add a new endpoint `GET /available_payments` that returns an object with the structure:
+    ```json
+    {
+      "payment_methods": {
+        "credit_cards": true,
+        "paypal": false
+      }
+    }
+    ```
+  - Add a new endpoint `POST /login` that returns the message `Welcome :username` where `:username` is the value of the body variable `userName`.
+  
+- **Modify the file `api.test.js`:**
+  - Add a test suite for the `/login` endpoint.
+  - Add a test suite for the `/available_payments` endpoint.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+1. **Update `api.js` with the new endpoints:**
+
+   - Add the `GET /available_payments` and `POST /login` routes:
+   
+   ```javascript
+   const express = require('express');
+   const app = express();
+   
+   app.use(express.json());
+   
+   // Existing endpoints
+   app.get('/', (req, res) => {
+     res.send('Welcome to the payment system');
+   });
+
+   app.get('/cart/:id(\\d+)', (req, res) => {
+     const cartId = req.params.id;
+     res.send(`Payment methods for cart ${cartId}`);
+   });
+
+   // New endpoint for available payments
+   app.get('/available_payments', (req, res) => {
+     res.json({
+       payment_methods: {
+         credit_cards: true,
+         paypal: false
+       }
+     });
+   });
+
+   // New endpoint for login
+   app.post('/login', (req, res) => {
+     const { userName } = req.body;
+     if (!userName) {
+       res.status(400).send('Username is required');
+     } else {
+       res.send(`Welcome ${userName}`);
+     }
+   });
+
+   app.listen(7865, () => {
+     console.log('API available on localhost port 7865');
+   });
+
+   module.exports = app;
+   ```
+
+2. **Update `api.test.js` with tests for the new endpoints:**
+
+```javascript
+const request = require('request');
+const { expect } = require('chai');
+
+describe('Index page', () => {
+  it('should return status code 200', (done) => {
+    request('http://localhost:7865/', (error, response, body) => {
+      expect(response.statusCode).to.equal(200);
+      done();
+    });
+  });
+
+  it('should return the correct message', (done) => {
+    request('http://localhost:7865/', (error, response, body) => {
+      expect(body).to.equal('Welcome to the payment system');
+      done();
+    });
+  });
+});
+
+describe('Cart page', () => {
+  it('should return 200 and correct message when :id is a number', (done) => {
+    request('http://localhost:7865/cart/12', (error, response, body) => {
+      expect(response.statusCode).to.equal(200);
+      expect(body).to.equal('Payment methods for cart 12');
+      done();
+    });
+  });
+
+  it('should return 404 when :id is not a number', (done) => {
+    request('http://localhost:7865/cart/hello', (error, response, body) => {
+      expect(response.statusCode).to.equal(404);
+      done();
+    });
+  });
+});
+
+
+describe('GET /available_payments', () => {
+  it('should return available payment methods', (done) => {
+    request('http://localhost:7865/available_payments', (error, response, body) => {
+      expect(response.statusCode).to.equal(200);
+      expect(JSON.parse(body)).to.deep.equal({
+        payment_methods: {
+          credit_cards: true,
+          paypal: false,
+        },
+      });
+      done();
+    });
+  });
+});
+
+describe('POST /login', () => {
+  it('should return a welcome message with the userName', (done) => {
+    const options = {
+      url: 'http://localhost:7865/login',
+      method: 'POST',
+      json: {
+        userName: 'Betty',
+      },
+    };
+    request(options, (error, response, body) => {
+      expect(response.statusCode).to.equal(200);
+      expect(body).to.equal('Welcome Betty');
+      done();
+    });
+  });
+});
+```
+
+3. **Run the tests:**
+
+   - In **Terminal 1**, start the server:
+     ```bash
+     node api.js
+     ```
+
+   - In **Terminal 2**, run the tests:
+     ```bash
+     npm test api.test.js
+     ```
+
+   **Expected Output:**
+   
+   ```bash
+   Index page
+     ✓ should return status code 200
+     ✓ should return the correct message
+   
+   Cart page
+     ✓ should return 200 and correct message when :id is a number
+     ✓ should return 404 when :id is not a number
+   
+   GET /available_payments
+     ✓ should return available payment methods
+   
+   POST /login
+     ✓ should return a welcome message with the userName
+   
+   6 passing (45ms)
+   ```
+
+</details>
+
+<details>
+  <summary><strong>Troubleshooting</strong></summary>
+
+- **Issue:** Failing test for cart when :id is a number.
+  - **Solution:** Ensure the route `/cart/:id` is properly set up with `\\d+` to validate the `:id` is a number.
+  
+- **Issue:** Deep equality test failure for `/available_payments`.
+  - **Solution:** Use `expect(JSON.parse(body)).to.deep.equal(expectedResponse)` to compare objects for deep equality in the test.
+
+</details>
