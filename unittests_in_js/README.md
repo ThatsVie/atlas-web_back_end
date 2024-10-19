@@ -1542,6 +1542,19 @@ describe('POST /login', () => {
 </details>
 
 <details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What:** In this task, we add two new endpoints to our Express API (`GET /available_payments` and `POST /login`) and write integration tests for both using Mocha and Chai. The `/available_payments` endpoint returns an object with available payment methods, while `/login` takes a username from the request body and returns a personalized welcome message.
+- **Where:** This task is implemented in the `api.js` file with the endpoints, and the integration tests are written in `api.test.js`.
+- **Why:** This task helps you learn how to write integration tests for GET and POST endpoints, including deep equality checks for JSON objects and testing for both successful and failed responses.
+- **How:** We use `request` to make HTTP calls in our tests and `expect` from Chai for assertions. We validate the HTTP status codes, response messages, and deep equality of JSON responses.
+- **Who:** Developers who need to write integration tests for their APIs can benefit from this task, especially for testing server functionality and validating responses.
+- **When:** The tests are run automatically every time the `npm test` command is executed to ensure the API's functionality is maintained as expected.
+
+</details>
+
+
+<details>
   <summary><strong>Troubleshooting</strong></summary>
 
 - **Issue:** Failing test for cart when :id is a number.
