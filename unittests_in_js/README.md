@@ -421,3 +421,521 @@ This task involves copying the `calculateNumber` function from Task 1 and rewrit
 - **Additional Note:** Ensure that your test files use `require()` for both `chai` and `calculateNumber`. This allows you to continue using CommonJS without switching to ESM.
 
 </details>
+
+### Task 3: Spies with Sinon
+
+This task involves using Sinon to create a spy for testing whether the `Utils.calculateNumber` function is called correctly when `sendPaymentRequestToApi` is invoked.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Install Sinon using npm to create spies.
+- Create a new module `Utils` in `utils.js` that contains the `calculateNumber` function from the previous tasks.
+- Create a new function `sendPaymentRequestToApi` in `3-payment.js` that calls `Utils.calculateNumber` with the type `SUM` and logs the result.
+- Write tests for `sendPaymentRequestToApi` in `3-payment.test.js` using Sinon to spy on `Utils.calculateNumber`, ensuring it’s called with the correct arguments.
+- Remember to restore the spy after each test to avoid unexpected behavior in future tests.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+1. **Install Sinon:**
+
+   First, install Sinon using npm:
+
+   ```bash
+   npm install sinon --save-dev
+   ```
+
+2. **Create `utils.js`:**
+
+   Define the `Utils` module with the `calculateNumber` function:
+
+   ```javascript
+   const Utils = {
+     calculateNumber: function (type, a, b) {
+       const roundedA = Math.round(a);
+       const roundedB = Math.round(b);
+
+       if (type === 'SUM') {
+         return roundedA + roundedB;
+       } else if (type === 'SUBTRACT') {
+         return roundedA - roundedB;
+       } else if (type === 'DIVIDE') {
+         if (roundedB === 0) {
+           return 'Error';
+         }
+         return roundedA / roundedB;
+       }
+     }
+   };
+
+   module.exports = Utils;
+   ```
+
+3. **Create `3-payment.js`:**
+
+   Write the `sendPaymentRequestToApi` function that calls `Utils.calculateNumber`:
+
+   ```javascript
+   const Utils = require('./utils');
+
+   function sendPaymentRequestToApi(totalAmount, totalShipping) {
+     const total = Utils.calculateNumber('SUM', totalAmount, totalShipping);
+     console.log(`The total is: ${total}`);
+   }
+
+   module.exports = sendPaymentRequestToApi;
+   ```
+
+4. **Create `3-payment.test.js`:**
+
+   Write the test for `sendPaymentRequestToApi` using Sinon to spy on `Utils.calculateNumber`:
+
+   ```javascript
+   const sinon = require('sinon');
+   const Utils = require('./utils');
+   const sendPaymentRequestToApi = require('./3-payment');
+   const { expect } = require('chai');
+
+   describe('sendPaymentRequestToApi', () => {
+     let spy;
+
+     beforeEach(() => {
+       spy = sinon.spy(Utils, 'calculateNumber');
+     });
+
+     afterEach(() => {
+       spy.restore(); // Always restore the spy after the test
+     });
+
+     it('validates that Utils.calculateNumber was called with the correct arguments', () => {
+       sendPaymentRequestToApi(100, 20);
+
+       expect(spy.calledOnceWithExactly('SUM', 100, 20)).to.be.true;
+     });
+   });
+   ```
+
+5. **Run the Test:**
+
+   To run the test suite, use:
+
+   ```bash
+   npm test 3-payment.test.js
+   ```
+
+   **Expected Output:**
+
+   ```bash
+   sendPaymentRequestToApi
+     ✔ validates that Utils.calculateNumber was called with the correct arguments
+
+   1 passing (5ms)
+   ```
+
+</details>
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What:** This task introduces Sinon spies, which help verify whether certain functions are called and with what arguments. We use a spy to track calls to `Utils.calculateNumber`.
+- **Where:** The function `sendPaymentRequestToApi` is defined in `3-payment.js` and calls `Utils.calculateNumber` from `utils.js`. The tests are written in `3-payment.test.js`.
+- **Why:** Spies are useful in testing to validate function interactions without directly testing the function itself.
+- **How:** Sinon’s `spy` method is used to monitor calls to `Utils.calculateNumber`. After the function is called, we assert that the spy was called with the correct arguments.
+- **Who:** This task is for developers who want to learn how to implement and use spies in their testing process.
+- **When:** This test should run whenever `npm test 3-payment.test.js` is executed.
+
+</details>
+
+### Task 4: Stubs with Sinon
+
+This task involves using Sinon stubs to replace the behavior of `Utils.calculateNumber` in order to control the return value for testing purposes. A spy is also used to verify that `console.log` outputs the correct message.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Copy the file `3-payment.js` to `4-payment.js` (same content and behavior).
+- Copy the test suite from `3-payment.test.js` to `4-payment.test.js`.
+- Stub the function `Utils.calculateNumber` to always return the number `10`.
+- Verify that the stub is called with the correct arguments (`type = SUM`, `a = 100`, `b = 20`).
+- Use a spy to verify that `console.log` logs the correct message: `The total is: 10`.
+- Ensure all tests pass and restore the spy and stub after each test to avoid unintended side effects.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+1. **Copy `4-payment.js`:**
+
+   Copy the contents of `3-payment.js` to `4-payment.js`. No changes are required for the logic:
+
+   ```javascript
+   const Utils = require('./utils');
+
+   function sendPaymentRequestToApi(totalAmount, totalShipping) {
+     const total = Utils.calculateNumber('SUM', totalAmount, totalShipping);
+     console.log(`The total is: ${total}`);
+   }
+
+   module.exports = sendPaymentRequestToApi;
+   ```
+
+2. **Write `4-payment.test.js`:**
+
+   In `4-payment.test.js`, we replace the actual implementation of `Utils.calculateNumber` with a stub that always returns `10`. We also add a spy on `console.log` to verify the correct output.
+
+   ```javascript
+   const sinon = require('sinon');
+   const Utils = require('./utils');
+   const sendPaymentRequestToApi = require('./4-payment');
+   const { expect } = require('chai');
+
+   describe('sendPaymentRequestToApi with stubs', () => {
+     let calculateNumberStub;
+     let consoleSpy;
+
+     beforeEach(() => {
+       // Stub the Utils.calculateNumber method to return 10
+       calculateNumberStub = sinon.stub(Utils, 'calculateNumber').returns(10);
+       // Spy on console.log
+       consoleSpy = sinon.spy(console, 'log');
+     });
+
+     afterEach(() => {
+       // Restore the original methods
+       calculateNumberStub.restore();
+       consoleSpy.restore();
+     });
+
+     it('validates that Utils.calculateNumber was called with the correct arguments and console.log logs the correct message', () => {
+       sendPaymentRequestToApi(100, 20);
+
+       // Verify that the stub was called with the correct arguments
+       expect(calculateNumberStub.calledOnceWithExactly('SUM', 100, 20)).to.be.true;
+
+       // Verify that console.log was called with the correct message
+       expect(consoleSpy.calledOnceWithExactly('The total is: 10')).to.be.true;
+     });
+   });
+   ```
+
+3. **Run the Test:**
+
+   To run the test suite, use:
+
+   ```bash
+   npm test 4-payment.test.js
+   ```
+
+   **Expected Output:**
+
+   ```bash
+   sendPaymentRequestToApi with stubs
+     ✔ validates that Utils.calculateNumber was called with the correct arguments and console.log logs the correct message
+
+   1 passing (6ms)
+   ```
+
+</details>
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What:** This task involves using Sinon stubs to replace the behavior of a function for testing purposes, ensuring that the function returns a specific result without executing the actual implementation.
+- **Where:** The function `sendPaymentRequestToApi` is located in `4-payment.js`, and the tests are in `4-payment.test.js`.
+- **Why:** Stubbing is useful when testing code that depends on functions with side effects (e.g., API calls, expensive calculations) to control the results and focus only on the behavior of the code under test.
+- **How:** We use `sinon.stub()` to make `Utils.calculateNumber` always return `10` and `sinon.spy()` to ensure `console.log` logs the correct message. After each test, we restore the stub and spy to avoid affecting other tests.
+- **Who:** This task is for developers learning how to use stubs in unit testing to improve test speed and control function behavior.
+- **When:** Run the tests using `npm test 4-payment.test.js`.
+
+</details>
+
+### Task 5: Hooks with Mocha
+
+This task involves using Mocha hooks (`beforeEach` and `afterEach`) to set up a spy for `console.log`, ensuring that the spy is initialized before each test and restored afterward. The tests validate that `sendPaymentRequestToApi` logs the correct total and that the console is only called once per test.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Copy the contents of `4-payment.js` into a new file `5-payment.js` (same content and behavior).
+- In `5-payment.test.js`, use `beforeEach` and `afterEach` hooks to set up a spy on `console.log`.
+- Create two tests:
+  1. Call `sendPaymentRequestToApi(100, 20)` and verify that the console logs `The total is: 120` and that it’s only called once.
+  2. Call `sendPaymentRequestToApi(10, 10)` and verify that the console logs `The total is: 20` and that it’s only called once.
+- Ensure all tests pass and that the spy is correctly restored after each test.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+1. **Copy `5-payment.js`:**
+
+   Copy the contents of `4-payment.js` to `5-payment.js`:
+
+   ```javascript
+   const Utils = require('./utils');
+
+   function sendPaymentRequestToApi(totalAmount, totalShipping) {
+     const total = Utils.calculateNumber('SUM', totalAmount, totalShipping);
+     console.log(`The total is: ${total}`);
+   }
+
+   module.exports = sendPaymentRequestToApi;
+   ```
+
+2. **Write `5-payment.test.js`:**
+
+   In this test file, Mocha’s hooks are used to set up a spy on `console.log` and verify that it logs the correct totals for each test case.
+
+   ```javascript
+   const sinon = require('sinon');
+   const sendPaymentRequestToApi = require('./5-payment');
+   const { expect } = require('chai');
+
+   describe('sendPaymentRequestToApi with hooks', () => {
+     let consoleSpy;
+
+     beforeEach(() => {
+       // Set up a spy on console.log before each test
+       consoleSpy = sinon.spy(console, 'log');
+     });
+
+     afterEach(() => {
+       // Restore the spy after each test
+       consoleSpy.restore();
+     });
+
+     it('logs the correct total for 100 and 20', () => {
+       sendPaymentRequestToApi(100, 20);
+
+       // Check that the correct message was logged
+       expect(consoleSpy.calledOnceWithExactly('The total is: 120')).to.be.true;
+       // Ensure console.log was only called once
+       expect(consoleSpy.calledOnce).to.be.true;
+     });
+
+     it('logs the correct total for 10 and 10', () => {
+       sendPaymentRequestToApi(10, 10);
+
+       // Check that the correct message was logged
+       expect(consoleSpy.calledOnceWithExactly('The total is: 20')).to.be.true;
+       // Ensure console.log was only called once
+       expect(consoleSpy.calledOnce).to.be.true;
+     });
+   });
+   ```
+
+3. **Run the Test:**
+
+   To run the test suite, use:
+
+   ```bash
+   npm test 5-payment.test.js
+   ```
+
+   **Expected Output:**
+
+   ```bash
+   sendPaymentRequestToApi with hooks
+     ✔ logs the correct total for 100 and 20
+     ✔ logs the correct total for 10 and 10
+
+   2 passing (7ms)
+   ```
+
+</details>
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What:** This task focuses on using Mocha’s hooks (`beforeEach` and `afterEach`) to set up and restore spies, ensuring that each test starts with a fresh spy instance.
+- **Where:** The `sendPaymentRequestToApi` function is in `5-payment.js`, and the test suite is in `5-payment.test.js`.
+- **Why:** Hooks allow us to initialize spies before each test and restore them afterward, preventing side effects across tests.
+- **How:** Mocha’s `beforeEach` hook sets up a spy on `console.log`, and the `afterEach` hook restores it after each test. This ensures that we can accurately test the console output without interference from previous tests.
+- **Who:** This task is for developers learning how to use Mocha hooks to manage test setup and teardown for repetitive tasks like spying, stubbing, or setting up a database.
+- **When:** The test suite runs using `npm test 5-payment.test.js` to verify the behavior.
+
+</details>
+
+### Task 6: Async Tests with `done`
+
+This task involves testing an asynchronous function `getPaymentTokenFromAPI` that returns a promise. We use Mocha’s `done` callback to handle the asynchronous nature of the test.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- Create the `getPaymentTokenFromAPI` function in `6-payment_token.js` that accepts a `success` argument (boolean).
+- If `success` is `true`, return a resolved promise with the object `{ data: 'Successful response from the API' }`.
+- Write tests in `6-payment_token.test.js` using Mocha’s `done` callback to verify the promise resolves correctly.
+- Ensure all tests pass and handle async properly using `done`.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+1. **Create `6-payment_token.js`:**
+
+   Define the `getPaymentTokenFromAPI` function that returns a resolved promise when `success` is true:
+
+   ```javascript
+   function getPaymentTokenFromAPI(success) {
+     if (success) {
+       return Promise.resolve({ data: 'Successful response from the API' });
+     }
+   }
+
+   module.exports = getPaymentTokenFromAPI;
+   ```
+
+2. **Write `6-payment_token.test.js`:**
+
+   In the test file, we test the resolved value of `getPaymentTokenFromAPI(true)` using the `done` callback to ensure the test waits for the promise to resolve.
+
+   ```javascript
+   const getPaymentTokenFromAPI = require('./6-payment_token');
+   const { expect } = require('chai');
+
+   describe('getPaymentTokenFromAPI', () => {
+     it('returns a resolved promise with correct data when success is true', (done) => {
+       getPaymentTokenFromAPI(true)
+         .then((response) => {
+           expect(response).to.have.property('data', 'Successful response from the API');
+           done(); // Call done when the test finishes successfully
+         })
+         .catch((error) => done(error)); // Call done with error if the promise rejects
+     });
+   });
+   ```
+
+3. **Run the Test:**
+
+   Run the test suite using:
+
+   ```bash
+   npm test 6-payment_token.test.js
+   ```
+
+   **Expected Output:**
+
+   ```bash
+   getPaymentTokenFromAPI
+     ✔ returns a resolved promise with correct data when success is true
+
+   1 passing (4ms)
+   ```
+
+</details>
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What:** This task involves testing a function that returns a promise and verifying the result using Mocha’s `done` callback to handle asynchronous tests.
+- **Where:** The function `getPaymentTokenFromAPI` is located in `6-payment_token.js`, and the tests are in `6-payment_token.test.js`.
+- **Why:** The `done` callback is used to properly manage asynchronous tests, ensuring that Mocha waits for the test to complete before moving on.
+- **How:** The promise returned by `getPaymentTokenFromAPI` is tested by chaining a `.then()` method, and the `done()` callback is called after the promise resolves. If the promise rejects, `done(error)` is used to fail the test.
+- **Who:** This task is for developers learning how to handle async testing, especially when testing promises or other asynchronous behavior.
+- **When:** Run the tests using `npm test 6-payment_token.test.js` to verify the behavior.
+
+</details>
+
+
+### Task 7: Skipping a Test with Mocha
+
+This task involves skipping a failing test in a test suite without removing or commenting it out. Mocha’s `it.skip` is used to skip the test, allowing the rest of the test suite to pass.
+
+<details>
+  <summary><strong>Curriculum Instruction</strong></summary>
+
+- In `7-skip.test.js`, skip the failing test `'1 is equal to 3'` using `it.skip` without removing or modifying the test description.
+- Ensure that the rest of the test suite passes and the skipped test is marked as pending.
+
+</details>
+
+<details>
+  <summary><strong>Steps and Code Implementation</strong></summary>
+
+1. **Create `7-skip.test.js`:**
+
+   Here’s the code with the failing test skipped:
+
+   ```javascript
+   const { expect } = require('chai');
+
+   describe('Testing numbers', () => {
+     it('1 is equal to 1', () => {
+       expect(1 === 1).to.be.true;
+     });
+
+     it('2 is equal to 2', () => {
+       expect(2 === 2).to.be.true;
+     });
+
+     it.skip('1 is equal to 3', () => {
+       expect(1 === 3).to.be.true; // This test will be skipped
+     });
+
+     it('3 is equal to 3', () => {
+       expect(3 === 3).to.be.true;
+     });
+
+     it('4 is equal to 4', () => {
+       expect(4 === 4).to.be.true;
+     });
+
+     it('5 is equal to 5', () => {
+       expect(5 === 5).to.be.true;
+     });
+
+     it('6 is equal to 6', () => {
+       expect(6 === 6).to.be.true;
+     });
+
+     it('7 is equal to 7', () => {
+       expect(7 === 7).to.be.true;
+     });
+   });
+   ```
+
+2. **Run the Test:**
+
+   Run the test suite using:
+
+   ```bash
+   npm test 7-skip.test.js
+   ```
+
+   **Expected Output:**
+
+   ```bash
+   Testing numbers
+     ✔ 1 is equal to 1
+     ✔ 2 is equal to 2
+     - 1 is equal to 3 (skipped)
+     ✔ 3 is equal to 3
+     ✔ 4 is equal to 4
+     ✔ 5 is equal to 5
+     ✔ 6 is equal to 6
+     ✔ 7 is equal to 7
+
+   7 passing (4ms)
+   1 pending
+   ```
+
+</details>
+
+<details>
+  <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
+
+- **What:** This task focuses on skipping failing tests using `it.skip` to allow the rest of the test suite to pass.
+- **Where:** The test suite is located in `7-skip.test.js`.
+- **Why:** Skipping tests is a best practice for retaining tests that are failing or not currently relevant without removing or commenting them out. This allows developers to revisit the issue later while ensuring the test suite still runs smoothly.
+- **How:** Mocha’s `it.skip` is used to mark the test as pending, and the skipped test will show as pending in the test results.
+- **Who:** This task is important for developers who want to maintain the integrity of their test suite while dealing with tests that need to be temporarily skipped.
+- **When:** Run the tests using `npm test 7-skip.test.js` to verify the behavior.
+
+</details>
