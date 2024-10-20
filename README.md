@@ -117,6 +117,12 @@ This project focuses on unit and integration testing in Node.js using Mocha, Cha
 
 To vie a README.md file for Unittests in JS visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/unittests_in_js/README.md)
 
+## Queuing System in JS
+
+This project demonstrates the integration of Redis and Node.js to build a scalable queuing system using Kue, alongside a basic Express API that manages product stock. The system handles Redis-based job creation and processing, supports async operations, and tracks job progress with real-time updates. It showcases how Redis can be used for both data storage and queue management in modern web applications.
+
+To view a README.md file for Queing System in JS visit [this link.](https://github.com/ThatsVie/atlas-web_back_end/blob/main/queuing_system_in_js/README.md)
+
 ## Author
 
 Vie Paula - [GitHub Profile](https://github.com/ThatsVie)
