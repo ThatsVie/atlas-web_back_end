@@ -22,7 +22,7 @@ This project demonstrates the integration of Redis and Node.js to build a scalab
 
 </details>
 
----
+
 
 <details>
   <summary><strong>How to run simple operations with the Redis client</strong></summary>
@@ -47,7 +47,7 @@ This project demonstrates the integration of Redis and Node.js to build a scalab
 
 </details>
 
----
+
 
 <details>
   <summary><strong>How to use a Redis client with Node JS for basic operations</strong></summary>
@@ -66,7 +66,6 @@ This project demonstrates the integration of Redis and Node.js to build a scalab
 
 </details>
 
----
 
 <details>
   <summary><strong>How to store hash values in Redis</strong></summary>
@@ -83,7 +82,6 @@ This project demonstrates the integration of Redis and Node.js to build a scalab
 
 </details>
 
----
 
 <details>
   <summary><strong>How to deal with async operations with Redis</strong></summary>
@@ -101,7 +99,7 @@ This project demonstrates the integration of Redis and Node.js to build a scalab
 
 </details>
 
----
+
 
 <details>
   <summary><strong>How to use Kue as a queue system</strong></summary>
@@ -122,7 +120,7 @@ This project demonstrates the integration of Redis and Node.js to build a scalab
 
 </details>
 
----
+
 
 <details>
   <summary><strong>How to build a basic Express app interacting with a Redis server</strong></summary>
@@ -142,7 +140,6 @@ This project demonstrates the integration of Redis and Node.js to build a scalab
 
 </details>
 
----
 
 <details>
   <summary><strong>How to build a basic Express app interacting with a Redis server and queue</strong></summary>
@@ -168,11 +165,12 @@ This project demonstrates the integration of Redis and Node.js to build a scalab
 - [Redis Client for Node.js](https://github.com/redis/node-redis)
 - [Kue Documentation](https://github.com/Automattic/kue)
 - [Express Documentation](https://expressjs.com/)
-**MDN - ES6 Modules:**
+
+- **MDN - ES6 Modules:**
    This page covers the basics of importing and exporting modules in JavaScript:
    - [JavaScript Modules - Import and Export](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
 
- **MDN - Named and Default Exports:**
+- **MDN - Named and Default Exports:**
    This page explains named exports (using `{}`) and default exports in detail:
    - [MDN - Export](https://developer.mozilla.org/en-US/docs/web/javascript/reference/statements/export)
    - [MDN - Import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)
