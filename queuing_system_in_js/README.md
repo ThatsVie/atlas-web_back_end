@@ -1,5 +1,14 @@
-# Queuing System in JS
-This project demonstrates the integration of Redis and Node.js to build a scalable queuing system using Kue, alongside a basic Express API that manages product stock. The system handles Redis-based job creation and processing, supports async operations, and tracks job progress with real-time updates. It showcases how Redis can be used for both data storage and queue management in modern web applications.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ce881c39-ff92-4947-bf57-7996f99bb8b1" alt="puginalley" />
+</p>
+
+<h1 align="center">Queuing System in JS</h1>
+
+<p align="center">
+  This project demonstrates the integration of Redis and Node.js to build a scalable queuing system using Kue, alongside a basic Express API that manages product stock. The system handles Redis-based job creation and processing, supports async operations, and tracks job progress with real-time updates. It showcases how Redis can be used for both data storage and queue management in modern web applications.
+</p>
+
 
 ## Learning Objectives
 <details>
