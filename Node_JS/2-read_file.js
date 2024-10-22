@@ -30,12 +30,10 @@ function countStudents(path) {
       fields[field].push(firstname);
     });
 
-    // Log the number of students in each field and their names
     for (const [field, names] of Object.entries(fields)) {
       console.log(`Number of students in ${field}: ${names.length}. List: ${names.join(', ')}`);
     }
   } catch (error) {
-    // If an error occurs (file not found), throw an error
     throw new Error('Cannot load the database');
   }
 }

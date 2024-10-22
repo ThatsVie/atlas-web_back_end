@@ -27,7 +27,6 @@ function countStudents(path) {
         result += `Number of students in ${field}: ${names.length}. List: ${names.join(', ')}\n`;
       }
 
-      // Return the formatted result as a string
       console.log(result.trim());
       return result.trim();
     })

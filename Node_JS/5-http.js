@@ -2,18 +2,16 @@ const http = require('http');
 const url = require('url');
 const countStudents = require('./3-read_file_async');
 
-// HTTP server listening on port 1245
+
 const app = http.createServer((req, res) => {
   const parsedUrl = url.parse(req.url, true);
 
-  // Handle root endpoint
   if (parsedUrl.pathname === '/') {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
     res.end('Hello Holberton School!');
   }
 
-  // Handle /students
   else if (parsedUrl.pathname === '/students') {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');

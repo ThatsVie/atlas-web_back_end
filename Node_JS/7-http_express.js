@@ -1,15 +1,12 @@
 const express = require('express');
 const countStudents = require('./3-read_file_async');
 
-// Create an Express app
 const app = express();
 
-// Route for root
 app.get('/', (req, res) => {
   res.send('Hello Holberton School!');
 });
 
-// Route for /students
 app.get('/students', (req, res) => {
   const databasePath = process.argv[2];
 
