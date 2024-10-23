@@ -1546,16 +1546,26 @@ This task involves organizing a complex Express server into multiple files and d
       "sinon": "^7.5.0"
     }
   }
- 
    ```
 
-8. **Test the server**:
+8. **Add the `.babelrc` file**:
+   You need to add a `.babelrc` file to allow the use of ES6 features like `import` and `export`. Create a `.babelrc` file with the following content:
+
+   ```json
+   {
+     "presets": [["env", { "exclude": ["transform-regenerator"] }]]
+   }
+   ```
+
+   This file ensures that `babel-node` works correctly by using the `env` preset.
+
+9. **Test the server**:
    In **Terminal 1**, start the server:
    ```bash
    npm run dev
    ```
 
-9. **Test with Curl**:
+10. **Test with Curl**:
    In **Terminal 2**, test the root path:
    ```bash
    curl localhost:1245 && echo ""
@@ -1585,7 +1595,7 @@ This task involves organizing a complex Express server into multiple files and d
    List: Johann, Arielle, Jonathan, Emmanuel, Guillaume, Katie
    ```
 
-10. **Test Invalid Major**:
+11. **Test Invalid Major**:
    Test the `/students/:major` path with an invalid major:
    ```bash
    curl localhost:1245/students/French && echo ""
@@ -1629,7 +1639,9 @@ This task involves organizing a complex Express server into multiple files and d
      ```
 
 4. **Test with Postman**:
-   - Open Postman and create a new **GET** request to:
+   - Open Postman and create a new
+
+ **GET** request to:
      ```
      http://localhost:1245/students
      ```
@@ -1662,21 +1674,6 @@ This task involves organizing a complex Express server into multiple files and d
 
 </details>
 
-<details>
-  <summary><strong>Troubleshooting</strong></summary>
-
-**What We Tried**:
-- We organized the server code into different files for controllers, routes, and utilities,
-
- to improve structure and maintainability.
-
-**Issue**:
-- Ensuring the correct error handling when the CSV file isn't available or when an invalid major is passed.
-
-**Final Solution**:
-- Error handling was added in the `StudentsController` methods to manage cases where the CSV file cannot be loaded or the user provides an invalid major.
-
-</details>
 
 <details>
   <summary><strong>Explanation: Who, What, Where, When, Why, How</strong></summary>
@@ -1694,5 +1691,3 @@ This task involves organizing a complex Express server into multiple files and d
 - **How**: The server is created using Express and modularized by separating routes and logic into different files. It processes requests to different endpoints, reading student data from a CSV file and filtering it by major.
 
 </details>
-
-
