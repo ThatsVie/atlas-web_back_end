@@ -1546,7 +1546,8 @@ This task involves organizing a complex Express server into multiple files and d
       "sinon": "^7.5.0"
     }
   }
-   ```
+
+  ```
 
 8. **Add the `.babelrc` file**:
    You need to add a `.babelrc` file to allow the use of ES6 features like `import` and `export`. Create a `.babelrc` file with the following content:
