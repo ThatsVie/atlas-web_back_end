@@ -1179,7 +1179,6 @@ In this task, we create multiple jobs using the Kue library. The jobs are queued
 <details>
   <summary><strong>Steps and Code Implementation</strong></summary>
 
-
 1. **Create the `7-job_creator.js` file:**
 
    Write the following code to create the jobs and track their progress:
@@ -1201,38 +1200,7 @@ In this task, we create multiple jobs using the Kue library. The jobs are queued
        phoneNumber: '4153518743',
        message: 'This is the code 4321 to verify your account'
      },
-     {
-       phoneNumber: '4153538781',
-       message: 'This is the code 4562 to verify your account'
-     },
-     {
-       phoneNumber: '4153118782',
-       message: 'This is the code 4321 to verify your account'
-     },
-     {
-       phoneNumber: '4153718781',
-       message: 'This is the code 4562 to verify your account'
-     },
-     {
-       phoneNumber: '4159518782',
-       message: 'This is the code 4321 to verify your account'
-     },
-     {
-       phoneNumber: '4158718781',
-       message: 'This is the code 4562 to verify your account'
-     },
-     {
-       phoneNumber: '4153818782',
-       message: 'This is the code 4321 to verify your account'
-     },
-     {
-       phoneNumber: '4154318781',
-       message: 'This is the code 4562 to verify your account'
-     },
-     {
-       phoneNumber: '4151218782',
-       message: 'This is the code 4321 to verify your account'
-     }
+     // Add remaining job entries
    ];
 
    // Create a Kue queue
@@ -1282,14 +1250,7 @@ In this task, we create multiple jobs using the Kue library. The jobs are queued
    Notification job created: 10
    Notification job created: 11
    Notification job created: 12
-   Notification job created: 13
-   Notification job created: 14
-   Notification job created: 15
-   Notification job created: 16
-   Notification job created: 17
-   Notification job created: 48
-  ```
-
+   ```
 </details>
 
 <details>
@@ -1303,6 +1264,7 @@ In this task, we create multiple jobs using the Kue library. The jobs are queued
 - **When:** This process is executed whenever the job creator script is run, generating new jobs for the queue.
 
 </details>
+
 
 
 ### Task 9: Track Progress and Errors with Kue - Create the Job Processor
@@ -1391,13 +1353,6 @@ This task involves creating a job processor that handles notification jobs, trac
    ```
    Sending notification to 4153518743, with message: This is the code 4321 to verify your account
    Sending notification to 4153538781, with message: This is the code 4562 to verify your account
-   Sending notification to 4153118782, with message: This is the code 4321 to verify your account
-   Sending notification to 4153718781, with message: This is the code 4562 to verify your account
-   Sending notification to 4159518782, with message: This is the code 4321 to verify your account
-   Sending notification to 4158718781, with message: This is the code 4562 to verify your account
-   Sending notification to 4153818782, with message: This is the code 4321 to verify your account
-   Sending notification to 4154318781, with message: This is the code 4562 to verify your account
-   Sending notification to 4151218782, with message: This is the code 4321 to verify your account
    ```
 
 7. **Example of Output in Terminal 2 (Job Creator):**
@@ -1407,30 +1362,13 @@ This task involves creating a job processor that handles notification jobs, trac
    ```
    Notification job created: 19
    Notification job created: 20
-   Notification job created: 21
-   Notification job created: 22
-   Notification job created: 23
-   Notification job created: 24
-   Notification job created: 25
-   Notification job created: 26
-   Notification job created: 27
-   Notification job created: 28
-   Notification job created: 29
    ```
 
    Additionally, the job creator tracks the progress and failures of jobs:
 
    ```
    Notification job 19 0% complete
-   Notification job 20 0% complete
    Notification job 19 failed: Phone number 4153518780 is blacklisted
-   Notification job 20 failed: Phone number 4153518781 is blacklisted
-   Notification job 21 0% complete
-   Notification job 21 50% complete
-   Notification job 22 0% complete
-   Notification job 22 50% complete
-   Notification job 21 completed
-   Notification job 22 completed
    ```
 
 </details>
